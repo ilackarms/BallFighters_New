@@ -1,0 +1,19 @@
+
+BooKnockoff.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+BooDown
+  rotate: false
+  xy: 1, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+BooUp
+  rotate: false
+  xy: 35, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

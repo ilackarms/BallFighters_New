@@ -1,0 +1,19 @@
+
+2PlayerButton.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+2PlayerStartButton
+  rotate: false
+  xy: 1, 1
+  size: 46, 30
+  orig: 46, 30
+  offset: 0, 0
+  index: -1
+2PlayerStartButtonPressed
+  rotate: false
+  xy: 49, 1
+  size: 46, 30
+  orig: 46, 30
+  offset: 0, 0
+  index: -1
