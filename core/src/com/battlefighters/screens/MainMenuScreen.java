@@ -6,7 +6,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,7 +22,8 @@ public class MainMenuScreen implements Screen {
 
     private TweenManager tweenManager;
     private Stage stage;
-
+    private Sprite mainMenuLabel, blackScreen;
+    private SpriteBatch batch;
 
     public void render(float delta){
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -28,10 +31,14 @@ public class MainMenuScreen implements Screen {
 
         tweenManager.update(delta);
 
-        Table.drawDebug(stage);
+//        Table.drawDebug(stage);
 
         stage.act(delta);
         stage.draw();
+
+        batch.begin();
+        mainMenuLabel.draw(batch);
+        batch.end();
 
 
     }
@@ -41,6 +48,46 @@ public class MainMenuScreen implements Screen {
     }
 
     public void show(){
+
+        initializeSprites();
+        initializeStage();
+
+        //fade in screen
+        tweenManager = new TweenManager();
+        Tween.registerAccessor(Sprite.class, new SpriteAccessor());
+        Tween.set(mainMenuLabel,SpriteAccessor.ALPHA).target(0).start(tweenManager);
+        Tween.to(mainMenuLabel, SpriteAccessor.ALPHA, 3).target(1).start(tweenManager);
+
+    }
+
+    public void hide(){
+        dispose();
+    }
+
+    public void pause(){
+
+    }
+
+    public void resume(){
+
+    }
+
+    public void dispose(){
+        stage.dispose();
+        batch.dispose();
+    }
+
+    protected void initializeSprites(){
+
+        Texture menuTexture = new Texture(Gdx.files.internal("Labels/selectMode.png"));
+        mainMenuLabel= new Sprite(menuTexture);
+        mainMenuLabel.setSize(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/4);
+        mainMenuLabel.setPosition(Gdx.graphics.getWidth()/2-130f,Gdx.graphics.getHeight()/2+80f);
+
+        batch = new SpriteBatch();
+    }
+
+    protected void initializeStage(){
         stage = new Stage();
 
         Table table;
@@ -92,32 +139,12 @@ public class MainMenuScreen implements Screen {
         blankButton.pad(20);
 
         table.add(buttonPlay1);
+        table.getCell(buttonPlay1).spaceRight(80f);
         table.add(buttonPlay2);
+        table.getCell(buttonPlay2).spaceRight(80f);
         table.add(exitButton);
         table.debug();  //remove later
         stage.addActor(table);
-
-        //fade in screen
-        tweenManager = new TweenManager();
-        Tween.registerAccessor(Sprite.class, new SpriteAccessor());
-        Tween.set(stage.getActors().first(),SpriteAccessor.ALPHA).target(0).start(tweenManager);
-        Tween.to(stage.getBatch(), SpriteAccessor.ALPHA, 3).target(1).start(tweenManager);
-
-    }
-
-    public void hide(){
-
-    }
-
-    public void pause(){
-
-    }
-
-    public void resume(){
-
-    }
-
-    public void dispose(){
 
     }
 }

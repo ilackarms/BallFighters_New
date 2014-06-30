@@ -7,7 +7,6 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -40,10 +39,10 @@ public class SplashScreen implements Screen {
 
     public void show(){
         batch = new SpriteBatch();
-        Texture splashTexture = new Texture(Gdx.files.internal("Backgrounds/StartScreen.png"));
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class,new SpriteAccessor());
 
+        Texture splashTexture = new Texture(Gdx.files.internal("Backgrounds/StartScreen.png"));
         splash = new Sprite(splashTexture);
         splash.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
@@ -53,7 +52,7 @@ public class SplashScreen implements Screen {
 
         Tween.set(splash, SpriteAccessor.ALPHA).target(0).start(tweenManager);
         Tween.to(splash, SpriteAccessor.ALPHA, 3).target(1).start(tweenManager);
-        Tween.to(splash, SpriteAccessor.ALPHA, 5).delay(3).target(0).setCallback(new TweenCallback() {
+        Tween.to(splash, SpriteAccessor.ALPHA, 3).delay(6).target(0).setCallback(new TweenCallback() {
             @Override
             public void onEvent(int i, BaseTween<?> baseTween) {
                 Tween.to(splash, SpriteAccessor.ALPHA, 2).target(1).delay(3).start(tweenManager);
@@ -63,7 +62,7 @@ public class SplashScreen implements Screen {
     }
 
     public void hide(){
-
+        dispose();
     }
 
     public void pause(){
