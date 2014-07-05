@@ -1,10 +1,11 @@
-package com.battlefighters.global;
+package com.ballfighters.global;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
@@ -16,6 +17,8 @@ public final class GameData {
     public static String player;
     public static Sprite BLACKSCREEN =new Sprite(new Texture(Gdx.files.internal("Backgrounds/blackScreen.png")));
     public static World WORLD;
+    public static Screen screen;
+    public static Camera camera;
 
     public static void playMusic(String filename){
         GameData.music.stop();

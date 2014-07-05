@@ -1,4 +1,4 @@
-package com.battlefighters.screens;
+package com.ballfighters.screens;
 
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
@@ -18,14 +18,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.battlefighters.global.GameData;
-import com.battlefighters.tween.SpriteAccessor;
+import com.ballfighters.global.GameData;
+import com.ballfighters.tween.SpriteAccessor;
 
 
 public class CharacterSelectScreen implements Screen {
 
     private Stage stage;
-    private Sprite characterSelectLabel, blackScreen;
+    private Sprite characterSelectLabel;
     private SpriteBatch batch;
     private TweenManager tweenManager;
 
@@ -50,6 +50,7 @@ public class CharacterSelectScreen implements Screen {
     }
 
     public void show(){
+    	GameData.screen = this;
 
         initializeSprites();
         initializeStage();

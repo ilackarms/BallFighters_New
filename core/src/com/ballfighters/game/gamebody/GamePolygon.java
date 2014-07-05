@@ -1,8 +1,8 @@
-package com.battlefighters.game.gamebody;
+package com.ballfighters.game.gamebody;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.battlefighters.global.GameData;
+import com.ballfighters.global.GameData;
 
 /**
  * Created by Dell_Owner on 6/29/2014.

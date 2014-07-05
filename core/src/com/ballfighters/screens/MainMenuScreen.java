@@ -1,29 +1,34 @@
-package com.battlefighters.screens;
+package com.ballfighters.screens;
 
+import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.battlefighters.tween.SpriteAccessor;
+import com.ballfighters.game.gamebody.Animator;
+import com.ballfighters.global.GameData;
+import com.ballfighters.tween.SpriteAccessor;
 
 public class MainMenuScreen implements Screen {
 
     private TweenManager tweenManager;
     private Stage stage;
-    private Sprite mainMenuLabel, blackScreen;
     private SpriteBatch batch;
+    private Animator animator;
+    private Sprite sprite;
 
     public void render(float delta){
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -33,13 +38,20 @@ public class MainMenuScreen implements Screen {
 
 //        Table.drawDebug(stage);
 
-        stage.act(delta);
-        stage.draw();
+
+        animator.update();
+        sprite = new Sprite(new TextureRegion(animator.currentFrame));
+        sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         batch.begin();
-        mainMenuLabel.draw(batch);
+
+        sprite.draw(batch);
+
+        GameData.BLACKSCREEN.draw(batch);
         batch.end();
 
+        stage.act(delta);
+        stage.draw();
 
     }
 
@@ -48,6 +60,9 @@ public class MainMenuScreen implements Screen {
     }
 
     public void show(){
+    	GameData.screen = this;
+
+        animator = new Animator("Backgrounds/MainMenuScreenAnimationMatrix.png",3,5);
 
         initializeSprites();
         initializeStage();
@@ -55,8 +70,8 @@ public class MainMenuScreen implements Screen {
         //fade in screen
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
-        Tween.set(mainMenuLabel,SpriteAccessor.ALPHA).target(0).start(tweenManager);
-        Tween.to(mainMenuLabel, SpriteAccessor.ALPHA, 3).target(1).start(tweenManager);
+        Tween.set(GameData.BLACKSCREEN,SpriteAccessor.ALPHA).target(1).start(tweenManager);
+        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(0).start(tweenManager);
 
     }
 
@@ -79,10 +94,7 @@ public class MainMenuScreen implements Screen {
 
     protected void initializeSprites(){
 
-        Texture menuTexture = new Texture(Gdx.files.internal("Labels/selectMode.png"));
-        mainMenuLabel= new Sprite(menuTexture);
-        mainMenuLabel.setSize(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/4);
-        mainMenuLabel.setPosition(Gdx.graphics.getWidth()/2-130f,Gdx.graphics.getHeight()/2+80f);
+        GameData.BLACKSCREEN.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         batch = new SpriteBatch();
     }
@@ -119,9 +131,15 @@ public class MainMenuScreen implements Screen {
 
         buttonPlay1 = new Button(style1);
         buttonPlay1.pad(40);
-        buttonPlay1.addListener(new ClickListener() {
+        buttonPlay1.addListener(new ClickListener(){
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new CharacterSelectScreen());
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new CharacterSelectScreen());
+                    }
+                }).start(tweenManager);
             }
         });
         buttonPlay2 = new Button(style2);

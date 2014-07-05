@@ -1,4 +1,4 @@
-package com.battlefighters.game;
+package com.ballfighters.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -8,10 +8,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.GdxNativesLoader;
-import com.battlefighters.global.GameData;
-import com.battlefighters.screens.SplashScreen;
+import com.ballfighters.global.GameData;
+import com.ballfighters.screens.TestBattleScreen;
 
-public class BallFightersGame extends Game {
+public class BallFighters extends Game {
 	SpriteBatch batch;
 	Texture img;
     Music music;
@@ -24,7 +24,7 @@ public class BallFightersGame extends Game {
         GameData.WORLD = world;
         GdxNativesLoader.load();
         Gdx.app.log(TITLE,"create()");
-        setScreen(new SplashScreen());
+        setScreen(new TestBattleScreen());
 	}
 
 	@Override
@@ -42,6 +42,8 @@ public class BallFightersGame extends Game {
     public void resize(int width, int height){
         super.pause();
         Gdx.app.log(TITLE,"resize("+width+","+height+")");
+        GameData.screen.resize(width, height);
+		
     }
 
     @Override

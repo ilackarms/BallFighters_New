@@ -1,4 +1,4 @@
-package com.battlefighters.tween;
+package com.ballfighters.tween;
 
 import aurelienribon.tweenengine.TweenAccessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;

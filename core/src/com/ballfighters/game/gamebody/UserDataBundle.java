@@ -1,4 +1,4 @@
-package com.battlefighters.game.gamebody;
+package com.ballfighters.game.gamebody;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -12,12 +12,15 @@ public class UserDataBundle {
     public Boolean flaggedForDeletion;
     public int health;
     public Boolean isPlayer;
+    public Boolean destroyOnCollision;
     public GameBody baseObject;
+    public int damage;
 
     public UserDataBundle(){
         this.sprite = new Sprite();
         this.rotatable = true;
         this.isDisposable = false;
+        destroyOnCollision = false;
         this.flaggedForDeletion = false;
         health = 100;
         this.isPlayer = false;

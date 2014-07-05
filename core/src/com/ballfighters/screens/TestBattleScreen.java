@@ -1,12 +1,13 @@
-package com.battlefighters.screens;
+package com.ballfighters.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.battlefighters.game.world.BallWorld;
-import com.battlefighters.global.GameData;
+import com.ballfighters.game.world.BallWorld;
+import com.ballfighters.global.GameData;
 
 /**
  * Created by Dell_Owner on 6/28/2014.
@@ -17,23 +18,24 @@ public class TestBattleScreen implements Screen {
     private Sprite background;
     private SpriteBatch batch;
     private int track;
-
-
     public void render(float delta){
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.begin();
-        background.draw(batch);
-        batch.end();
-        loopMusic();
+//        background.draw(batch);
         ballWorld.update();
+        ballWorld.render();
+
+//        loopMusic();
     }
     public void show(){
+    	GameData.screen = this;
         track = 0;
         batch = new SpriteBatch();
         background = new Sprite(new Texture(Gdx.files.internal("Backgrounds/TwinklingStars.gif")));
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        ballWorld = new BallWorld();
+    	        
+        ballWorld = new BallWorld(batch);
     }
     public void hide(){
         dispose();
@@ -45,7 +47,9 @@ public class TestBattleScreen implements Screen {
 
     }
     public void resize(int width, int height){
-
+		ballWorld.camera.viewportHeight = height/4f;
+		ballWorld.camera.viewportWidth = width/4f;
+		ballWorld.camera.update();
     }
     public void dispose(){
 

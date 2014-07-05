@@ -1,4 +1,4 @@
-package com.battlefighters.game.gamebody;
+package com.ballfighters.game.gamebody;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,7 +15,6 @@ public abstract class GameBody {
     public Sprite sprite;
     public Fixture fixture;
     public Vector2 position;
-    public Vector2 appliedForce;
     public Vector2 inputDirection;
     public Animator animator;
     public Vector3 clickPosition;
@@ -27,15 +26,20 @@ public abstract class GameBody {
     }
 
     public void dispose(){
+        sprite.getTexture().dispose();
     }
 
     protected void animate(){
-        animator.update(inputDirection);
+        //animation
+
+        animator.update(clickPosition);
         sprite = new Sprite(new TextureRegion(animator.currentFrame));
-        sprite.setSize(spriteWidth,spriteHeight);
-        sprite.setOriginCenter();
+        sprite.setSize(spriteHeight, spriteWidth);
+        sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
         dataBundle.sprite = sprite;
+        body.setUserData(dataBundle);
     }
+
     public void kill(){
             dataBundle.flaggedForDeletion = true;
     }

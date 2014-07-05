@@ -1,12 +1,12 @@
-package com.battlefighters.game.gamebody;
+package com.ballfighters.game.gamebody;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.battlefighters.math.MyMathStuff;
+import com.badlogic.gdx.math.Vector3;
+import com.ballfighters.math.MyMathStuff;
 
 /**
  * Created by Dell_Owner on 6/29/2014.
@@ -18,7 +18,7 @@ public class Animator {
     public TextureRegion currentFrame;
     public SpriteBatch batch;
     public Animation moveAnimation;
-    public float frameRate = 0.25f;
+    public float frameRate = 0.50f;
     public float stateTime;
 
     public Animator(String file, int rows, int cols){
@@ -38,7 +38,7 @@ public class Animator {
         stateTime = 0f;
     }
 
-    public void update(Vector2 direction){
+    public void update(Vector3 direction){
         direction = MyMathStuff.toUnit(direction);
         stateTime += Gdx.graphics.getDeltaTime();           // #15
         float state=0; //= stateTime;
@@ -55,6 +55,11 @@ public class Animator {
             state = rows*3;
         }
         currentFrame = moveAnimation.getKeyFrame((stateTime % (frameRate*cols)) + state*frameRate , true);
+    }
+
+    public void update(){//go through all frames, row/col doesn't matter
+        stateTime += Gdx.graphics.getDeltaTime();
+        currentFrame = moveAnimation.getKeyFrame((stateTime), true);
     }
 
 
