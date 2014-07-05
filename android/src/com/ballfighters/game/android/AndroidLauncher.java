@@ -1,17 +1,16 @@
-package com.ballfighters.android;
+package com.ballfighters.game.android;
 
 import android.os.Bundle;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.battlefighters.game.BallFightersGame;
+import com.ballfighters.game.BallFighters;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize( new BallFightersGame(), config);
+		initialize(new BallFighters(), config);
 	}
 }
