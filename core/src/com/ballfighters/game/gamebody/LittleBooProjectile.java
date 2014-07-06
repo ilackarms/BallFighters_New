@@ -7,17 +7,21 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 import com.ballfighters.global.GameData;
+import com.ballfighters.math.MyMathStuff;
 
 /**
  * Created by Dell_Owner on 7/4/2014.
  */
 public class LittleBooProjectile extends Bullet {
-    Body body;
 
-    public LittleBooProjectile(Vector2 position, Vector2 velocity) {
+    GameBody parent;
+
+    public LittleBooProjectile(GameBody parent, Vector2 position, Vector2 velocity) {
+
+        this.parent = parent;
         spriteWidth=5f;
         spriteHeight=5f;
-        duration = 5f;
+        duration = 2f;
         damage = 6;
 
         this.position = position;
@@ -25,7 +29,7 @@ public class LittleBooProjectile extends Bullet {
         inputDirection = new Vector2(0, 0);
         body =  initializeBody();
         body.setTransform(position, 0);
-        body.setLinearVelocity(velocity);
+        body.setLinearVelocity(MyMathStuff.toUnit(velocity).x*300f,MyMathStuff.toUnit(velocity).y*600f);
         dataBundle = createUserDataBundle();
 
         dataBundle = createUserDataBundle();

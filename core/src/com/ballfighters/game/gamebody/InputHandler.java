@@ -28,20 +28,8 @@ public class InputHandler implements InputProcessor {
 
 
     public void directionHandler(){
+        //Android
         if(Gdx.app.getType()== Application.ApplicationType.Android) {
-//
-//            if (Gdx.input.getAccelerometerX() < -0.5f) {
-//                inputDirection.y = 1;
-//            }
-//            if (Gdx.input.getAccelerometerY() < -0.5f) {
-//                inputDirection.x = -1;
-//            }
-//            if (Gdx.input.getAccelerometerX() > 0.5f) {
-//                inputDirection.y = -1;
-//            }
-//            if (Gdx.input.getAccelerometerY() > 0.5f) {
-//                inputDirection.x = 1;
-//            }
             inputDirection.x = 0;
             inputDirection.y = 0;
             inputDirection.x = Gdx.input.getAccelerometerY();
@@ -49,6 +37,8 @@ public class InputHandler implements InputProcessor {
             player.move(inputDirection);
             System.out.println("X TILT ="+inputDirection.x+"             Y TILT ="+inputDirection.y);
         }
+
+        //Desktop
         if(Gdx.app.getType()== Application.ApplicationType.Desktop) {
             if(Gdx.input.isKeyPressed(Input.Keys.UP)){
                 inputDirection.x = 0;
@@ -75,59 +65,11 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean keyDown(int i) {
-//        switch(i){
-//            case Input.Keys.UP:
-////            	System.out.println("KEYPRESSED: UP");
-//                inputDirection.y = 1;
-//                player.move(inputDirection);
-//                break;
-//            case Input.Keys.DOWN:
-////            	System.out.println("KEYPRESSED: DOWN");
-//                inputDirection.y = -1;
-//                player.move(inputDirection);
-//                break;
-//            case Input.Keys.LEFT:
-////            	System.out.println("KEYPRESSED: LEFT");
-//                inputDirection.x = -1;
-//                player.move(inputDirection);
-//                break;
-//            case Input.Keys.RIGHT:
-////            	System.out.println("KEYPRESSED: RIGHT");
-//                inputDirection.x = 1;
-//                player.move(inputDirection);
-//                break;
-//        }
-        return true;
+        return false;
     }
 
     @Override
     public boolean keyUp(int i) {
-        switch(i){
-            case Input.Keys.UP:
-                if(!Gdx.input.isButtonPressed(Input.Keys.DOWN)){
-                    System.out.println("released: UP");
-                    inputDirection.y = 0;
-                }
-                break;
-            case Input.Keys.DOWN:
-                if(!Gdx.input.isButtonPressed(Input.Keys.UP)){
-                    System.out.println("released: DOWN");
-                    inputDirection.y = 0;
-                }
-                break;
-            case Input.Keys.LEFT:
-                if(!Gdx.input.isButtonPressed(Input.Keys.RIGHT)){
-                    System.out.println("released: LEFT");
-                    inputDirection.x = 0;
-                }
-                break;
-            case Input.Keys.RIGHT:
-                if(!Gdx.input.isButtonPressed(Input.Keys.LEFT)){
-                    System.out.println("released: RIGHT");
-                    inputDirection.x = 0;
-                }
-                break;
-        }
         return false;
     }
 

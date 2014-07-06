@@ -2,6 +2,8 @@ package com.ballfighters.game.players;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.ballfighters.game.gamebody.Animator;
 import com.ballfighters.game.gamebody.InputHandler;
+import com.ballfighters.game.gamebody.LittleBooProjectile;
 import com.ballfighters.game.gamebody.UserDataBundle;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
@@ -91,6 +94,24 @@ public class LittleBoo extends Player {
             }
         body.applyForceToCenter(inputDirection, true);
     	}
+    }
+
+    @Override
+    public void fireShots(){
+        Gdx.input.vibrate(50);
+        int rand = MathUtils.random(5);
+        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/littleBooProjectile"+rand+".wav"));
+        fireSound.play();
+        Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
+                this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
+//        Vector2 shot2= new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
+//        this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
+//        Vector2 shot3 = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
+//        this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
+        Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
+        LittleBooProjectile boo = new LittleBooProjectile(this, shot1Position,shot1Velocity);
+        System.out.println("SHOTS FIRED!!         "+rand);
+        fireSound.dispose();
     }
 
 }

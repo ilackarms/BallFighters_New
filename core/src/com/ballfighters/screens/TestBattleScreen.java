@@ -26,7 +26,7 @@ public class TestBattleScreen implements Screen {
         ballWorld.update();
         ballWorld.render();
 
-//        loopMusic();
+        loopMusic();
     }
     public void show(){
     	GameData.screen = this;

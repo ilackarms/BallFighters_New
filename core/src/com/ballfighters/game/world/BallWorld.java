@@ -25,7 +25,6 @@ public class BallWorld {
 	private final float TIME_STEP = 1/30f;
 	private final int VELOCITY_ITERATIONS = 8, POSITION_ITERATIONS = 3;
 	public Player player1, player2, player3;
-    public LittleBooProjectile littleBooProjectile;
     public Camera camera;
     public Box2DDebugRenderer debugRenderer;
     public Array<Body> worldBodies;
@@ -35,8 +34,7 @@ public class BallWorld {
 
     public BallWorld(SpriteBatch batch){
         player1 = new LittleBoo(new Vector2(10,80));
-        player2 = new LittleBoo(new Vector2(12,50));
-        littleBooProjectile = new LittleBooProjectile(new Vector2(-20,-20),new Vector2(20,40));
+//        player2 = new LittleBoo(new Vector2(12,50));
 //        player3= new LittleBoo(new Vector2(12,52));
         camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         GameData.camera = camera;
@@ -71,9 +69,9 @@ public class BallWorld {
     public void update(){
 
     	player1.update();
-        player2.update();
-        player1.dataBundle.baseObject.kill();
-        littleBooProjectile.update();
+//        player2.update();
+//        player1.dataBundle.baseObject.kill();
+//        littleBooProjectile.update();
 
 //        player3.update();
 
@@ -83,6 +81,7 @@ public class BallWorld {
         for(Body body : worldBodies){
             if(body.getUserData()!=null && body.getUserData() instanceof UserDataBundle){
                 UserDataBundle bundle = (UserDataBundle) body.getUserData();
+                bundle.baseObject.update();
                 if (bundle.flaggedForDeletion){
                     bundle.baseObject.body.setActive(false);
                     GameData.WORLD.destroyBody(body);
@@ -119,6 +118,6 @@ public class BallWorld {
         batch.end();
 
         //debug
-        debugRenderer.render(world, camera.combined);
+//        debugRenderer.render(world, camera.combined);
     }
 }
