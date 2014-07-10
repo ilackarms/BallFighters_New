@@ -1,11 +1,13 @@
 package com.ballfighters.screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.ballfighters.game.world.BallWorld;
 import com.ballfighters.global.GameData;
 
@@ -16,24 +18,36 @@ public class TestBattleScreen implements Screen {
 
     private BallWorld ballWorld;
     private Sprite background;
-    private SpriteBatch batch;
+    private SpriteBatch batch, bgBatch;
     private int track;
+
     public void render(float delta){
+
+
+
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-//        background.draw(batch);
+        GameData.ANIMATEDBG.update();
+        background = new Sprite(GameData.ANIMATEDBG.currentFrame);
+        background.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        bgBatch.begin();
+        background.draw(bgBatch);
+        GameData.PLAYER_1_HEALTH_BAR_BOX.draw(bgBatch);
+        GameData.PLAYER_1_HEALTH_BAR.draw(bgBatch);
+        bgBatch.end();
+
         ballWorld.update();
         ballWorld.render();
 
-        loopMusic();
+//        loopMusic();
     }
     public void show(){
     	GameData.screen = this;
+        GameData.initializeHealthBars();
         track = 0;
         batch = new SpriteBatch();
-        background = new Sprite(new Texture(Gdx.files.internal("Backgrounds/TwinklingStars.gif")));
-        background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        bgBatch = new SpriteBatch();
     	        
         ballWorld = new BallWorld(batch);
     }
@@ -47,9 +61,9 @@ public class TestBattleScreen implements Screen {
 
     }
     public void resize(int width, int height){
-		ballWorld.camera.viewportHeight = height/4f;
-		ballWorld.camera.viewportWidth = width/4f;
-		ballWorld.camera.update();
+        ballWorld.camera.viewportWidth = width/4f;
+        ballWorld.camera.viewportHeight = height/4f;
+        ballWorld.camera.update();
     }
     public void dispose(){
 

@@ -1,11 +1,13 @@
 package com.ballfighters.game.gamebody;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.ballfighters.tween.BallTween;
+
+import java.util.ArrayList;
 
 /**
  * Created by Dell_Owner on 6/29/2014.
@@ -20,6 +22,7 @@ public abstract class GameBody {
     public Vector3 clickPosition;
     public UserDataBundle dataBundle;
     public float spriteHeight, spriteWidth;
+    public ArrayList<BallTween> tweenList;
 
     public void update(){
         animate();
@@ -33,7 +36,7 @@ public abstract class GameBody {
         //animation
 
         animator.update(clickPosition);
-        sprite = new Sprite(new TextureRegion(animator.currentFrame));
+        sprite = new Sprite(animator.currentFrame);
         sprite.setSize(spriteHeight, spriteWidth);
         sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
         dataBundle.sprite = sprite;
@@ -42,6 +45,10 @@ public abstract class GameBody {
 
     public void kill(){
             dataBundle.flaggedForDeletion = true;
+    }
+
+    public void getHit(Bullet bullet){
+
     }
 
 }

@@ -21,4 +21,12 @@ public class Player extends GameBody {
     public void move(Vector2 inputDirection){
 
     }
+
+    public void getHit(){
+
+    }
+
+    public void shield(){
+
+    }
 }

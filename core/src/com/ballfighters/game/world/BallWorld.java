@@ -1,22 +1,28 @@
 package com.ballfighters.game.world;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.ballfighters.game.gamebody.Animator;
 import com.ballfighters.game.gamebody.GamePolygon;
-import com.ballfighters.game.gamebody.LittleBooProjectile;
+import com.ballfighters.game.players.LittleBooAI;
 import com.ballfighters.game.gamebody.UserDataBundle;
 import com.ballfighters.game.players.LittleBoo;
 import com.ballfighters.game.players.Player;
 import com.ballfighters.global.GameData;
+import com.ballfighters.math.MyMathStuff;
 
 /**
  * Created by Dell_Owner on 6/29/2014.
@@ -34,46 +40,48 @@ public class BallWorld {
 
     public BallWorld(SpriteBatch batch){
         player1 = new LittleBoo(new Vector2(10,80));
-//        player2 = new LittleBoo(new Vector2(12,50));
+        player2 = new LittleBooAI(new Vector2(12,50));
 //        player3= new LittleBoo(new Vector2(12,52));
         camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         GameData.camera = camera;
+        GameData.PLAYER = player1;
+        GameData.ANIMATEDBG =new Animator("Backgrounds/testBattleBGSheet.png",4,4,.25f);
         debugRenderer = new Box2DDebugRenderer();
         worldBodies = new Array<Body>();
         this.batch = batch;
         world = GameData.WORLD;
 
-        leftWall =  new GamePolygon(new Vector2(-180,0), new Vector2[] {
-                new Vector2(-1f,-100f),
-                new Vector2(-1f,100f),
-                new Vector2(1f,-100f),
-                new Vector2(1f,100f)});
-        rightWall=  new GamePolygon(new Vector2(0,85), new Vector2[] {
-                new Vector2(-200f,-1f),
-                new Vector2(-200f,1f),
-                new Vector2(200f,-1f),
-                new Vector2(200f,1f)});
-        floor=  new GamePolygon(new Vector2(0,-85), new Vector2[] {
-                new Vector2(-200f,-1f),
-                new Vector2(-200f,1f),
-                new Vector2(200f,-1f),
-                new Vector2(200f,1f)});
-        ceiling=  new GamePolygon(new Vector2(180,0), new Vector2[] {
-                new Vector2(-1f,-100f),
-                new Vector2(-1f,100f),
-                new Vector2(1f,-100f),
-                new Vector2(1f,100f)});
+        leftWall =  new GamePolygon(MyMathStuff.convertTo2D(GameData.camera.unproject(new Vector3(Gdx.graphics.getWidth()*0.25f,0f,0f))), new Vector2[]{
+                new Vector2(-1f, -1000f),
+                new Vector2(-1f, 1000f),
+                new Vector2(1f, -1000f),
+                new Vector2(1f, 1000f)});
+        rightWall=  new GamePolygon(MyMathStuff.convertTo2D(GameData.camera.unproject(new Vector3(0f,Gdx.graphics.getHeight()*0.25f,0f))), new Vector2[] {
+                new Vector2(-2000f,-1f),
+                new Vector2(-2000f,1f),
+                new Vector2(2000f,-1f),
+                new Vector2(2000f,1f)});
+        floor=  new GamePolygon(MyMathStuff.convertTo2D(GameData.camera.unproject(new Vector3(0f,Gdx.graphics.getHeight()*0.75f,0f))), new Vector2[] {
+                new Vector2(-2000f,-1f),
+                new Vector2(-2000f,1f),
+                new Vector2(2000f,-1f),
+                new Vector2(2000f,1f)});
+        ceiling=  new GamePolygon(MyMathStuff.convertTo2D(GameData.camera.unproject(new Vector3(Gdx.graphics.getWidth()*0.75f,0f,0f))), new Vector2[] {
+                new Vector2(-1f,-1000f),
+                new Vector2(-1f,1000f),
+                new Vector2(1f,-1000f),
+                new Vector2(1f,1000f)});
+
+
+        //Contact Listener
+        world.setContactListener(new BallContactListener());
     }
 
 
     public void update(){
 
     	player1.update();
-//        player2.update();
-//        player1.dataBundle.baseObject.kill();
-//        littleBooProjectile.update();
-
-//        player3.update();
+    	player2.update();
 
         GameData.WORLD.getBodies(worldBodies);
 
@@ -101,6 +109,7 @@ public class BallWorld {
 
         batch.begin();
 
+
         for(Body body : worldBodies){
             if(body.getUserData()!=null && body.getUserData() instanceof UserDataBundle){
                 UserDataBundle bundle = (UserDataBundle) body.getUserData();
@@ -118,6 +127,7 @@ public class BallWorld {
         batch.end();
 
         //debug
-//        debugRenderer.render(world, camera.combined);
+        debugRenderer.render(world, camera.combined);
     }
+
 }

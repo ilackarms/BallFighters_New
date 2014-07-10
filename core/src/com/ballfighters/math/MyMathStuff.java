@@ -17,4 +17,25 @@ public abstract class MyMathStuff {
                 vector.y/vector.len(),
                 vector.z/vector.len()));
     }
+
+    public static Vector2 findPerpendicularVectorOne(Vector2 vector){
+        Vector2 returnVector = new Vector2(0,0);
+        returnVector.x = vector.y;
+        returnVector.y = -1*vector.x;
+        return returnVector;
+    }
+
+    public static Vector2 findPerpendicularVectorTwo(Vector2 vector){
+        Vector2 returnVector = new Vector2(0,0);
+        returnVector.x = -1*vector.y;
+        returnVector.y = vector.x;
+        return returnVector;
+    }
+
+    public static Vector2 convertTo2D(Vector3 vector3){
+        Vector2 returnVector = new Vector2(0,0);
+        returnVector.x = vector3.x;
+        returnVector.y = vector3.y;
+        return returnVector;
+    }
 }

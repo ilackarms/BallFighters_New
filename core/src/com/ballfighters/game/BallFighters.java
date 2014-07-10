@@ -26,7 +26,7 @@ public class BallFighters extends Game {
         GameData.WORLD = world;
         GdxNativesLoader.load();
         Gdx.app.log(TITLE,"create()");
-        setScreen(new TweenTestScreen());
+        setScreen(new TestBattleScreen());
 	}
 
 	@Override

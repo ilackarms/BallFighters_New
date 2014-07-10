@@ -13,6 +13,7 @@ public class GamePolygon {
     PolygonShape shape;
     Body body;
     Fixture fixture;
+    UserDataBundle dataBundle;
 
     public GamePolygon(Vector2 position, Vector2[] vertices){
         bodyDef = new BodyDef();
@@ -31,6 +32,9 @@ public class GamePolygon {
         fixtureDef.restitution = 0.5f;
 
         fixture = GameData.WORLD.createBody(bodyDef).createFixture(fixtureDef);
+
+        dataBundle = new UserDataBundle();
+
 
         shape.dispose();
     }

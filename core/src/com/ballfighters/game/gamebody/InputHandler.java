@@ -4,15 +4,17 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.ballfighters.game.players.Player;
 import com.ballfighters.global.GameData;
+import com.ballfighters.math.MyMathStuff;
 
 /**
  * Created by Dell_Owner on 7/2/2014.
  */
-public class InputHandler implements InputProcessor {
+public class InputHandler implements GestureDetector.GestureListener {
 
     public Vector2 inputDirection;
     public Vector3 targetDirection;
@@ -24,6 +26,7 @@ public class InputHandler implements InputProcessor {
         this.player = player;
         targetDirection = new Vector3(0,0,0);
         mousePosition = new Vector3(0,0,0);
+
     }
 
 
@@ -35,7 +38,7 @@ public class InputHandler implements InputProcessor {
             inputDirection.x = Gdx.input.getAccelerometerY();
             inputDirection.y = -1*Gdx.input.getAccelerometerX()+5;
             player.move(inputDirection);
-            System.out.println("X TILT ="+inputDirection.x+"             Y TILT ="+inputDirection.y);
+//            System.out.println("X TILT ="+inputDirection.x+"             Y TILT ="+inputDirection.y);
         }
 
         //Desktop
@@ -62,23 +65,76 @@ public class InputHandler implements InputProcessor {
             }
         }
     }
+        @Override
+        public boolean touchDown(float v, float v2, int i, int i2) {
+            return false;
+        }
 
-    @Override
+        @Override
+        public boolean tap(float v, float v2, int i, int i2) {
+            targetDirection.x = Gdx.input.getX();
+            targetDirection.y = Gdx.input.getY();
+            mousePosition = GameData.camera.unproject(targetDirection);
+            player.clickPosition.x = mousePosition.x - player.body.getPosition().x;
+            player.clickPosition.y = mousePosition.y - player.body.getPosition().y;
+            player.fireShots();
+            return false;
+        }
+
+        @Override
+        public boolean longPress(float v, float v2) {
+            Gdx.input.vibrate(50);
+            targetDirection.x = Gdx.input.getX();
+            targetDirection.y = Gdx.input.getY();
+            mousePosition = GameData.camera.unproject(targetDirection);
+            player.clickPosition.x = mousePosition.x - player.body.getPosition().x;
+            player.clickPosition.y = mousePosition.y - player.body.getPosition().y;
+            player.shield();
+            return false;
+        }
+
+        @Override
+        public boolean fling(float v, float v2, int i) {
+// todo: find something to do with flings
+//    Vector2 flingVelocity = MyMathStuff.toUnit(new Vector2(v,v2));
+//            flingVelocity.x*=900;
+//            flingVelocity.y*=-900;
+//            player.body.setLinearVelocity(flingVelocity);
+            return false;
+        }
+
+        @Override
+        public boolean pan(float v, float v2, float v3, float v4) {
+            return false;
+        }
+
+        @Override
+        public boolean panStop(float v, float v2, int i, int i2) {
+            return false;
+        }
+
+        @Override
+        public boolean zoom(float v, float v2) {
+            return false;
+        }
+
+        @Override
+        public boolean pinch(Vector2 vector2, Vector2 vector22, Vector2 vector23, Vector2 vector24) {
+            return false;
+        }
+
     public boolean keyDown(int i) {
         return false;
     }
 
-    @Override
     public boolean keyUp(int i) {
         return false;
     }
 
-    @Override
     public boolean keyTyped(char c) {
         return false;
     }
 
-    @Override
     public boolean touchDown(int i, int i2, int i3, int i4) {
         targetDirection.x = Gdx.input.getX();
         targetDirection.y = Gdx.input.getY();
@@ -90,22 +146,18 @@ public class InputHandler implements InputProcessor {
         return false;
     }
 
-    @Override
     public boolean touchUp(int i, int i2, int i3, int i4) {
         return false;
     }
 
-    @Override
     public boolean touchDragged(int i, int i2, int i3) {
         return false;
     }
 
-    @Override
     public boolean mouseMoved(int i, int i2) {
         return false;
     }
 
-    @Override
     public boolean scrolled(int i) {
         return false;
     }

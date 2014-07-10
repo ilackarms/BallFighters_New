@@ -9,6 +9,7 @@ public class Bullet extends GameBody {
     public int damage;
     public float duration;
     public Sound sound;
+    public GameBody parent;
 
 
 }

@@ -13,6 +13,7 @@ public class UserDataBundle {
     public int health;
     public Boolean isPlayer;
     public Boolean destroyOnCollision;
+    public Boolean followsPlayer;
     public GameBody baseObject;
     public int damage;
 
@@ -24,5 +25,6 @@ public class UserDataBundle {
         this.flaggedForDeletion = false;
         health = 100;
         this.isPlayer = false;
+        followsPlayer = false;
     }
 }
