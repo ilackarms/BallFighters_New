@@ -1,10 +1,7 @@
 package com.ballfighters.game.players;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -13,12 +10,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Timer;
-import com.ballfighters.game.gamebody.AIInputHandler;
-import com.ballfighters.game.gamebody.Animator;
-import com.ballfighters.game.gamebody.LittleBooProjectile;
-import com.ballfighters.game.gamebody.UserDataBundle;
-import com.ballfighters.game.players.LittleBoo;
-import com.ballfighters.game.players.Player;
+import com.ballfighters.game.gamebody.*;
+import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.tween.BallTween;
@@ -33,6 +26,7 @@ public class LittleBooAI extends Player {
     protected float radius = 6f;
     protected float density = 0.05f;
     protected float restitution = 0.5f;
+    public static final int MAX_HEALTH = 75;
 
     protected Boolean fireShotsOnCooldown;
 
@@ -43,7 +37,7 @@ public class LittleBooAI extends Player {
         this.position = position;
         animator = new Animator("Sprites/playerSpriteSheet.png", 4, 4);
         body = createBody();
-        health = 100;
+        health = MAX_HEALTH;
         spriteHeight = 14f;
         spriteWidth = 14f;
         dataBundle = createUserDataBundle();
@@ -54,6 +48,8 @@ public class LittleBooAI extends Player {
         tween = null;
         aiInputHandler = new AIInputHandler(this);//TODO
         fireShotsOnCooldown = false;
+
+        lastPosition = body.getPosition();
     }
 
 
@@ -132,6 +128,42 @@ public class LittleBooAI extends Player {
 
             tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
         }
+    }
+
+    @Override
+    public void getHit(Bullet bullet){
+//        Gdx.input.vibrate(10);
+        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.RED,2.2f).yoyo(1);
+        Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
+        long soundID = hitSound .play();
+        hitSound .setVolume(soundID, GameData.VOLUME);
+        hitSound.dispose();
+
+        health-=bullet.damage;
+        float ratio = (float) health/ (float) MAX_HEALTH;
+        System.out.println(health+"/"+MAX_HEALTH+"="+ratio);
+        GameData.PLAYER_2_HEALTH_BAR.setSize(Gdx.graphics.getWidth()/6*ratio,GameData.PLAYER_2_HEALTH_BAR.getHeight());
+        if(health<0){
+            Gdx.input.vibrate(2000);
+            kill();
+        }
+    }
+
+    @Override
+    public void kill(){
+        super.kill();
+        Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));
+        long soundID = deathSound.play();
+        deathSound .setVolume(soundID, GameData.VOLUME);
+        deathSound.dispose();
+        lastPosition = body.getPosition();
+
+
+        Animator player1DeathAnimation = new Animator("Sprites/HolyShitAnimation.png",1,11);
+        AnimationPackage staticDeathAnimation = new AnimationPackage(player1DeathAnimation,spriteWidth*10,spriteHeight*10);
+        staticDeathAnimation.play();
+        staticDeathAnimation.position=new Vector2(lastPosition);
+        GameData.staticAnimations.add(staticDeathAnimation);
     }
 
 }

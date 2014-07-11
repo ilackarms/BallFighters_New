@@ -9,6 +9,7 @@ import com.ballfighters.game.gamebody.GameBody;
 public class Player extends GameBody {
     public int health;
     public float ACCELERATION;
+    public Vector2 lastPosition;
 
     public void update(){
         super.update();

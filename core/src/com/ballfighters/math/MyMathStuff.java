@@ -38,4 +38,11 @@ public abstract class MyMathStuff {
         returnVector.y = vector3.y;
         return returnVector;
     }
+
+    public static Vector3 convertTo3D(Vector2 vector3){
+        Vector3 returnVector = new Vector3(0,0,0);
+        returnVector.x = vector3.x;
+        returnVector.y = vector3.y;
+        return returnVector;
+    }
 }

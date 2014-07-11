@@ -8,7 +8,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -54,8 +53,6 @@ public class SplashScreen implements Screen {
         batch = new SpriteBatch();
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class,new SpriteAccessor());
-
-        Texture splashTexture = new Texture(Gdx.files.internal("Backgrounds/StartScreen.png"));
 
         GameData.music = Gdx.audio.newMusic(Gdx.files.internal("Music/GetLucky.mp3"));
         GameData.music.setVolume(GameData.VOLUME);

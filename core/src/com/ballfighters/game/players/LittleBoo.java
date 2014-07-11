@@ -2,7 +2,6 @@ package com.ballfighters.game.players;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.input.GestureDetector;
@@ -13,7 +12,9 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.utils.Timer;
 import com.ballfighters.game.gamebody.*;
+import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.tween.BallTween;
@@ -56,6 +57,7 @@ public class LittleBoo extends Player {
         tweenList = new ArrayList<BallTween>();
 
         tween = null;
+        lastPosition = body.getPosition();
     }
 
     protected UserDataBundle createUserDataBundle(){
@@ -145,9 +147,9 @@ public class LittleBoo extends Player {
 
     @Override
     public void getHit(Bullet bullet){
-        Gdx.input.vibrate(1000);
+        Gdx.input.vibrate(100);
         tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.RED,2.2f).yoyo(1);
-        Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooShield.wav"));
+        Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
         long soundID = hitSound .play();
         hitSound .setVolume(soundID, GameData.VOLUME);
         hitSound.dispose();
@@ -155,14 +157,47 @@ public class LittleBoo extends Player {
         health-=bullet.damage;
         float ratio = (float) health/ (float) MAX_HEALTH;
         System.out.println(health+"/"+MAX_HEALTH+"="+ratio);
-        GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth()/6*ratio,GameData.PLAYER_1_HEALTH_BAR.getHeight());
+        GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
         if(health<0){
-            Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooShield.wav"));
-            soundID = deathSound.play();
-            deathSound .setVolume(soundID, GameData.VOLUME);
-            deathSound.dispose();
             kill();
         }
+    }
+
+    @Override
+    public void kill(){
+        super.kill();
+        Gdx.input.vibrate(1000);
+        Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));
+        long soundID = deathSound.play();
+        deathSound .setVolume(soundID, GameData.VOLUME);
+        deathSound.dispose();
+        lastPosition.x = MyMathStuff.convertTo3D(body.getPosition()).x;
+        lastPosition.y = MyMathStuff.convertTo3D(body.getPosition()).y;
+
+        Animator player1DeathAnimation = new Animator("Sprites/LittleBooDeathAnimation.png",1,5); // todo: change this to be dynamic for any player
+        AnimationPackage staticDeathAnimation = new AnimationPackage(player1DeathAnimation,spriteWidth*4,spriteHeight*4);
+        staticDeathAnimation.play();
+        staticDeathAnimation.position=new Vector2(lastPosition);
+        GameData.staticAnimations.add(staticDeathAnimation);
+
+        Animator gameOverAnimation = new Animator("Sprites/GameOverAnimation.png",2,5);
+        AnimationPackage staticGameOverAnimation = new AnimationPackage(gameOverAnimation,64*2,32*2);
+        staticGameOverAnimation.play();
+        staticGameOverAnimation.position=new Vector2(lastPosition);
+        GameData.staticAnimations.add(staticGameOverAnimation);
+
+        //NEW GAME ON DEATH!
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                GameData.screen.dispose();
+                GameData.WORLD.dispose();
+//                GameData.music.stop();
+//                GameData.music.dispose();
+                Gdx.app.exit();
+            }
+        }, 10);
+
     }
 
 }

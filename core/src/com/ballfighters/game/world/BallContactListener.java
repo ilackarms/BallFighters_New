@@ -1,8 +1,10 @@
 package com.ballfighters.game.world;
 
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.ballfighters.game.gamebody.Bullet;
-import com.ballfighters.game.gamebody.GameBody;
 import com.ballfighters.game.gamebody.UserDataBundle;
 import com.ballfighters.game.players.Player;
 

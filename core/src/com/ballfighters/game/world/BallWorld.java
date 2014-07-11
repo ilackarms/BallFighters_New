@@ -1,10 +1,8 @@
 package com.ballfighters.game.world;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -14,12 +12,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.ballfighters.game.gamebody.Animator;
 import com.ballfighters.game.gamebody.GamePolygon;
-import com.ballfighters.game.players.LittleBooAI;
 import com.ballfighters.game.gamebody.UserDataBundle;
 import com.ballfighters.game.players.LittleBoo;
+import com.ballfighters.game.players.LittleBooAI;
 import com.ballfighters.game.players.Player;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
@@ -40,7 +37,7 @@ public class BallWorld {
 
     public BallWorld(SpriteBatch batch){
         player1 = new LittleBoo(new Vector2(10,80));
-        player2 = new LittleBooAI(new Vector2(12,50));
+        player2 = new LittleBooAI(new Vector2(12,-50));
 //        player3= new LittleBoo(new Vector2(12,52));
         camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         GameData.camera = camera;
@@ -122,12 +119,14 @@ public class BallWorld {
             }
         }
 
+        GameData.renderStaticAnimations();
+
         batch.setProjectionMatrix(camera.combined);
 
         batch.end();
 
         //debug
-        debugRenderer.render(world, camera.combined);
+//        debugRenderer.render(world, camera.combined);
     }
 
 }

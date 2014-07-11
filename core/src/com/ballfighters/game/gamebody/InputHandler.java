@@ -3,13 +3,11 @@ package com.ballfighters.game.gamebody;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.ballfighters.game.players.Player;
 import com.ballfighters.global.GameData;
-import com.ballfighters.math.MyMathStuff;
 
 /**
  * Created by Dell_Owner on 7/2/2014.
