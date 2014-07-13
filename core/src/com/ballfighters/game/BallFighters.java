@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.ballfighters.global.GameData;
 import com.ballfighters.screens.SplashScreen;
+import com.ballfighters.screens.TestBattleScreen;
 
 public class BallFighters extends Game {
 	SpriteBatch batch;
@@ -20,8 +21,7 @@ public class BallFighters extends Game {
 	public static final String TITLE = "Ball Fighters Extreme v0.1";
 	@Override
 	public void create () {
-        world = new World(new Vector2(0,0), true);//TODO: make sure this doesn't make a new world every time
-        GameData.WORLD = world;
+
         GdxNativesLoader.load();
         Gdx.app.log(TITLE,"create()");
         setScreen(new SplashScreen());

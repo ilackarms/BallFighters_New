@@ -1,5 +1,6 @@
 package com.ballfighters.global;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -40,12 +41,13 @@ public final class GameData {
 
     public static ArrayList<AnimationPackage> staticAnimations = new ArrayList<AnimationPackage>();
 
-    public static void playMusic(String filename){
+    public static Music playMusic(String filename){
         GameData.music.stop();
         GameData.music.dispose();
         GameData.music = Gdx.audio.newMusic(Gdx.files.internal(filename));
         GameData.music.setVolume(GameData.VOLUME);
         GameData.music.play();
+        return GameData.music;
     }
 
     public static void fadeIn(){

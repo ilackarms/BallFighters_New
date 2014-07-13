@@ -11,7 +11,7 @@ public class GamePolygon {
     BodyDef bodyDef;
     FixtureDef fixtureDef;
     PolygonShape shape;
-    Body body;
+    public Body body;
     Fixture fixture;
     UserDataBundle dataBundle;
 

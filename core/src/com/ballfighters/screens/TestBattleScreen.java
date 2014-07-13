@@ -1,5 +1,7 @@
 package com.ballfighters.screens;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.ballfighters.game.world.BallWorld;
 import com.ballfighters.global.GameData;
+import com.ballfighters.tween.SpriteAccessor;
 
 /**
  * Created by Dell_Owner on 6/28/2014.
@@ -16,7 +19,9 @@ public class TestBattleScreen implements Screen {
 
     private BallWorld ballWorld;
     private Sprite background;
-    private SpriteBatch batch, bgBatch;
+    private SpriteBatch batch, bgBatch, fadeOut;
+    public TweenManager tweenManager;
+
 
     private int track;
 
@@ -45,9 +50,14 @@ public class TestBattleScreen implements Screen {
         ballWorld.update();
         ballWorld.render();
 
+        fadeOut.begin();
+        GameData.BLACKSCREEN.draw(fadeOut);
+        fadeOut.end();
+
+        tweenManager.update(delta);
 
         //should be called in update method:
-        loopMusic();
+//        loopMusic();
     }
     public void show(){
     	GameData.screen = this;
@@ -56,10 +66,15 @@ public class TestBattleScreen implements Screen {
         batch = new SpriteBatch();
         GameData.batch = batch;
         bgBatch = new SpriteBatch();
-    	        
+        fadeOut = new SpriteBatch();
+
         ballWorld = new BallWorld(batch);
 
-        startMusic();
+        tweenManager = new TweenManager();
+        Tween.registerAccessor(Sprite.class, new SpriteAccessor());
+
+        Tween.set(GameData.BLACKSCREEN,SpriteAccessor.ALPHA).target(0).start(tweenManager);
+//        startMusic();
     }
     public void hide(){
         dispose();
@@ -76,7 +91,6 @@ public class TestBattleScreen implements Screen {
         ballWorld.camera.update();
     }
     public void dispose(){
-
     }
 
     public void startMusic() {
@@ -98,10 +112,10 @@ public class TestBattleScreen implements Screen {
     }
 
     public void loopMusic() {
+        track = MathUtils.random(0, 5);
         if(!GameData.music.isPlaying()) {
-            track = MathUtils.random(0, 5);
             switch (track % 5) {
-                case 5:
+                case 0:
                     GameData.playMusic("Music/ff3boss.ogg");
                 case 1:
                     GameData.playMusic("Music/dkc3tree[1].ogg");
@@ -111,8 +125,6 @@ public class TestBattleScreen implements Screen {
                     GameData.playMusic("Music/grnhill[1].ogg");
                 case 4:
                     GameData.playMusic("Music/dkc3purs[1].ogg");
-                case 0:
-                    GameData.playMusic("Music/Techrap.ogg");
             }
         }
     }

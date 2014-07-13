@@ -26,7 +26,7 @@ public class MainMenuScreen implements Screen {
 
     private TweenManager tweenManager;
     private Stage stage;
-    private SpriteBatch batch;
+    private SpriteBatch batch, blackScreenBatch;
     private Animator animator;
     private Sprite sprite;
 
@@ -47,12 +47,14 @@ public class MainMenuScreen implements Screen {
 
         sprite.draw(batch);
 
-        GameData.BLACKSCREEN.draw(batch);
         batch.end();
 
         stage.act(delta);
         stage.draw();
 
+        blackScreenBatch.begin();
+        GameData.BLACKSCREEN.draw(blackScreenBatch);
+        blackScreenBatch.end();
     }
 
     public void resize(int i, int i1){
@@ -73,6 +75,7 @@ public class MainMenuScreen implements Screen {
         Tween.set(GameData.BLACKSCREEN,SpriteAccessor.ALPHA).target(1).start(tweenManager);
         Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(0).start(tweenManager);
 
+        blackScreenBatch = new SpriteBatch();
     }
 
     public void hide(){
@@ -130,7 +133,8 @@ public class MainMenuScreen implements Screen {
         style3.down = skin3.getDrawable("ExitDown");
 
         buttonPlay1 = new Button(style1);
-        buttonPlay1.pad(40);
+        buttonPlay1.setSize(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()/4);
+        buttonPlay1.pad(Gdx.graphics.getWidth()/15);
         buttonPlay1.addListener(new ClickListener(){
             public void clicked(InputEvent event, float x, float y) {
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
@@ -143,9 +147,11 @@ public class MainMenuScreen implements Screen {
             }
         });
         buttonPlay2 = new Button(style2);
-        buttonPlay2.pad(40);
+        buttonPlay2.setSize(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()/4);
+        buttonPlay2.pad(Gdx.graphics.getWidth()/15);
         exitButton = new Button(style3);
-        exitButton.pad(40);
+        exitButton.setSize(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()/4);
+        exitButton.pad(Gdx.graphics.getWidth()/15);
         exitButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y){
                 Gdx.app.exit();

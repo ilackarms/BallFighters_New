@@ -36,8 +36,11 @@ public class BallWorld {
     GamePolygon leftWall, rightWall, floor, ceiling;
 
     public BallWorld(SpriteBatch batch){
-        player1 = new LittleBoo(new Vector2(10,80));
-        player2 = new LittleBooAI(new Vector2(12,-50));
+        world = new World(new Vector2(0,0), true);//TODO: make sure this doesn't make a new world every time
+        GameData.WORLD = world;
+
+        player1 = new LittleBoo(new Vector2(-40,40));
+        player2 = new LittleBooAI(new Vector2(40,-40));
 //        player3= new LittleBoo(new Vector2(12,52));
         camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         GameData.camera = camera;
@@ -96,7 +99,7 @@ public class BallWorld {
 
 		//step time
 		world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-        
+
     }
 
 
@@ -127,6 +130,13 @@ public class BallWorld {
 
         //debug
 //        debugRenderer.render(world, camera.combined);
+    }
+
+    public void dispose(){
+        player1.body.destroyFixture(player1.fixture);
+        player2.body.destroyFixture(player2.fixture);
+        player1.kill();
+        player2.kill();
     }
 
 }

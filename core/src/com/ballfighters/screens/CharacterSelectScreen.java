@@ -84,7 +84,7 @@ public class CharacterSelectScreen implements Screen {
         Texture menuTexture = new Texture(Gdx.files.internal("Labels/selectPlayer.png"));
         characterSelectLabel= new Sprite(menuTexture);
         characterSelectLabel.setSize(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/4);
-        characterSelectLabel.setPosition(Gdx.graphics.getWidth()/2-130f,Gdx.graphics.getHeight()/2+80f);
+        characterSelectLabel.setPosition(Gdx.graphics.getWidth()/2-characterSelectLabel.getWidth()/2,Gdx.graphics.getHeight()-characterSelectLabel.getHeight()-10f);
 
         GameData.BLACKSCREEN.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -113,7 +113,7 @@ public class CharacterSelectScreen implements Screen {
         style1.down = booSkin.getDrawable("BooDown");
 
         booButton = new Button(style1);
-        booButton.pad(40);
+        booButton.pad(Gdx.graphics.getWidth()/25);
         booButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {

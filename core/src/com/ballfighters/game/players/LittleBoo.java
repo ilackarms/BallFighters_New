@@ -1,7 +1,12 @@
 package com.ballfighters.game.players;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.input.GestureDetector;
@@ -17,7 +22,10 @@ import com.ballfighters.game.gamebody.*;
 import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
+import com.ballfighters.screens.GameOverScreen;
+import com.ballfighters.screens.TestBattleScreen;
 import com.ballfighters.tween.BallTween;
+import com.ballfighters.tween.SpriteAccessor;
 
 import java.util.ArrayList;
 
@@ -44,7 +52,7 @@ public class LittleBoo extends Player {
         animator = new Animator("Sprites/littleboo.png", 4, 4);
         inputDirection = new Vector2(0,0);
         body = createBody();
-        health = 100;
+        health = MAX_HEALTH;
         spriteHeight = 13f;
         spriteWidth = 13f;
         dataBundle = createUserDataBundle();
@@ -58,6 +66,7 @@ public class LittleBoo extends Player {
 
         tween = null;
         lastPosition = body.getPosition();
+
     }
 
     protected UserDataBundle createUserDataBundle(){
@@ -166,6 +175,7 @@ public class LittleBoo extends Player {
     @Override
     public void kill(){
         super.kill();
+        final Music deathMusic = GameData.playMusic("Music/GameOver.mp3");
         Gdx.input.vibrate(1000);
         Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));
         long soundID = deathSound.play();
@@ -174,14 +184,8 @@ public class LittleBoo extends Player {
         lastPosition.x = MyMathStuff.convertTo3D(body.getPosition()).x;
         lastPosition.y = MyMathStuff.convertTo3D(body.getPosition()).y;
 
-        Animator player1DeathAnimation = new Animator("Sprites/LittleBooDeathAnimation.png",1,5); // todo: change this to be dynamic for any player
-        AnimationPackage staticDeathAnimation = new AnimationPackage(player1DeathAnimation,spriteWidth*4,spriteHeight*4);
-        staticDeathAnimation.play();
-        staticDeathAnimation.position=new Vector2(lastPosition);
-        GameData.staticAnimations.add(staticDeathAnimation);
-
         Animator gameOverAnimation = new Animator("Sprites/GameOverAnimation.png",2,5);
-        AnimationPackage staticGameOverAnimation = new AnimationPackage(gameOverAnimation,64*2,32*2);
+        final AnimationPackage staticGameOverAnimation = new AnimationPackage(gameOverAnimation,64*2,32*2);
         staticGameOverAnimation.play();
         staticGameOverAnimation.position=new Vector2(lastPosition);
         GameData.staticAnimations.add(staticGameOverAnimation);
@@ -190,13 +194,19 @@ public class LittleBoo extends Player {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                GameData.screen.dispose();
-                GameData.WORLD.dispose();
-//                GameData.music.stop();
-//                GameData.music.dispose();
-                Gdx.app.exit();
+                final TestBattleScreen battleScreen = (TestBattleScreen) GameData.screen;
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int type, BaseTween<?> source) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
+                        GameData.screen.dispose();
+                        GameData.screen.hide();
+                        GameData.staticAnimations.remove(staticGameOverAnimation);
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
+                    }
+                }).start(battleScreen.tweenManager);
             }
-        }, 10);
+        }, 8);
 
     }
 
