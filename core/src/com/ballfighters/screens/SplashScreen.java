@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.ballfighters.game.gamebody.Animator;
+import com.ballfighters.game.gamebody.TestBattleScreen2;
 import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -65,7 +66,7 @@ public class SplashScreen implements Screen {
             @Override
             public void onEvent(int i, BaseTween<?> baseTween) {
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
             }
         }).start(tweenManager);
     }

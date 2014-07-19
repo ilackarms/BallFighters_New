@@ -28,24 +28,24 @@ import com.ballfighters.tween.SpriteAccessor;
 import java.util.ArrayList;
 
 /**
- * Created by Dell_Owner on 6/29/2014.
+ * Created by Dell_Owner on 7/15/2014.
  */
-public class LittleBoo extends Player {
+public class SwordGuy extends Player {
 
 
     protected InputHandler inputHandler;
-    protected float radius = 6f;
-    protected float density = 0.05f;
+    protected float radius = 5.5f;
+    protected float density = 5f;
     protected float restitution = 0.5f;
     public static final int MAX_HEALTH = 100;
 
     protected BallTween tween;
 
-    public LittleBoo(Vector2 position) {
+    public SwordGuy(Vector2 position) {
 
 
-    	this.position = position;
-        animator = new Animator("Sprites/littleboo.png", 4, 4);
+        this.position = position;
+        animator = new Animator("Sprites/SwordGuy.png", 4, 4);
         inputDirection = new Vector2(0,0);
         body = createBody();
         health = MAX_HEALTH;
@@ -57,7 +57,7 @@ public class LittleBoo extends Player {
         gestureDetector.setLongPressSeconds(0.5f);
         Gdx.input.setInputProcessor(gestureDetector);
         clickPosition = new Vector3(0,0,0);
-        ACCELERATION = 300f;
+        ACCELERATION = 60000f;
         tweenList = new ArrayList<BallTween>();
 
         tween = null;
@@ -91,7 +91,7 @@ public class LittleBoo extends Player {
         body.setTransform(position,0);
         return body;
     }
-    
+
     @Override
     public void update(){
         super.update();
@@ -109,7 +109,7 @@ public class LittleBoo extends Player {
 
     @Override
     public void move(Vector2 inputDirection){
-    	if(inputDirection.len()!=0){
+        if(inputDirection.len()!=0){
             if(Gdx.app.getType()== Application.ApplicationType.Android) {
                 inputDirection.x = inputHandler.inputDirection.x * ACCELERATION;
                 inputDirection.y = inputHandler.inputDirection.y * ACCELERATION;
@@ -118,44 +118,56 @@ public class LittleBoo extends Player {
                 inputDirection.x = MyMathStuff.toUnit(inputHandler.inputDirection).x * ACCELERATION;
                 inputDirection.y = MyMathStuff.toUnit(inputHandler.inputDirection).y * ACCELERATION;
             }
-        body.applyForceToCenter(inputDirection, true);
-    	}
+            body.applyForceToCenter(inputDirection, true);
+        }
     }
 
+    Boolean fireShotOnCoolDown = false;
     @Override
     public void fireShots(){
-        Gdx.input.vibrate(15);
-        int rand = MathUtils.random(5);
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/littleBooProjectile" + rand + ".wav"));
-        long soundID = fireSound.play();
-        fireSound.setVolume(soundID, GameData.VOLUME);
-        Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
-                this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
-        Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
-        new LittleBooProjectile(this, shot1Position,shot1Velocity);
-        fireSound.dispose();
+        if(!fireShotOnCoolDown) {
+            Gdx.input.vibrate(15);
 
-        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.YELLOW,1.2f).yoyo(1);
+            int rand = MathUtils.random(5);
+            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/littleBooProjectile" + rand + ".wav"));
+            long soundID = fireSound.play();
+            fireSound.setVolume(soundID, GameData.VOLUME);
+            fireSound.dispose();
+
+            Vector2 swordDisplacement = MyMathStuff.toUnit(new Vector2(clickPosition.x, clickPosition.y));
+            swordDisplacement.x *= 10;
+            swordDisplacement.y *= 10;
+            int direction;
+            if (swordDisplacement.x >= 0) {
+                direction = 1;
+            } else {
+                direction = -1;
+            }
+            swordDisplacement.rotate(60 * direction);
+            float angle = ((float) Math.atan2(-1 * swordDisplacement.x, swordDisplacement.y));
+            new SwordProjectile(this, swordDisplacement, angle);
+
+            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
+
+            fireShotOnCoolDown=true;
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    fireShotOnCoolDown = false;
+                }
+            },0.20f);
+        }
     }
 
     @Override
     public void shield(){
-//        Vector2 shieldDisplacement = MyMathStuff.toUnit(new Vector2(clickPosition.x,clickPosition.y));
-//        shieldDisplacement.x*=10;
-//        shieldDisplacement.y*=10;
-//        float angle = ((float) Math.atan2(shieldDisplacement.y,shieldDisplacement.x));
-//        new SwordGuyShield(this, shieldDisplacement, angle);
+        Vector2 shieldDisplacement = MyMathStuff.toUnit(new Vector2(clickPosition.x,clickPosition.y));
+        shieldDisplacement.x*=10;
+        shieldDisplacement.y*=10;
+        float angle = ((float) Math.atan2(shieldDisplacement.y,shieldDisplacement.x));
+        new SwordGuyShield(this, shieldDisplacement, angle);
 
-        dataBundle.ghostMode = true;
-        System.out.println("GHOSTMODE ON");
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                dataBundle.ghostMode=false;
-                System.out.println("GHOSTMODE OFF");
-            }
-        },3f);
-
+        Gdx.input.vibrate(50);
         Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
         long soundID = fireSound.play();
         fireSound.setVolume(soundID, GameData.VOLUME);

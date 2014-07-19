@@ -26,6 +26,7 @@ public abstract class GameBody {
 
     public void update(){
         animate();
+        body.setUserData(dataBundle);
     }
 
     public void dispose(){
@@ -40,7 +41,6 @@ public abstract class GameBody {
         sprite.setSize(spriteHeight, spriteWidth);
         sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
         dataBundle.sprite = sprite;
-        body.setUserData(dataBundle);
     }
 
     public void kill(){

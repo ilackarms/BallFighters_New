@@ -1,12 +1,11 @@
 package com.ballfighters.game.world;
 
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.*;
 import com.ballfighters.game.gamebody.Bullet;
+import com.ballfighters.game.gamebody.SwordProjectile;
 import com.ballfighters.game.gamebody.UserDataBundle;
 import com.ballfighters.game.players.Player;
+import com.ballfighters.game.players.SwordGuy;
 
 /**
  * Created by Dell_Owner on 7/9/2014.
@@ -29,7 +28,39 @@ public class BallContactListener implements ContactListener {
 
     @Override
     public void preSolve(Contact contact, Manifold manifold){
-
+        WorldManifold currentManifold = contact.getWorldManifold();
+        for(int j = 0; j < currentManifold.getNumberOfContactPoints(); j++){
+            if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).ghostMode)
+                contact.setEnabled(false);
+            if(contact.getFixtureB().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).ghostMode)
+                contact.setEnabled(false);
+        }
+        for(int j = 0; j < currentManifold.getNumberOfContactPoints(); j++){
+            if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof SwordProjectile){
+                UserDataBundle bundleA = (UserDataBundle) contact.getFixtureA().getBody().getUserData();
+                SwordProjectile swordProjectile = (SwordProjectile) bundleA.baseObject;
+                SwordGuy swordParent = (SwordGuy) swordProjectile.parent;
+                if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof SwordGuy){
+                    UserDataBundle bundleB = (UserDataBundle) contact.getFixtureB().getBody().getUserData();
+                    SwordGuy swordGuy = (SwordGuy) bundleB.baseObject;
+                    if(swordParent.equals(swordGuy)){
+                        contact.setEnabled(false);
+                    }
+                }
+            }
+            if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof SwordProjectile){
+                UserDataBundle bundleB = (UserDataBundle) contact.getFixtureB().getBody().getUserData();
+                SwordProjectile swordProjectile = (SwordProjectile) bundleB.baseObject;
+                SwordGuy swordParent = (SwordGuy) swordProjectile.parent;
+                if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof SwordGuy){
+                    UserDataBundle bundleA = (UserDataBundle) contact.getFixtureA().getBody().getUserData();
+                    SwordGuy swordGuy = (SwordGuy) bundleA.baseObject;
+                    if(swordParent.equals(swordGuy)) {
+                        contact.setEnabled(false);
+                    }
+                }
+            }
+        }
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.ballfighters.screens;
+package com.ballfighters.game.gamebody;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -13,9 +13,9 @@ import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
 
 /**
- * Created by Dell_Owner on 6/28/2014.
+ * Created by Dell_Owner on 7/13/2014.
  */
-public class TestBattleScreen implements Screen {
+public class TestBattleScreen2 implements Screen {
 
     private BallWorld ballWorld;
     private Sprite background;
@@ -29,8 +29,8 @@ public class TestBattleScreen implements Screen {
 
 
 
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //animate background
         GameData.ANIMATEDBG.update();
@@ -57,12 +57,12 @@ public class TestBattleScreen implements Screen {
         tweenManager.update(delta);
 
         //should be called in update method:
-        loopMusic();
+//        loopMusic();TODO
     }
     public void show(){
-    	GameData.screen = this;
+        GameData.screen = this;
         GameData.initializeHealthBars();
-        track= MathUtils.random(0,5);
+        track= MathUtils.random(0, 5);
         batch = new SpriteBatch();
         GameData.batch = batch;
         bgBatch = new SpriteBatch();

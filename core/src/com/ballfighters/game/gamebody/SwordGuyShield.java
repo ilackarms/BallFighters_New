@@ -13,12 +13,12 @@ import com.ballfighters.global.GameData;
 /**
  * Created by Dell_Owner on 7/8/2014.
  */
-public class LittleBooShield extends GameBody {
+public class SwordGuyShield extends GameBody {
     GameBody parent;
     public float angle;
     public Vector2 displacement;
 
-    public LittleBooShield (GameBody parent, Vector2 displacement, float angle) {
+    public SwordGuyShield(GameBody parent, Vector2 displacement, float angle) {
         this.parent = parent;
         this.displacement = new Vector2(displacement);
         this.position = new Vector2(parent.body.getPosition().x+displacement.x,parent.body.getPosition().y+displacement.y);
@@ -28,12 +28,11 @@ public class LittleBooShield extends GameBody {
         spriteHeight=4f;
         float duration = 5f;
 
-
         body =  initializeBody();
         body.setTransform(position, 0);
         dataBundle = createUserDataBundle();
 
-        sprite = new Sprite(new Texture("Sprites/LittleBooShield.png"));
+        sprite = new Sprite(new Texture("Sprites/Shield.png"));
         sprite.setSize(spriteHeight, spriteWidth);
         sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
 

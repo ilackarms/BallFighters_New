@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ballfighters.game.gamebody.Animator;
@@ -18,6 +19,7 @@ import com.ballfighters.game.gamebody.UserDataBundle;
 import com.ballfighters.game.players.LittleBoo;
 import com.ballfighters.game.players.LittleBooAI;
 import com.ballfighters.game.players.Player;
+import com.ballfighters.game.players.SwordGuy;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 
@@ -31,6 +33,7 @@ public class BallWorld {
     public Camera camera;
     public Box2DDebugRenderer debugRenderer;
     public Array<Body> worldBodies;
+    public Array<Joint> worldJoints;
     public World world;
     public SpriteBatch batch;
     GamePolygon leftWall, rightWall, floor, ceiling;
@@ -39,7 +42,7 @@ public class BallWorld {
         world = new World(new Vector2(0,0), true);//TODO: make sure this doesn't make a new world every time
         GameData.WORLD = world;
 
-        player1 = new LittleBoo(new Vector2(-40,40));
+        player1 = new SwordGuy(new Vector2(-40,40));
         player2 = new LittleBooAI(new Vector2(40,-40));
 //        player3= new LittleBoo(new Vector2(12,52));
         camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
@@ -48,6 +51,7 @@ public class BallWorld {
         GameData.ANIMATEDBG =new Animator("Backgrounds/testBattleBGSheet.png",4,4,.25f);
         debugRenderer = new Box2DDebugRenderer();
         worldBodies = new Array<Body>();
+        worldJoints = new Array<Joint>();
         this.batch = batch;
         world = GameData.WORLD;
 
@@ -84,6 +88,7 @@ public class BallWorld {
     	player2.update();
 
         GameData.WORLD.getBodies(worldBodies);
+        GameData.WORLD.getJoints(worldJoints);
 
         //for deletion: remember, the update method has to be called to update the setUserData() for the body!
         for(Body body : worldBodies){
@@ -93,6 +98,16 @@ public class BallWorld {
                 if (bundle.flaggedForDeletion){
                     bundle.baseObject.body.setActive(false);
                     GameData.WORLD.destroyBody(body);
+                }
+            }
+        }
+
+        //for deletion: remember, the update method has to be called to update the setUserData() for the body!
+        for(Joint joint : worldJoints){
+            if(joint.getUserData()!=null && joint.getUserData() instanceof UserDataBundle){
+                UserDataBundle bundle = (UserDataBundle) joint.getUserData();
+                if (bundle.flaggedForDeletion){
+                    GameData.WORLD.destroyJoint(joint);
                 }
             }
         }
@@ -113,12 +128,14 @@ public class BallWorld {
         for(Body body : worldBodies){
             if(body.getUserData()!=null && body.getUserData() instanceof UserDataBundle){
                 UserDataBundle bundle = (UserDataBundle) body.getUserData();
-                Sprite sprite = bundle.sprite;
-                sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
-                if (bundle.rotatable){
-                    sprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+                if(bundle.draw) {
+                    Sprite sprite = bundle.sprite;
+                    sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
+                    if (bundle.rotatable) {
+                        sprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+                    }
+                    sprite.draw(batch);
                 }
-                sprite.draw(batch);
             }
         }
 

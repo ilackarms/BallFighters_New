@@ -1,7 +1,12 @@
 package com.ballfighters.game.players;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -14,7 +19,9 @@ import com.ballfighters.game.gamebody.*;
 import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
+import com.ballfighters.screens.TestBattleScreen;
 import com.ballfighters.tween.BallTween;
+import com.ballfighters.tween.SpriteAccessor;
 
 import java.util.ArrayList;
 
@@ -26,31 +33,12 @@ public class LittleBooAI extends Player {
     protected float radius = 6f;
     protected float density = 0.05f;
     protected float restitution = 0.5f;
-    public static final int MAX_HEALTH = 75;
+    public static final int MAX_HEALTH = 100;
 
     protected Boolean fireShotsOnCooldown;
 
-    protected AIInputHandler aiInputHandler;
+    protected AIInputHandlerLittleBoo aiInputHandler;
     protected BallTween tween;
-
-    public LittleBooAI(Vector2 position) {
-        this.position = position;
-        animator = new Animator("Sprites/playerSpriteSheet.png", 4, 4);
-        body = createBody();
-        health = MAX_HEALTH;
-        spriteHeight = 14f;
-        spriteWidth = 14f;
-        dataBundle = createUserDataBundle();
-        clickPosition = new Vector3(0,0,0);
-        ACCELERATION = 200f;
-        tweenList = new ArrayList<BallTween>();
-
-        tween = null;
-        aiInputHandler = new AIInputHandler(this);//TODO
-        fireShotsOnCooldown = false;
-
-        lastPosition = body.getPosition();
-    }
 
 
     protected UserDataBundle createUserDataBundle(){
@@ -80,6 +68,29 @@ public class LittleBooAI extends Player {
         return body;
     }
 
+
+    /**
+     * Constructor
+     * @param position
+     */
+    public LittleBooAI(Vector2 position) {
+        this.position = position;
+        animator = new Animator("Sprites/playerSpriteSheet.png", 4, 4);
+        body = createBody();
+        health = MAX_HEALTH;
+        spriteHeight = 14f;
+        spriteWidth = 14f;
+        dataBundle = createUserDataBundle();
+        clickPosition = new Vector3(0,0,0);
+        ACCELERATION = 200f;
+        tweenList = new ArrayList<BallTween>();
+
+        tween = null;
+        aiInputHandler = new AIInputHandlerLittleBoo(this);//TODO
+        fireShotsOnCooldown = false;
+
+        lastPosition = body.getPosition();
+    }
     @Override
     public void update(){
         super.update();
@@ -92,7 +103,7 @@ public class LittleBooAI extends Player {
         clickPosition.x = aiInputHandler.targetDirection.x;
         clickPosition.y = aiInputHandler.targetDirection.y;
         move(inputDirection);
-        if(!fireShotsOnCooldown) {
+        if(!fireShotsOnCooldown && health>0) {
             fireShotsOnCooldown = true;
             Timer.schedule(new Timer.Task() {
                 @Override
@@ -152,6 +163,7 @@ public class LittleBooAI extends Player {
     @Override
     public void kill(){
         super.kill();
+        GameData.playMusic("Music/Victory.mp3");
         Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));
         long soundID = deathSound.play();
         deathSound .setVolume(soundID, GameData.VOLUME);
@@ -159,11 +171,71 @@ public class LittleBooAI extends Player {
         lastPosition = body.getPosition();
 
 
-        Animator player1DeathAnimation = new Animator("Sprites/HolyShitAnimation.png",1,11);
-        AnimationPackage staticDeathAnimation = new AnimationPackage(player1DeathAnimation,spriteWidth*10,spriteHeight*10);
+        Animator player1DeathAnimation = new Animator("Sprites/ClickToContinue.png",1,5);
+        final AnimationPackage staticDeathAnimation = new AnimationPackage(player1DeathAnimation,spriteWidth*10,spriteHeight*10);
         staticDeathAnimation.play();
-        staticDeathAnimation.position=new Vector2(lastPosition);
+        staticDeathAnimation.position=new Vector2(position);
         GameData.staticAnimations.add(staticDeathAnimation);
+
+
+
+        /*
+        LISTEN FOR LONG PRESS
+         */
+        Gdx.input.setInputProcessor(new GestureDetector(new GestureDetector.GestureListener() {
+            @Override
+            public boolean touchDown(float v, float v2, int i, int i2) {
+                return false;
+            }
+
+            @Override
+            public boolean tap(float v, float v2, int i, int i2) {
+                return false;
+            }
+
+            @Override
+            public boolean longPress(float v, float v2) {
+                final TestBattleScreen battleScreen = (TestBattleScreen) GameData.screen;
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int type, BaseTween<?> source) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
+                        GameData.screen.dispose();
+                        GameData.screen.hide();
+                        GameData.staticAnimations.remove(staticDeathAnimation);
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen2());
+                    }
+                }).start(battleScreen.tweenManager);
+                return false;
+            }
+
+            @Override
+            public boolean fling(float v, float v2, int i) {
+                return false;
+            }
+
+            @Override
+            public boolean pan(float v, float v2, float v3, float v4) {
+                return false;
+            }
+
+            @Override
+            public boolean panStop(float v, float v2, int i, int i2) {
+                return false;
+            }
+
+            @Override
+            public boolean zoom(float v, float v2) {
+                return false;
+            }
+
+            @Override
+            public boolean pinch(Vector2 vector2, Vector2 vector22, Vector2 vector23, Vector2 vector24) {
+                return false;
+            }
+        }));
+
+
     }
 
 }

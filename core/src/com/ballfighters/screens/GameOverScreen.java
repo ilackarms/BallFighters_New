@@ -42,14 +42,15 @@ public class GameOverScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        stage.draw();
+        stage.act(delta);
+
         Table.drawDebug(stage);
         batch.begin();
         gameOverLabel.draw(batch);
         GameData.BLACKSCREEN.draw(batch);
         batch.end();
 
-        stage.draw();
-        stage.act(delta);
 
         tweenManager.update(delta);
     }
@@ -111,17 +112,17 @@ public class GameOverScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         table = new Table();
-        table.setBounds(0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight()/2);
+        table.setBounds(0,Gdx.graphics.getHeight()/4,Gdx.graphics.getWidth(),Gdx.graphics.getHeight()*3/4);
 
         newGameButtonTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/NewGameButton.pack"));
         newGameButtonSkin = new Skin(newGameButtonTextureAtlas);
 
         Button.ButtonStyle style1 = new Button.ButtonStyle();
-        style1.up = newGameButtonSkin.getDrawable("NewGameUp");
-        style1.down = newGameButtonSkin.getDrawable("NewGameDown");
+        style1.up = newGameButtonSkin.getDrawable("NewGameDown");
+        style1.down = newGameButtonSkin.getDrawable("NewGameUp");
 
         newGameButton = new Button(style1);
-        newGameButton.pad(Gdx.graphics.getHeight()/25);
+        newGameButton.pad(Gdx.graphics.getHeight()/35);
         newGameButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
@@ -138,8 +139,8 @@ public class GameOverScreen implements Screen {
         continueButtonSkin = new Skin(continueButtonTextureAtlas);
 
         Button.ButtonStyle style2 = new Button.ButtonStyle();
-        style2.up = continueButtonSkin.getDrawable("ContinueButtonUp");
-        style2.down = continueButtonSkin.getDrawable("ContinueButtonDown");
+        style2.up = continueButtonSkin.getDrawable("ContinueButtonDown");
+        style2.down = continueButtonSkin.getDrawable("ContinueButtonUp");
 
         continueButton = new Button(style2);
         continueButton.pad(Gdx.graphics.getHeight()/25);
@@ -179,14 +180,9 @@ public class GameOverScreen implements Screen {
         });
 
 
-        table.add(newGameButton);
-        table.row();
-
-        table.row();
-        table.add(continueButton);
-        table.row();
-        table.row();
-        table.add(exitButton);
+        table.add(newGameButton).spaceBottom(newGameButton.getHeight()).row();
+        table.add(continueButton).spaceBottom(newGameButton.getHeight()).row();
+        table.add(exitButton).spaceBottom(newGameButton.getHeight()).row();
 
 
 

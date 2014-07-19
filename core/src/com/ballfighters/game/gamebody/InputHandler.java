@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Timer;
 import com.ballfighters.game.players.Player;
 import com.ballfighters.global.GameData;
 
@@ -18,12 +19,14 @@ public class InputHandler implements GestureDetector.GestureListener {
     public Vector3 targetDirection;
     public Player player;
     public Vector3 mousePosition;
+    public Boolean shieldDelay;
 
     public InputHandler(Player player){//todo: make the constructor accept a set of keys as the up/down/left/right input
         inputDirection = new Vector2(0,0);
         this.player = player;
         targetDirection = new Vector3(0,0,0);
         mousePosition = new Vector3(0,0,0);
+        shieldDelay = false;
 
     }
 
@@ -81,13 +84,22 @@ public class InputHandler implements GestureDetector.GestureListener {
 
         @Override
         public boolean longPress(float v, float v2) {
-            Gdx.input.vibrate(50);
-            targetDirection.x = Gdx.input.getX();
-            targetDirection.y = Gdx.input.getY();
-            mousePosition = GameData.camera.unproject(targetDirection);
-            player.clickPosition.x = mousePosition.x - player.body.getPosition().x;
-            player.clickPosition.y = mousePosition.y - player.body.getPosition().y;
-            player.shield();
+            if(!shieldDelay) {
+                Gdx.input.vibrate(50);
+                targetDirection.x = Gdx.input.getX();
+                targetDirection.y = Gdx.input.getY();
+                mousePosition = GameData.camera.unproject(targetDirection);
+                player.clickPosition.x = mousePosition.x - player.body.getPosition().x;
+                player.clickPosition.y = mousePosition.y - player.body.getPosition().y;
+                player.shield();
+                shieldDelay = true;
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        shieldDelay = false;
+                    }
+                },5);
+            }
             return false;
         }
 

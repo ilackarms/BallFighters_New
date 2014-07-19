@@ -11,7 +11,7 @@ import com.ballfighters.math.MyMathStuff;
 /**
  * Created by Dell_Owner on 7/7/2014.
  */
-public class AIInputHandler {
+public class AIInputHandlerLittleBoo {
     public Vector2 inputDirection;
     public Vector2 targetDirection;
     public Vector3 mousePosition;
@@ -27,7 +27,7 @@ public class AIInputHandler {
     public static final int TRACKING = 5;
 
 
-    public AIInputHandler(Player aiPlayer) {//todo: make the constructor accept a set of keys as the up/down/left/right input
+    public AIInputHandlerLittleBoo(Player aiPlayer) {//todo: make the constructor accept a set of keys as the up/down/left/right input
         this.aiPlayer = aiPlayer;
         inputDirection = new Vector2(0, 0);
         targetDirection = new Vector2(0, 0);

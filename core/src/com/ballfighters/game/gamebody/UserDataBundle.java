@@ -16,6 +16,8 @@ public class UserDataBundle {
     public Boolean followsPlayer;
     public GameBody baseObject;
     public int damage;
+    public Boolean ghostMode;
+    public Boolean draw;
 
     public UserDataBundle(){
         this.sprite = new Sprite();
@@ -26,5 +28,7 @@ public class UserDataBundle {
         health = 100;
         this.isPlayer = false;
         followsPlayer = false;
+        ghostMode = false;
+        draw = true;
     }
 }
