@@ -94,19 +94,20 @@ public class CharacterSelectScreen implements Screen {
     protected void initializeStage() {
 
         Table table;
-        TextureAtlas textureAtlasBoo;
-        Button booButton;
-        Skin booSkin;
+        TextureAtlas textureAtlasBoo, textureAtlasSwordGuy;
+        Button booButton, swordGuyButton;
+        Skin booSkin, swordGuySkin;
 
         stage = new Stage();
 
         Gdx.input.setInputProcessor(stage);
 
-        textureAtlasBoo = new TextureAtlas(Gdx.files.internal("Buttons/BooKnockoff.pack"));
-        booSkin = new Skin(textureAtlasBoo);
-
         table = new Table();
         table.setBounds(0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+
+
+        textureAtlasBoo = new TextureAtlas(Gdx.files.internal("Buttons/BooKnockoff.pack"));
+        booSkin = new Skin(textureAtlasBoo);
 
         Button.ButtonStyle style1 = new Button.ButtonStyle();
         style1.up = booSkin.getDrawable("BooUp");
@@ -120,17 +121,39 @@ public class CharacterSelectScreen implements Screen {
                     @Override
                     public void onEvent(int i, BaseTween<?> baseTween) {
                         Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        GameData.PLAYER_CHOICE = GameData.LITTLE_BOO;
                         ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
                     }
                 }).start(tweenManager);
             }
         });
 
-        Button blankButton = new Button();
-        blankButton.setVisible(false);
-        blankButton.pad(20);
 
-        table.add(booButton);
+        textureAtlasSwordGuy = new TextureAtlas(Gdx.files.internal("Buttons/SwordGuyButton.pack"));
+        swordGuySkin = new Skin(textureAtlasSwordGuy);
+
+        Button.ButtonStyle style2 = new Button.ButtonStyle();
+        style2.up = swordGuySkin.getDrawable("SwordGuyUp");
+        style2.down = swordGuySkin.getDrawable("SwordGuyDown");
+
+        swordGuyButton = new Button(style2);
+        swordGuyButton.pad(Gdx.graphics.getWidth()/25);
+        swordGuyButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        GameData.PLAYER_CHOICE = GameData.SWORD_GUY;
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
+                    }
+                }).start(tweenManager);
+            }
+        });
+
+
+        table.add(booButton).spaceRight(20f);
+        table.add(swordGuyButton);
         //TODO: save characters unlocked, add them in as needed!
         stage.addActor(table);
     }

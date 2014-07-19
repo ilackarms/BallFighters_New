@@ -30,7 +30,7 @@ public class SwordProjectile extends Bullet {
         this.angle = angle;
 
         System.out.println("DISPLACEMENT: ("+displacement.x+","+displacement.y+")");
-        System.out.println("ANGLE: (" + MyMathStuff.convertTo2D(parent.clickPosition).angle());
+        System.out.println("ANGLE: (" + MyMathStuff.convertTo2D(parent.clickPosition).angle()+")");
         if(displacement.x>=0){
             direction = 1;
         }else {
@@ -67,7 +67,7 @@ public class SwordProjectile extends Bullet {
     @Override
     public void update(){
         dataBundle.sprite = sprite;
-        displacement.rotate(direction*-750*Gdx.graphics.getDeltaTime());
+        displacement.rotate(direction*-1000*Gdx.graphics.getDeltaTime());
         angle = ((float) Math.atan2(-1*displacement.x,displacement.y));
         body.setTransform(parent.body.getPosition().x+displacement.x,parent.body.getPosition().y+displacement.y,angle);
         body.setLinearVelocity(parent.body.getLinearVelocity());

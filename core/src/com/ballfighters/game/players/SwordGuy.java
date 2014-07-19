@@ -128,8 +128,8 @@ public class SwordGuy extends Player {
         if(!fireShotOnCoolDown) {
             Gdx.input.vibrate(15);
 
-            int rand = MathUtils.random(5);
-            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/littleBooProjectile" + rand + ".wav"));
+            int rand = MathUtils.random(1,3);
+            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/SwordProjectile" + rand + ".wav"));
             long soundID = fireSound.play();
             fireSound.setVolume(soundID, GameData.VOLUME);
             fireSound.dispose();
@@ -155,7 +155,7 @@ public class SwordGuy extends Player {
                 public void run() {
                     fireShotOnCoolDown = false;
                 }
-            },0.20f);
+            },0.10f);
         }
     }
 
@@ -168,7 +168,7 @@ public class SwordGuy extends Player {
         new SwordGuyShield(this, shieldDisplacement, angle);
 
         Gdx.input.vibrate(50);
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
+        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/Shield.wav"));
         long soundID = fireSound.play();
         fireSound.setVolume(soundID, GameData.VOLUME);
         fireSound.dispose();

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.ballfighters.game.world.BallWorld;
+import com.ballfighters.game.world.BallWorld2;
 import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -17,7 +18,7 @@ import com.ballfighters.tween.SpriteAccessor;
  */
 public class TestBattleScreen2 implements Screen {
 
-    private BallWorld ballWorld;
+    private BallWorld2 ballWorld;
     private Sprite background;
     private SpriteBatch batch, bgBatch, fadeOut;
     public TweenManager tweenManager;
@@ -68,14 +69,15 @@ public class TestBattleScreen2 implements Screen {
         bgBatch = new SpriteBatch();
         fadeOut = new SpriteBatch();
 
-        ballWorld = new BallWorld(batch);
+        ballWorld = new BallWorld2(batch);
 
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
 
         Tween.set(GameData.BLACKSCREEN,SpriteAccessor.ALPHA).target(0).start(tweenManager);
-//        startMusic();
+        startMusic();
     }
+
     public void hide(){
         dispose();
     }

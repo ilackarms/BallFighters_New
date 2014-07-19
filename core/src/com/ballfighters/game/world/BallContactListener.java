@@ -39,10 +39,10 @@ public class BallContactListener implements ContactListener {
             if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof SwordProjectile){
                 UserDataBundle bundleA = (UserDataBundle) contact.getFixtureA().getBody().getUserData();
                 SwordProjectile swordProjectile = (SwordProjectile) bundleA.baseObject;
-                SwordGuy swordParent = (SwordGuy) swordProjectile.parent;
-                if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof SwordGuy){
+                Player swordParent = (Player) swordProjectile.parent;
+                if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof Player){
                     UserDataBundle bundleB = (UserDataBundle) contact.getFixtureB().getBody().getUserData();
-                    SwordGuy swordGuy = (SwordGuy) bundleB.baseObject;
+                    Player swordGuy = (Player) bundleB.baseObject;
                     if(swordParent.equals(swordGuy)){
                         contact.setEnabled(false);
                     }
@@ -51,10 +51,10 @@ public class BallContactListener implements ContactListener {
             if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof SwordProjectile){
                 UserDataBundle bundleB = (UserDataBundle) contact.getFixtureB().getBody().getUserData();
                 SwordProjectile swordProjectile = (SwordProjectile) bundleB.baseObject;
-                SwordGuy swordParent = (SwordGuy) swordProjectile.parent;
-                if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof SwordGuy){
+                Player swordParent = (Player) swordProjectile.parent;
+                if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof Player){
                     UserDataBundle bundleA = (UserDataBundle) contact.getFixtureA().getBody().getUserData();
-                    SwordGuy swordGuy = (SwordGuy) bundleA.baseObject;
+                    Player swordGuy = (Player) bundleA.baseObject;
                     if(swordParent.equals(swordGuy)) {
                         contact.setEnabled(false);
                     }

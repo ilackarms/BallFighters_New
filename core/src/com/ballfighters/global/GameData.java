@@ -28,6 +28,11 @@ public final class GameData {
     public static Camera camera;
     public static Player PLAYER;
     public static Animator ANIMATEDBG;
+    public static int PLAYER_CHOICE;
+
+    public static final int LITTLE_BOO=0;
+    public static final int SWORD_GUY=1;
+
 
     public static final Vector2 PLAYER_1_HEALTH_BAR_LOCATION = new Vector2(5,Gdx.graphics.getHeight()-25);
     public static final Vector2 HEALTH_BAR_SIZE = new Vector2(Gdx.graphics.getWidth()/6,Gdx.graphics.getHeight()/35);
