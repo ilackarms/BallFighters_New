@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer;
 import com.ballfighters.game.players.Player;
+import com.ballfighters.game.players.SwordGuy;
 import com.ballfighters.global.GameData;
 
 /**
@@ -92,7 +93,7 @@ public class InputHandler implements GestureDetector.GestureListener {
                 player.clickPosition.x = mousePosition.x - player.body.getPosition().x;
                 player.clickPosition.y = mousePosition.y - player.body.getPosition().y;
                 player.shield();
-                shieldDelay = true;
+                if(!(player instanceof SwordGuy)) shieldDelay = true;
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {

@@ -14,7 +14,7 @@ import com.ballfighters.global.GameData;
  * Created by Dell_Owner on 7/8/2014.
  */
 public class SwordGuyShield extends GameBody {
-    GameBody parent;
+    public GameBody parent;
     public float angle;
     public Vector2 displacement;
 
@@ -24,7 +24,7 @@ public class SwordGuyShield extends GameBody {
         this.position = new Vector2(parent.body.getPosition().x+displacement.x,parent.body.getPosition().y+displacement.y);
         this.angle = angle;
 
-        spriteWidth=13f;
+        spriteWidth=18f;
         spriteHeight=4f;
         float duration = 5f;
 
@@ -57,17 +57,17 @@ public class SwordGuyShield extends GameBody {
     public Body initializeBody(){
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
         PolygonShape shape = new PolygonShape();
         Vector2 vertices[] = {
                 new Vector2(0,-4),
                 new Vector2(0.5f,-4),
-                new Vector2(-2.5f,-4),
+                new Vector2(-4.5f,-4),
                 new Vector2(0,0),
                 new Vector2(0.5f,0),
                 new Vector2(0,4),
                 new Vector2(0.5f,4),
-                new Vector2(-2.5f,4)
+                new Vector2(-4.5f,4)
         };
         shape.set(vertices);
 

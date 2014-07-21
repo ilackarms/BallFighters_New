@@ -20,6 +20,7 @@ import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.screens.TestBattleScreen;
+import com.ballfighters.screens.TestBattleScreen2;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -33,7 +34,7 @@ public class LittleBooAI extends Player {
     protected float radius = 6f;
     protected float density = 0.05f;
     protected float restitution = 0.5f;
-    public static final int MAX_HEALTH = 10 ;
+    public static final int MAX_HEALTH = 100 ;
 
     protected Boolean fireShotsOnCooldown;
 

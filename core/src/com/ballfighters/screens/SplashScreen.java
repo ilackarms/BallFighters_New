@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.ballfighters.game.gamebody.Animator;
-import com.ballfighters.game.gamebody.TestBattleScreen2;
 import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
 

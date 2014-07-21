@@ -23,7 +23,7 @@ import com.ballfighters.math.MyMathStuff;
 /**
  * Created by Dell_Owner on 6/29/2014.
  */
-public class BallWorld {
+public class BallWorld3 {
 	private final float TIME_STEP = 1/30f;
 	private final int VELOCITY_ITERATIONS = 8, POSITION_ITERATIONS = 3;
 	public Player player1, player2;
@@ -35,27 +35,27 @@ public class BallWorld {
     public SpriteBatch batch;
     GamePolygon leftWall, rightWall, floor, ceiling;
 
-    public BallWorld(SpriteBatch batch){
+    public BallWorld3(SpriteBatch batch){
         world = new World(new Vector2(0,0), true);//TODO: make sure this doesn't make a new world every time
         GameData.WORLD = world;
 
         switch (GameData.PLAYER_CHOICE){
             case GameData.LITTLE_BOO:
-                GameData.PLAYER = new LittleBoo(new Vector2(-40,40));
+                player1 = new LittleBoo(new Vector2(-40,40));
                 break;
             case GameData.SWORD_GUY:
-                GameData.PLAYER = new SwordGuy(new Vector2(-40,40));
+                player1 = new SwordGuy(new Vector2(-40,40));
                 break;
             case GameData.LASER_GUY:
-                GameData.PLAYER = new LaserGuy(new Vector2(-40,40));
+                player1 = new LaserGuy(new Vector2(-40,40));
                 break;
         }
 
-        player1 = GameData.PLAYER;
-        player2 = new LittleBooAI(new Vector2(40,-40));
+        player2 = new SwordGuyAI(new Vector2(40,-40));
         camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         GameData.camera = camera;
-        GameData.ANIMATEDBG =new Animator("Backgrounds/testBattleBGSheet.png",4,4,.25f);
+        GameData.PLAYER = player1;
+        GameData.ANIMATEDBG =new Animator("Backgrounds/LaserBattleScreen.png",1,4,.125f);
         debugRenderer = new Box2DDebugRenderer();
         worldBodies = new Array<Body>();
         worldJoints = new Array<Joint>();
@@ -153,7 +153,7 @@ public class BallWorld {
         batch.end();
 
         //debug
-//        debugRenderer.render(world, camera.combined);
+        debugRenderer.render(world, camera.combined);
     }
 
     public void dispose(){

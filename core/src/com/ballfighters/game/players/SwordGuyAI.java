@@ -37,7 +37,7 @@ public class SwordGuyAI  extends Player {
     protected float radius = 5.5f;
     protected float density = 5f;
     protected float restitution = 0.5f;
-    public static final int MAX_HEALTH = 100;
+    public static final int MAX_HEALTH = 150;
 
     protected AIHandlerSwordGuy aiInputHandler;
 

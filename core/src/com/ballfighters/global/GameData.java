@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public final class GameData {
     public static Music music;
-    public static float VOLUME = 0.20f;
+    public static float VOLUME = 0.05f;
     public static Sprite BLACKSCREEN =new Sprite(new Texture(Gdx.files.internal("Backgrounds/blackScreen.png")));
     public static World WORLD;
     public static SpriteBatch batch;
@@ -32,6 +32,7 @@ public final class GameData {
 
     public static final int LITTLE_BOO=0;
     public static final int SWORD_GUY=1;
+    public static final int LASER_GUY=2;
 
 
     public static final Vector2 PLAYER_1_HEALTH_BAR_LOCATION = new Vector2(5,Gdx.graphics.getHeight()-25);

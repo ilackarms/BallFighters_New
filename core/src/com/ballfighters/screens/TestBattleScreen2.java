@@ -9,15 +9,16 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.ballfighters.game.world.BallWorld;
+import com.ballfighters.game.world.BallWorld2;
 import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
 
 /**
- * Created by Dell_Owner on 6/28/2014.
+ * Created by Dell_Owner on 7/13/2014.
  */
-public class TestBattleScreen implements Screen {
+public class TestBattleScreen2 implements Screen {
 
-    private BallWorld ballWorld;
+    private BallWorld2 ballWorld;
     private Sprite background;
     private SpriteBatch batch, bgBatch, fadeOut;
     public TweenManager tweenManager;
@@ -29,8 +30,8 @@ public class TestBattleScreen implements Screen {
 
 
 
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //animate background
         GameData.ANIMATEDBG.update();
@@ -60,15 +61,15 @@ public class TestBattleScreen implements Screen {
         loopMusic();
     }
     public void show(){
-    	GameData.screen = this;
+        GameData.screen = this;
         GameData.initializeHealthBars();
-        track= MathUtils.random(0,5);
+        track= MathUtils.random(0, 5);
         batch = new SpriteBatch();
         GameData.batch = batch;
         bgBatch = new SpriteBatch();
         fadeOut = new SpriteBatch();
 
-        ballWorld = new BallWorld(batch);
+        ballWorld = new BallWorld2(batch);
 
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
@@ -76,6 +77,7 @@ public class TestBattleScreen implements Screen {
         Tween.set(GameData.BLACKSCREEN,SpriteAccessor.ALPHA).target(0).start(tweenManager);
         startMusic();
     }
+
     public void hide(){
         dispose();
     }

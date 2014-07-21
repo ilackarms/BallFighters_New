@@ -1,4 +1,4 @@
-package com.ballfighters.game.gamebody;
+package com.ballfighters.screens;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -8,17 +8,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.ballfighters.game.world.BallWorld;
 import com.ballfighters.game.world.BallWorld2;
+import com.ballfighters.game.world.BallWorld3;
 import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
 
 /**
  * Created by Dell_Owner on 7/13/2014.
  */
-public class TestBattleScreen2 implements Screen {
+public class TestBattleScreen3 implements Screen {
 
-    private BallWorld2 ballWorld;
+    private BallWorld3 ballWorld;
     private Sprite background;
     private SpriteBatch batch, bgBatch, fadeOut;
     public TweenManager tweenManager;
@@ -58,7 +58,7 @@ public class TestBattleScreen2 implements Screen {
         tweenManager.update(delta);
 
         //should be called in update method:
-//        loopMusic();TODO
+        loopMusic();
     }
     public void show(){
         GameData.screen = this;
@@ -69,7 +69,7 @@ public class TestBattleScreen2 implements Screen {
         bgBatch = new SpriteBatch();
         fadeOut = new SpriteBatch();
 
-        ballWorld = new BallWorld2(batch);
+        ballWorld = new BallWorld3(batch);
 
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());

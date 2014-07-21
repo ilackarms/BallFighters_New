@@ -3,11 +3,9 @@ package com.ballfighters.game.players;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -28,9 +26,9 @@ import com.ballfighters.tween.SpriteAccessor;
 import java.util.ArrayList;
 
 /**
- * Created by Dell_Owner on 7/15/2014.
+ * Created by Dell_Owner on 7/19/2014.
  */
-public class SwordGuy extends Player {
+public class LaserGuyAI extends Player {
 
 
     protected InputHandler inputHandler;
@@ -39,10 +37,11 @@ public class SwordGuy extends Player {
     protected float restitution = 0.5f;
     public static final int MAX_HEALTH = 150;
 
+    protected AIHandlerSwordGuy aiInputHandler;
+
     protected BallTween tween;
 
-    public SwordGuy(Vector2 position) {
-
+    public LaserGuyAI(Vector2 position) {
 
         this.position = position;
         animator = new Animator("Sprites/SwordGuy.png", 4, 4);
@@ -52,13 +51,11 @@ public class SwordGuy extends Player {
         spriteHeight = 13f;
         spriteWidth = 13f;
         dataBundle = createUserDataBundle();
-        inputHandler = new InputHandler(this);
-        GestureDetector gestureDetector =new GestureDetector(new InputHandler(this));
-        gestureDetector.setLongPressSeconds(0.5f);
-        Gdx.input.setInputProcessor(gestureDetector);
         clickPosition = new Vector3(0,0,0);
         ACCELERATION = 60000f;
         tweenList = new ArrayList<BallTween>();
+
+        aiInputHandler = new AIHandlerSwordGuy(this);
 
         tween = null;
         lastPosition = body.getPosition();
@@ -95,29 +92,23 @@ public class SwordGuy extends Player {
     @Override
     public void update(){
         super.update();
-        inputDirection.x = 0;
-        inputDirection.y = 0;
-        inputHandler.directionHandler();
+        aiInputHandler.updateDirections();
         animate();
-        if (tween != null) {
+        if(tween!=null){
             tween.update(sprite);
         }
-        if(dataBundle.ghostMode){
-            sprite.setColor(sprite.getColor().r,sprite.getColor().g,sprite.getColor().b,0.5f);
-        }
+        inputDirection = aiInputHandler.inputDirection;
+        clickPosition.x = aiInputHandler.targetDirection.x;
+        clickPosition.y = aiInputHandler.targetDirection.y;
+        move(inputDirection);
+        fireShots();
     }
 
     @Override
     public void move(Vector2 inputDirection){
         if(inputDirection.len()!=0){
-            if(Gdx.app.getType()== Application.ApplicationType.Android) {
-                inputDirection.x = inputHandler.inputDirection.x * ACCELERATION;
-                inputDirection.y = inputHandler.inputDirection.y * ACCELERATION;
-            }
-            if(Gdx.app.getType()== Application.ApplicationType.Desktop) {
-                inputDirection.x = MyMathStuff.toUnit(inputHandler.inputDirection).x * ACCELERATION;
-                inputDirection.y = MyMathStuff.toUnit(inputHandler.inputDirection).y * ACCELERATION;
-            }
+            inputDirection.x =  inputDirection.x * ACCELERATION;
+            inputDirection.y = inputDirection.y * ACCELERATION;
             body.applyForceToCenter(inputDirection, true);
         }
     }
@@ -125,8 +116,7 @@ public class SwordGuy extends Player {
     Boolean fireShotOnCoolDown = false;
     @Override
     public void fireShots(){
-        if(!fireShotOnCoolDown) {
-            Gdx.input.vibrate(15);
+        if(!fireShotOnCoolDown && aiInputHandler.state!=AIInputHandlerLittleBoo.HESITATING) {
 
             int rand = MathUtils.random(1,3);
             Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/SwordProjectile" + rand + ".wav"));
@@ -134,7 +124,8 @@ public class SwordGuy extends Player {
             fireSound.setVolume(soundID, GameData.VOLUME);
             fireSound.dispose();
 
-            Vector2 swordDisplacement = MyMathStuff.toUnit(new Vector2(clickPosition.x, clickPosition.y));
+            Vector2 swordDisplacement = MyMathStuff.toUnit(new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(aiInputHandler.targetDirection).x,
+                    this.body.getPosition().x+radius*2*MyMathStuff.toUnit(aiInputHandler.targetDirection).y));
             swordDisplacement.x *= 10;
             swordDisplacement.y *= 10;
             int direction;
@@ -155,7 +146,7 @@ public class SwordGuy extends Player {
                 public void run() {
                     fireShotOnCoolDown = false;
                 }
-            },0.10f);
+            }, 0.20f);
         }
     }
 
@@ -168,7 +159,7 @@ public class SwordGuy extends Player {
         new SwordGuyShield(this, shieldDisplacement, angle);
 
         Gdx.input.vibrate(50);
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/Shield.wav"));
+        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
         long soundID = fireSound.play();
         fireSound.setVolume(soundID, GameData.VOLUME);
         fireSound.dispose();
@@ -188,7 +179,7 @@ public class SwordGuy extends Player {
         health-=bullet.damage;
         float ratio = (float) health/ (float) MAX_HEALTH;
         System.out.println(health+"/"+MAX_HEALTH+"="+ratio);
-        GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
+        GameData.PLAYER_2_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
         if(health<0){
             kill();
         }

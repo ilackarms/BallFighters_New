@@ -46,6 +46,9 @@ public class BallWorld2 {
             case GameData.SWORD_GUY:
                 player1 = new SwordGuy(new Vector2(-40,40));
                 break;
+            case GameData.LASER_GUY:
+                player1 = new LaserGuy(new Vector2(-40,40));
+                break;
         }
 
         player2 = new SwordGuyAI(new Vector2(40,-40));

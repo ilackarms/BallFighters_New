@@ -129,23 +129,17 @@ public class LittleBoo extends Player {
         Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/littleBooProjectile" + rand + ".wav"));
         long soundID = fireSound.play();
         fireSound.setVolume(soundID, GameData.VOLUME);
+        fireSound.dispose();
         Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
                 this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
         Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
         new LittleBooProjectile(this, shot1Position,shot1Velocity);
-        fireSound.dispose();
 
         tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.YELLOW,1.2f).yoyo(1);
     }
 
     @Override
     public void shield(){
-//        Vector2 shieldDisplacement = MyMathStuff.toUnit(new Vector2(clickPosition.x,clickPosition.y));
-//        shieldDisplacement.x*=10;
-//        shieldDisplacement.y*=10;
-//        float angle = ((float) Math.atan2(shieldDisplacement.y,shieldDisplacement.x));
-//        new SwordGuyShield(this, shieldDisplacement, angle);
-
         dataBundle.ghostMode = true;
         System.out.println("GHOSTMODE ON");
         Timer.schedule(new Timer.Task() {

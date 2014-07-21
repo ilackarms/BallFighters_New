@@ -30,22 +30,22 @@ import java.util.ArrayList;
 /**
  * Created by Dell_Owner on 7/15/2014.
  */
-public class SwordGuy extends Player {
+public class LaserGuy extends Player {
 
 
     protected InputHandler inputHandler;
     protected float radius = 5.5f;
-    protected float density = 5f;
+    protected float density = 0.5f;
     protected float restitution = 0.5f;
-    public static final int MAX_HEALTH = 150;
+    public static final int MAX_HEALTH = 90;
 
     protected BallTween tween;
 
-    public SwordGuy(Vector2 position) {
+    public LaserGuy(Vector2 position) {
 
 
         this.position = position;
-        animator = new Animator("Sprites/SwordGuy.png", 4, 4);
+        animator = new Animator("Sprites/LaserGuy.png", 4, 4);
         inputDirection = new Vector2(0,0);
         body = createBody();
         health = MAX_HEALTH;
@@ -57,7 +57,7 @@ public class SwordGuy extends Player {
         gestureDetector.setLongPressSeconds(0.5f);
         Gdx.input.setInputProcessor(gestureDetector);
         clickPosition = new Vector3(0,0,0);
-        ACCELERATION = 60000f;
+        ACCELERATION = 3000f;
         tweenList = new ArrayList<BallTween>();
 
         tween = null;
@@ -134,18 +134,10 @@ public class SwordGuy extends Player {
             fireSound.setVolume(soundID, GameData.VOLUME);
             fireSound.dispose();
 
-            Vector2 swordDisplacement = MyMathStuff.toUnit(new Vector2(clickPosition.x, clickPosition.y));
-            swordDisplacement.x *= 10;
-            swordDisplacement.y *= 10;
-            int direction;
-            if (swordDisplacement.x >= 0) {
-                direction = 1;
-            } else {
-                direction = -1;
-            }
-            swordDisplacement.rotate(60 * direction);
-            float angle = ((float) Math.atan2(-1 * swordDisplacement.x, swordDisplacement.y));
-            new SwordProjectile(this, swordDisplacement, angle);
+            Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
+                    this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
+            Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
+            new LaserGuyProjectileCharge(this, shot1Position,shot1Velocity);
 
             tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
 
