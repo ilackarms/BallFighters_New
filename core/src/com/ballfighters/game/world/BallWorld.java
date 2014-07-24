@@ -1,6 +1,7 @@
 package com.ballfighters.game.world;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -86,6 +87,7 @@ public class BallWorld {
 
         //Contact Listener
         world.setContactListener(new BallContactListener());
+
     }
 
 

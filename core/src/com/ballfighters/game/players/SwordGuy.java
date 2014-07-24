@@ -21,6 +21,7 @@ import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.screens.GameOverScreen;
+import com.ballfighters.screens.GameScreen;
 import com.ballfighters.screens.TestBattleScreen;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
@@ -216,17 +217,16 @@ public class SwordGuy extends Player {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                final TestBattleScreen battleScreen = (TestBattleScreen) GameData.screen;
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
-                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(GameData.tweenManager);
                         GameData.screen.dispose();
                         GameData.screen.hide();
                         GameData.staticAnimations.remove(staticGameOverAnimation);
                         ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
                     }
-                }).start(battleScreen.tweenManager);
+                }).start(GameData.tweenManager);
             }
         }, 8);
 

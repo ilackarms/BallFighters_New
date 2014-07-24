@@ -3,6 +3,7 @@ package com.ballfighters.game.gamebody;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -14,7 +15,7 @@ import com.ballfighters.global.GameData;
 /**
  * Created by Dell_Owner on 7/2/2014.
  */
-public class InputHandler implements GestureDetector.GestureListener {
+public class InputHandler implements GestureDetector.GestureListener, InputProcessor {
 
     public Vector2 inputDirection;
     public Vector3 targetDirection;
@@ -29,6 +30,8 @@ public class InputHandler implements GestureDetector.GestureListener {
         mousePosition = new Vector3(0,0,0);
         shieldDelay = false;
 
+        //set Back button handler
+        Gdx.input.setCatchBackKey(true);
     }
 
 
@@ -135,6 +138,10 @@ public class InputHandler implements GestureDetector.GestureListener {
         }
 
     public boolean keyDown(int i) {
+        if(i == Input.Keys.BACK){
+            //do nothing?
+            System.out.println("TRY AGAIN FUCKER!!");
+        }
         return false;
     }
 

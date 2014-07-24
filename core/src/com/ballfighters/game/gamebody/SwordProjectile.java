@@ -43,7 +43,7 @@ public class SwordProjectile extends Bullet {
         spriteWidth=29f;
         spriteHeight=6f;
         duration = 0.25f;
-        damage = 4;
+        damage = 6;
 
         body =  initializeBody();
         body.setTransform(position, angle);

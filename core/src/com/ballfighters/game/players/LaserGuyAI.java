@@ -6,6 +6,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -19,7 +20,9 @@ import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.screens.GameOverScreen;
+import com.ballfighters.screens.GameScreen;
 import com.ballfighters.screens.TestBattleScreen;
+import com.ballfighters.screens.TestBattleScreen2;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -35,16 +38,16 @@ public class LaserGuyAI extends Player {
     protected float radius = 5.5f;
     protected float density = 5f;
     protected float restitution = 0.5f;
-    public static final int MAX_HEALTH = 150;
+    public static final int MAX_HEALTH = 90;
 
-    protected AIHandlerSwordGuy aiInputHandler;
+    protected AIHandlerLaserGuy aiInputHandler;
 
     protected BallTween tween;
 
     public LaserGuyAI(Vector2 position) {
 
         this.position = position;
-        animator = new Animator("Sprites/SwordGuy.png", 4, 4);
+        animator = new Animator("Sprites/LaserGuy.png", 4, 4);
         inputDirection = new Vector2(0,0);
         body = createBody();
         health = MAX_HEALTH;
@@ -55,7 +58,7 @@ public class LaserGuyAI extends Player {
         ACCELERATION = 60000f;
         tweenList = new ArrayList<BallTween>();
 
-        aiInputHandler = new AIHandlerSwordGuy(this);
+        aiInputHandler = new AIHandlerLaserGuy(this);
 
         tween = null;
         lastPosition = body.getPosition();
@@ -118,25 +121,16 @@ public class LaserGuyAI extends Player {
     public void fireShots(){
         if(!fireShotOnCoolDown && aiInputHandler.state!=AIInputHandlerLittleBoo.HESITATING) {
 
-            int rand = MathUtils.random(1,3);
-            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/SwordProjectile" + rand + ".wav"));
+            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LaserGuySounds/LaserCharge.wav"));
             long soundID = fireSound.play();
             fireSound.setVolume(soundID, GameData.VOLUME);
             fireSound.dispose();
 
-            Vector2 swordDisplacement = MyMathStuff.toUnit(new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(aiInputHandler.targetDirection).x,
-                    this.body.getPosition().x+radius*2*MyMathStuff.toUnit(aiInputHandler.targetDirection).y));
-            swordDisplacement.x *= 10;
-            swordDisplacement.y *= 10;
-            int direction;
-            if (swordDisplacement.x >= 0) {
-                direction = 1;
-            } else {
-                direction = -1;
-            }
-            swordDisplacement.rotate(60 * direction);
-            float angle = ((float) Math.atan2(-1 * swordDisplacement.x, swordDisplacement.y));
-            new SwordProjectile(this, swordDisplacement, angle);
+            Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
+                    this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
+            Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
+            new LaserGuyProjectileCharge(this, shot1Position,shot1Velocity);
+
 
             tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
 
@@ -152,14 +146,10 @@ public class LaserGuyAI extends Player {
 
     @Override
     public void shield(){
-        Vector2 shieldDisplacement = MyMathStuff.toUnit(new Vector2(clickPosition.x,clickPosition.y));
-        shieldDisplacement.x*=10;
-        shieldDisplacement.y*=10;
-        float angle = ((float) Math.atan2(shieldDisplacement.y,shieldDisplacement.x));
-        new SwordGuyShield(this, shieldDisplacement, angle);
+        new LaserGuyShield(this);
 
         Gdx.input.vibrate(50);
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
+        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LaserGuySounds/LaserGuyShield.wav"));
         long soundID = fireSound.play();
         fireSound.setVolume(soundID, GameData.VOLUME);
         fireSound.dispose();
@@ -188,38 +178,80 @@ public class LaserGuyAI extends Player {
     @Override
     public void kill(){
         super.kill();
-        GameData.playMusic("Music/GameOver.mp3");
-        Gdx.input.vibrate(1000);
+        GameData.playMusic("Music/Victory.mp3");
         Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));
         long soundID = deathSound.play();
         deathSound .setVolume(soundID, GameData.VOLUME);
         deathSound.dispose();
-        lastPosition.x = MyMathStuff.convertTo3D(body.getPosition()).x;
-        lastPosition.y = MyMathStuff.convertTo3D(body.getPosition()).y;
+        lastPosition = body.getPosition();
 
-        Animator gameOverAnimation = new Animator("Sprites/GameOverAnimation.png",2,5);
-        final AnimationPackage staticGameOverAnimation = new AnimationPackage(gameOverAnimation,64*2,32*2);
-        staticGameOverAnimation.play();
-        staticGameOverAnimation.position=new Vector2(lastPosition);
-        GameData.staticAnimations.add(staticGameOverAnimation);
 
-        //NEW GAME ON DEATH!
-        Timer.schedule(new Timer.Task() {
+        Animator player1DeathAnimation = new Animator("Sprites/ClickToContinue.png",1,5);
+        final AnimationPackage staticDeathAnimation = new AnimationPackage(player1DeathAnimation,spriteWidth*10,spriteHeight*10);
+        staticDeathAnimation.play();
+        staticDeathAnimation.position=new Vector2(position);
+        GameData.staticAnimations.add(staticDeathAnimation);
+
+
+
+        /*
+        LISTEN FOR LONG PRESS
+         */
+        Gdx.input.setInputProcessor(new GestureDetector(new GestureDetector.GestureListener() {
             @Override
-            public void run() {
-                final TestBattleScreen battleScreen = (TestBattleScreen) GameData.screen;
-                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
-                    @Override
-                    public void onEvent(int type, BaseTween<?> source) {
-                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
-                        GameData.screen.dispose();
-                        GameData.screen.hide();
-                        GameData.staticAnimations.remove(staticGameOverAnimation);
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
-                    }
-                }).start(battleScreen.tweenManager);
+            public boolean touchDown(float v, float v2, int i, int i2) {
+                return false;
             }
-        }, 8);
+
+            @Override
+            public boolean tap(float v, float v2, int i, int i2) {
+                return false;
+            }
+
+            @Override
+            public boolean longPress(float v, float v2) {
+                final GameScreen battleScreen = (GameScreen) GameData.screen;
+                Gdx.app.exit();//todo
+//                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+//                    @Override
+//                    public void onEvent(int type, BaseTween<?> source) {
+//                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
+//                        GameData.screen.dispose();
+//                        GameData.screen.hide();
+//                        GameData.staticAnimations.remove(staticDeathAnimation);
+//                        Gdx.input.vibrate(100);
+//                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen2());
+//                    }
+//                }).start(battleScreen.tweenManager);
+                return false;
+            }
+
+            @Override
+            public boolean fling(float v, float v2, int i) {
+                return false;
+            }
+
+            @Override
+            public boolean pan(float v, float v2, float v3, float v4) {
+                return false;
+            }
+
+            @Override
+            public boolean panStop(float v, float v2, int i, int i2) {
+                return false;
+            }
+
+            @Override
+            public boolean zoom(float v, float v2) {
+                return false;
+            }
+
+            @Override
+            public boolean pinch(Vector2 vector2, Vector2 vector22, Vector2 vector23, Vector2 vector24) {
+                return false;
+            }
+        }));
+
 
     }
 

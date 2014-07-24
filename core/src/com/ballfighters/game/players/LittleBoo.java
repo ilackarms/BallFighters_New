@@ -21,9 +21,11 @@ import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.screens.GameOverScreen;
+import com.ballfighters.screens.GameScreen;
 import com.ballfighters.screens.TestBattleScreen;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
+import javafx.stage.Screen;
 
 import java.util.ArrayList;
 
@@ -134,6 +136,8 @@ public class LittleBoo extends Player {
                 this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
         Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
         new LittleBooProjectile(this, shot1Position,shot1Velocity);
+        new LittleBooProjectile(this, shot1Position.rotate(-20),shot1Velocity.rotate(-20));
+        new LittleBooProjectile(this, shot1Position.rotate(20),shot1Velocity.rotate(20));
 
         tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.YELLOW,1.2f).yoyo(1);
     }
@@ -160,19 +164,21 @@ public class LittleBoo extends Player {
 
     @Override
     public void getHit(Bullet bullet){
-        Gdx.input.vibrate(100);
-        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.RED,2.2f).yoyo(1);
-        Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
-        long soundID = hitSound .play();
-        hitSound .setVolume(soundID, GameData.VOLUME);
-        hitSound.dispose();
+        if(!dataBundle.ghostMode) {
+            Gdx.input.vibrate(100);
+            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.RED, 2.2f).yoyo(1);
+            Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
+            long soundID = hitSound.play();
+            hitSound.setVolume(soundID, GameData.VOLUME);
+            hitSound.dispose();
 
-        health-=bullet.damage;
-        float ratio = (float) health/ (float) MAX_HEALTH;
-        System.out.println(health+"/"+MAX_HEALTH+"="+ratio);
-        GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
-        if(health<0){
-            kill();
+            health -= bullet.damage;
+            float ratio = (float) health / (float) MAX_HEALTH;
+            System.out.println(health + "/" + MAX_HEALTH + "=" + ratio);
+            GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
+            if (health < 0) {
+                kill();
+            }
         }
     }
 
@@ -198,17 +204,17 @@ public class LittleBoo extends Player {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                final TestBattleScreen battleScreen = (TestBattleScreen) GameData.screen;
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
-                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(GameData.tweenManager);
                         GameData.screen.dispose();
                         GameData.screen.hide();
                         GameData.staticAnimations.remove(staticGameOverAnimation);
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
+
                     }
-                }).start(battleScreen.tweenManager);
+                }).start(GameData.tweenManager);
             }
         }, 8);
 

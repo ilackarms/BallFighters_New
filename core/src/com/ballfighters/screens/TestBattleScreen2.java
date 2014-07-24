@@ -16,7 +16,7 @@ import com.ballfighters.tween.SpriteAccessor;
 /**
  * Created by Dell_Owner on 7/13/2014.
  */
-public class TestBattleScreen2 implements Screen {
+public class TestBattleScreen2 extends GameScreen {
 
     private BallWorld2 ballWorld;
     private Sprite background;
@@ -72,6 +72,7 @@ public class TestBattleScreen2 implements Screen {
         ballWorld = new BallWorld2(batch);
 
         tweenManager = new TweenManager();
+        GameData.tweenManager = tweenManager;
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
 
         Tween.set(GameData.BLACKSCREEN,SpriteAccessor.ALPHA).target(0).start(tweenManager);

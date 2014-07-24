@@ -1,5 +1,6 @@
 package com.ballfighters.global;
 
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ballfighters.game.gamebody.Animator;
 import com.ballfighters.game.players.Player;
+import com.ballfighters.screens.GameScreen;
 
 import java.util.ArrayList;
 
@@ -20,7 +22,7 @@ import java.util.ArrayList;
  */
 public final class GameData {
     public static Music music;
-    public static float VOLUME = 0.05f;
+    public static float VOLUME = 0.15f;
     public static Sprite BLACKSCREEN =new Sprite(new Texture(Gdx.files.internal("Backgrounds/blackScreen.png")));
     public static World WORLD;
     public static SpriteBatch batch;
@@ -28,6 +30,7 @@ public final class GameData {
     public static Camera camera;
     public static Player PLAYER;
     public static Animator ANIMATEDBG;
+    public static TweenManager tweenManager;
     public static int PLAYER_CHOICE;
 
     public static final int LITTLE_BOO=0;

@@ -11,7 +11,7 @@ import com.ballfighters.math.MyMathStuff;
 /**
  * Created by Dell_Owner on 7/19/2014.
  */
-public class AIHandlerSwordGuy {
+public class AIHandlerLaserGuy {
     public Vector2 inputDirection;
     public Vector2 targetDirection;
     public Vector3 mousePosition;
@@ -19,16 +19,15 @@ public class AIHandlerSwordGuy {
     public int state;
     public int stateDuration;
 
-    public static final int CHARGING1 = 0;
-    public static final int SIDESTEPPING_RIGHT = 1;
-    public static final int SIDESTEPPING_LEFT = 2;
-    public static final int TRACKING = 3;
+    public static final int CHARGING = 0;
+    public static final int RETREATING = 1;
+    public static final int SIDESTEPPING_RIGHT = 2;
+    public static final int SIDESTEPPING_LEFT = 3;
     public static final int HESITATING = 4;
-    public static final int CHARGING2 = 5;
-    public static final int CHARGING3 = 6;
+    public static final int TRACKING = 5;
 
 
-    public AIHandlerSwordGuy(Player aiPlayer) {
+    public AIHandlerLaserGuy(Player aiPlayer) {
         this.aiPlayer = aiPlayer;
         inputDirection = new Vector2(0, 0);
         targetDirection = new Vector2(0, 0);
@@ -39,14 +38,14 @@ public class AIHandlerSwordGuy {
 
     protected void changeState(){
         if (aiPlayer.body.isActive()) {
-            state = MathUtils.random(0, 4);
+            state = MathUtils.random(0, 5);
             System.out.println("STATE: "+state);
             //change state after 5 SECONDS!
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
                     changeState();
-                    if (state == TRACKING || state == HESITATING) aiPlayer.shield();
+                    if (state == RETREATING || state == HESITATING) aiPlayer.shield();
                 }
             }, stateDuration / 4);
         }
@@ -55,11 +54,15 @@ public class AIHandlerSwordGuy {
 
     public void updateDirections() {
         switch (state) {
-            case CHARGING1:
-            case CHARGING2:
-            case CHARGING3:
+            case CHARGING:
                 inputDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x);
                 inputDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y);
+                targetDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
+                targetDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
+                break;
+            case RETREATING:
+                inputDirection.x = -1 * (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x);
+                inputDirection.y = -1 * (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y);
                 targetDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
                 targetDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
                 break;

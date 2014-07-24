@@ -50,6 +50,7 @@ public class SwordGuyShield extends GameBody {
     public void update(){
         dataBundle.sprite = sprite;
         body.setTransform(parent.body.getPosition().x+displacement.x,parent.body.getPosition().y+displacement.y,angle);
+//        body.setLinearVelocity(0,0);
         body.setLinearVelocity(parent.body.getLinearVelocity());
         body.setUserData(dataBundle);
     }
@@ -57,7 +58,7 @@ public class SwordGuyShield extends GameBody {
     public Body initializeBody(){
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         PolygonShape shape = new PolygonShape();
         Vector2 vertices[] = {
                 new Vector2(0,-4),
@@ -73,7 +74,7 @@ public class SwordGuyShield extends GameBody {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 2.5f;
+        fixtureDef.density = 5.0f;
         fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.5f;
 

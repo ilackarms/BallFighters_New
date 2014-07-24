@@ -84,7 +84,7 @@ public class GameOverScreen implements Screen {
     }
 
     public void dispose(){
-        batch.dispose();
+//        batch.dispose();
         stage.dispose();
 
     }

@@ -51,7 +51,7 @@ public class BallWorld3 {
                 break;
         }
 
-        player2 = new SwordGuyAI(new Vector2(40,-40));
+        player2 = new LaserGuyAI(new Vector2(40,-40));
         camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         GameData.camera = camera;
         GameData.PLAYER = player1;

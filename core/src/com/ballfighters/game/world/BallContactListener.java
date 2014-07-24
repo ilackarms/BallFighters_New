@@ -64,7 +64,7 @@ public class BallContactListener implements ContactListener {
                     UserDataBundle bundleB = (UserDataBundle) contact.getFixtureB().getBody().getUserData();
                     Player swordGuy = (Player) bundleB.baseObject;
                     //if player is parent of sword, no contact
-                    if(swordParent.equals(swordGuy)){
+                    if(swordParent.equals(swordGuy) || bundleB.ghostMode){
                         contact.setEnabled(false);
                     }
                 }
@@ -77,9 +77,80 @@ public class BallContactListener implements ContactListener {
                     UserDataBundle bundleA = (UserDataBundle) contact.getFixtureA().getBody().getUserData();
                     Player swordGuy = (Player) bundleA.baseObject;
                     //if player is parent of sword, no contact
-                    if(swordParent.equals(swordGuy)) {
+                    if(swordParent.equals(swordGuy) || bundleA.ghostMode) {
                         contact.setEnabled(false);
                     }
+                }
+            }
+        }
+
+
+
+        //laser guy shield contact with parent
+        for(int j = 0; j < currentManifold.getNumberOfContactPoints(); j++){
+            if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof LaserGuyShield){
+                UserDataBundle bundleA = (UserDataBundle) contact.getFixtureA().getBody().getUserData();
+                LaserGuyShield laserShield = (LaserGuyShield) bundleA.baseObject;
+                Player laserParent = (Player) laserShield.parent;
+                if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof Player){
+                    UserDataBundle bundleB = (UserDataBundle) contact.getFixtureB().getBody().getUserData();
+                    Player swordGuy = (Player) bundleB.baseObject;
+                    //if player is parent of sword, no contact
+                    if(laserParent.equals(swordGuy) || bundleB.ghostMode){
+                        contact.setEnabled(false);
+                    }
+                }
+            }
+            if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof LaserGuyShield){
+                UserDataBundle bundleB = (UserDataBundle) contact.getFixtureB().getBody().getUserData();
+                LaserGuyShield laserProjectile = (LaserGuyShield) bundleB.baseObject;
+                Player laserParent = (Player) laserProjectile.parent;
+                if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof Player){
+                    UserDataBundle bundleA = (UserDataBundle) contact.getFixtureA().getBody().getUserData();
+                    Player swordGuy = (Player) bundleA.baseObject;
+                    //if player is parent of sword, no contact
+                    if(laserParent.equals(swordGuy) || bundleA.ghostMode) {
+                        contact.setEnabled(false);
+                    }
+                }
+            }
+        }
+
+        //laser projectile doesnt contact ghostmode or parent
+        for(int j = 0; j < currentManifold.getNumberOfContactPoints(); j++){
+            if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof LaserGuyProjectile){
+                UserDataBundle bundleA = (UserDataBundle) contact.getFixtureA().getBody().getUserData();
+                LaserGuyProjectile laserGuyProjectile = (LaserGuyProjectile) bundleA.baseObject;
+                Player laserParent = (Player) laserGuyProjectile.parent;
+                //if contacts with a player
+                if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof Player){
+                    UserDataBundle bundleB = (UserDataBundle) contact.getFixtureB().getBody().getUserData();
+                    Player laserGuy = (Player) bundleB.baseObject;
+                    //if player is parent of laser, no contact
+                    if(laserParent.equals(laserGuy) || bundleB.ghostMode){
+                        contact.setEnabled(false);
+                    }
+                }
+                //if contacts with a shield
+                if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof SwordGuyShield){
+                    ((LaserGuyProjectile) bundleA.baseObject).killChain();
+                }
+            }
+            if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof LaserGuyProjectile){
+                UserDataBundle bundleB = (UserDataBundle) contact.getFixtureB().getBody().getUserData();
+                LaserGuyProjectile laserGuyProjectile = (LaserGuyProjectile) bundleB.baseObject;
+                Player laserParent = (Player) laserGuyProjectile.parent;
+                if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof Player){
+                    UserDataBundle bundleA = (UserDataBundle) contact.getFixtureA().getBody().getUserData();
+                    Player laserGuy = (Player) bundleA.baseObject;
+                    //if player is parent of laser, no contact
+                    if(laserParent.equals(laserGuy) || bundleB.ghostMode){
+                        contact.setEnabled(false);
+                    }
+                }
+                //if contacts with a shield
+                if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof SwordGuyShield){
+                    ((LaserGuyProjectile) bundleB.baseObject).killChain();
                 }
             }
         }
@@ -151,7 +222,7 @@ public class BallContactListener implements ContactListener {
 
                     bundleB.baseObject.body.setLinearVelocity(bundleB.baseObject.body.getLinearVelocity().x*-1,bundleB.baseObject.body.getLinearVelocity().y*-1);
                     if(bundleB.baseObject instanceof SwordProjectile){
-                        ((LaserGuyProjectile) bundleB.baseObject).killChain();
+                        (bundleB.baseObject).kill();
                     }
                 }
                 if((bundleB.baseObject instanceof SwordProjectile) && !((SwordGuyShield) bundleA.baseObject).parent.equals(((SwordProjectile) bundleB.baseObject).parent)){
@@ -168,7 +239,7 @@ public class BallContactListener implements ContactListener {
 
                     bundleA.baseObject.body.setLinearVelocity(bundleA.baseObject.body.getLinearVelocity().x*-1,bundleA.baseObject.body.getLinearVelocity().y*-1);
                     if(bundleA.baseObject instanceof SwordProjectile){
-                        ((LaserGuyProjectile) bundleA.baseObject).killChain();
+                        (bundleA.baseObject).kill();
                     }
                 }
                 if((bundleA.baseObject instanceof SwordProjectile) && !((SwordGuyShield) bundleB.baseObject).parent.equals(((SwordProjectile) bundleA.baseObject).parent)){

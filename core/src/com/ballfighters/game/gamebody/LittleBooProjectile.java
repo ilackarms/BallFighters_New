@@ -21,7 +21,7 @@ public class LittleBooProjectile extends Bullet {
         this.parent = parent;
         spriteWidth=5f;
         spriteHeight=5f;
-        duration = 2f;
+        duration = 1.5f;
         damage = 2;
         float SPEED = 50000f;
 
@@ -54,7 +54,7 @@ public class LittleBooProjectile extends Bullet {
         spriteWidth=10f;
         spriteHeight=10f;
         duration = 2f;
-        damage = 6;
+        damage = 5;
         float SPEED = 50000f;
 
         this.position = position;

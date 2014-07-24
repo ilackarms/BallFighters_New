@@ -13,14 +13,14 @@ import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
 
 /**
- * Created by Dell_Owner on 6/28/2014.
+ * Created by Dell_Owner on 7/22/2014.
  */
-public class TestBattleScreen extends GameScreen {
+public class GameScreen implements Screen {
+    public TweenManager tweenManager;
 
     private BallWorld ballWorld;
     private Sprite background;
     private SpriteBatch batch, bgBatch, fadeOut;
-    public TweenManager tweenManager;
 
 
     private int track;
@@ -28,9 +28,8 @@ public class TestBattleScreen extends GameScreen {
     public void render(float delta){
 
 
-
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //animate background
         GameData.ANIMATEDBG.update();
@@ -60,9 +59,9 @@ public class TestBattleScreen extends GameScreen {
         loopMusic();
     }
     public void show(){
-    	GameData.screen = this;
+        GameData.screen = this;
         GameData.initializeHealthBars();
-        track= MathUtils.random(0,5);
+        track= MathUtils.random(0, 5);
         batch = new SpriteBatch();
         GameData.batch = batch;
         bgBatch = new SpriteBatch();
@@ -71,7 +70,6 @@ public class TestBattleScreen extends GameScreen {
         ballWorld = new BallWorld(batch);
 
         tweenManager = new TweenManager();
-        GameData.tweenManager = tweenManager;
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
 
         Tween.set(GameData.BLACKSCREEN,SpriteAccessor.ALPHA).target(0).start(tweenManager);

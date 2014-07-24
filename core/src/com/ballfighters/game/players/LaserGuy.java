@@ -6,6 +6,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
@@ -21,6 +22,7 @@ import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.screens.GameOverScreen;
+import com.ballfighters.screens.GameScreen;
 import com.ballfighters.screens.TestBattleScreen;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
@@ -42,7 +44,6 @@ public class LaserGuy extends Player {
     protected BallTween tween;
 
     public LaserGuy(Vector2 position) {
-
 
         this.position = position;
         animator = new Animator("Sprites/LaserGuy.png", 4, 4);
@@ -125,11 +126,10 @@ public class LaserGuy extends Player {
     Boolean fireShotOnCoolDown = false;
     @Override
     public void fireShots(){
-        if(!fireShotOnCoolDown) {
+        if(!fireShotOnCoolDown && health>0) {
             Gdx.input.vibrate(15);
 
-            int rand = MathUtils.random(1,3);
-            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/SwordProjectile" + rand + ".wav"));
+            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LaserGuySounds/LaserCharge.wav"));
             long soundID = fireSound.play();
             fireSound.setVolume(soundID, GameData.VOLUME);
             fireSound.dispose();
@@ -153,14 +153,10 @@ public class LaserGuy extends Player {
 
     @Override
     public void shield(){
-        Vector2 shieldDisplacement = MyMathStuff.toUnit(new Vector2(clickPosition.x,clickPosition.y));
-        shieldDisplacement.x*=10;
-        shieldDisplacement.y*=10;
-        float angle = ((float) Math.atan2(shieldDisplacement.y,shieldDisplacement.x));
-        new SwordGuyShield(this, shieldDisplacement, angle);
+        new LaserGuyShield(this);
 
         Gdx.input.vibrate(50);
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/Shield.wav"));
+        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LaserGuySounds/LaserGuyShield.wav"));
         long soundID = fireSound.play();
         fireSound.setVolume(soundID, GameData.VOLUME);
         fireSound.dispose();
@@ -208,17 +204,16 @@ public class LaserGuy extends Player {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                final TestBattleScreen battleScreen = (TestBattleScreen) GameData.screen;
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
-                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(GameData.tweenManager);
                         GameData.screen.dispose();
                         GameData.screen.hide();
                         GameData.staticAnimations.remove(staticGameOverAnimation);
                         ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
                     }
-                }).start(battleScreen.tweenManager);
+                }).start(GameData.tweenManager);
             }
         }, 8);
 

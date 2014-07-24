@@ -2,6 +2,7 @@ package com.ballfighters.game.gamebody;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -59,13 +60,15 @@ public class LaserGuyProjectile extends Bullet{
     public LaserGuyProjectile(GameBody parent, Vector2 position, Vector2 direction, final int blasts) {
         this.parent = parent;
         this.position = new Vector2(position).add(MyMathStuff.toUnit(direction).scl(WIDTH));
-        this.angle = direction.angle();
+        this.angle = MathUtils.degreesToRadians*direction.angle();
+        System.out.println("ANGLE!!!: "+angle);
+//        this.angle = 0;
         this.direction = direction;
 
         spriteWidth=HEIGHT*2;
         spriteHeight=WIDTH*2;
         float duration = 0.2f;
-        damage = 4;
+        damage = 1;
 
         body =  initializeBody();
         body.setTransform(position, 0);
@@ -98,20 +101,21 @@ public class LaserGuyProjectile extends Bullet{
         }, duration);
 
         //make sure that dead lasers dont make new ones
-        if((((UserDataBundle) parent.body.getUserData()).flaggedForDeletion)){
+        if(( parent.body.getUserData()!=null && ((UserDataBundle) parent.body.getUserData()).flaggedForDeletion)){
             killChain();
         }
     }
 
     @Override
     public void update(){
-        body.setTransform(position,direction.angle());
+        body.setTransform(position,angle);
 
         dataBundle.sprite = sprite;
         body.setUserData(dataBundle);
     }
 
     public void killChain(){
+        System.out.println("Killing "+this);
         kill();
         if(parent instanceof LaserGuyProjectile){
             ((LaserGuyProjectile) parent).killChain();

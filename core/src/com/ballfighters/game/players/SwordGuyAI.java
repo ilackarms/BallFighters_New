@@ -20,8 +20,7 @@ import com.ballfighters.game.gamebody.*;
 import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
-import com.ballfighters.screens.GameOverScreen;
-import com.ballfighters.screens.TestBattleScreen;
+import com.ballfighters.screens.*;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -37,7 +36,7 @@ public class SwordGuyAI  extends Player {
     protected float radius = 5.5f;
     protected float density = 5f;
     protected float restitution = 0.5f;
-    public static final int MAX_HEALTH = 150;
+    public static final int MAX_HEALTH = 200;
 
     protected AIHandlerSwordGuy aiInputHandler;
 
@@ -138,7 +137,8 @@ public class SwordGuyAI  extends Player {
             }
             swordDisplacement.rotate(60 * direction);
             float angle = ((float) Math.atan2(-1 * swordDisplacement.x, swordDisplacement.y));
-            new SwordProjectile(this, swordDisplacement, angle);
+            SwordProjectile swordProjectile = new SwordProjectile(this, swordDisplacement, angle);
+            swordProjectile.damage = 4;
 
             tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
 
@@ -190,38 +190,79 @@ public class SwordGuyAI  extends Player {
     @Override
     public void kill(){
         super.kill();
-        GameData.playMusic("Music/GameOver.mp3");
-        Gdx.input.vibrate(1000);
+        GameData.playMusic("Music/Victory.mp3");
         Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));
         long soundID = deathSound.play();
         deathSound .setVolume(soundID, GameData.VOLUME);
         deathSound.dispose();
-        lastPosition.x = MyMathStuff.convertTo3D(body.getPosition()).x;
-        lastPosition.y = MyMathStuff.convertTo3D(body.getPosition()).y;
+        lastPosition = body.getPosition();
 
-        Animator gameOverAnimation = new Animator("Sprites/GameOverAnimation.png",2,5);
-        final AnimationPackage staticGameOverAnimation = new AnimationPackage(gameOverAnimation,64*2,32*2);
-        staticGameOverAnimation.play();
-        staticGameOverAnimation.position=new Vector2(lastPosition);
-        GameData.staticAnimations.add(staticGameOverAnimation);
 
-        //NEW GAME ON DEATH!
-        Timer.schedule(new Timer.Task() {
+        Animator player1DeathAnimation = new Animator("Sprites/ClickToContinue.png",1,5);
+        final AnimationPackage staticDeathAnimation = new AnimationPackage(player1DeathAnimation,spriteWidth*10,spriteHeight*10);
+        staticDeathAnimation.play();
+        staticDeathAnimation.position=new Vector2(position);
+        GameData.staticAnimations.add(staticDeathAnimation);
+
+
+
+        /*
+        LISTEN FOR LONG PRESS
+         */
+        Gdx.input.setInputProcessor(new GestureDetector(new GestureDetector.GestureListener() {
             @Override
-            public void run() {
-                final TestBattleScreen battleScreen = (TestBattleScreen) GameData.screen;
+            public boolean touchDown(float v, float v2, int i, int i2) {
+                return false;
+            }
+
+            @Override
+            public boolean tap(float v, float v2, int i, int i2) {
+                return false;
+            }
+
+            @Override
+            public boolean longPress(float v, float v2) {
+                final TestBattleScreen2 battleScreen = (TestBattleScreen2) GameData.screen;
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
                         Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
                         GameData.screen.dispose();
                         GameData.screen.hide();
-                        GameData.staticAnimations.remove(staticGameOverAnimation);
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
+                        GameData.staticAnimations.remove(staticDeathAnimation);
+                        Gdx.input.vibrate(100);
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen3());
                     }
                 }).start(battleScreen.tweenManager);
+                return false;
             }
-        }, 8);
+
+            @Override
+            public boolean fling(float v, float v2, int i) {
+                return false;
+            }
+
+            @Override
+            public boolean pan(float v, float v2, float v3, float v4) {
+                return false;
+            }
+
+            @Override
+            public boolean panStop(float v, float v2, int i, int i2) {
+                return false;
+            }
+
+            @Override
+            public boolean zoom(float v, float v2) {
+                return false;
+            }
+
+            @Override
+            public boolean pinch(Vector2 vector2, Vector2 vector22, Vector2 vector23, Vector2 vector24) {
+                return false;
+            }
+        }));
+
 
     }
 
