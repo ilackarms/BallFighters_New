@@ -7,7 +7,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -19,10 +18,8 @@ import com.ballfighters.game.gamebody.*;
 import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
-import com.ballfighters.screens.GameOverScreen;
-import com.ballfighters.screens.GameScreen;
-import com.ballfighters.screens.TestBattleScreen;
-import com.ballfighters.screens.TestBattleScreen2;
+import com.ballfighters.screens.TestBattleScreen3;
+import com.ballfighters.screens.TestBattleScreen4;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -210,19 +207,18 @@ public class LaserGuyAI extends Player {
 
             @Override
             public boolean longPress(float v, float v2) {
-                final GameScreen battleScreen = (GameScreen) GameData.screen;
-                Gdx.app.exit();//todo
-//                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
-//                    @Override
-//                    public void onEvent(int type, BaseTween<?> source) {
-//                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
-//                        GameData.screen.dispose();
-//                        GameData.screen.hide();
-//                        GameData.staticAnimations.remove(staticDeathAnimation);
-//                        Gdx.input.vibrate(100);
-//                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen2());
-//                    }
-//                }).start(battleScreen.tweenManager);
+                final TestBattleScreen3 battleScreen = (TestBattleScreen3) GameData.screen;
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int type, BaseTween<?> source) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
+                        GameData.screen.dispose();
+                        GameData.screen.hide();
+                        GameData.staticAnimations.remove(staticDeathAnimation);
+                        Gdx.input.vibrate(100);
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen4());
+                    }
+                }).start(battleScreen.tweenManager);
                 return false;
             }
 

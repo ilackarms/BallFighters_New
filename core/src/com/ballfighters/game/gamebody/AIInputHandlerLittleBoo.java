@@ -54,26 +54,26 @@ public class AIInputHandlerLittleBoo {
     public void updateDirections() {
         switch (state) {
             case CHARGING:
-                inputDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x);
-                inputDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y);
+                inputDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x);
+                inputDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y);
                 targetDirection.x = inputDirection.x * MathUtils.random(0.8f, 1.2f);
                 targetDirection.y = inputDirection.y * MathUtils.random(0.8f, 1.2f);
                 break;
             case RETREATING:
-                inputDirection.x = -1 * (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x);
-                inputDirection.y = -1 * (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y);
+                inputDirection.x = -1 * (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x);
+                inputDirection.y = -1 * (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y);
                 targetDirection.x = -1 * inputDirection.x * MathUtils.random(0.8f, 1.2f);
                 targetDirection.y = -1 * inputDirection.y * MathUtils.random(0.8f, 1.2f);
                 break;
             case SIDESTEPPING_RIGHT:
                 targetDirection.x = inputDirection.x * MathUtils.random(0.8f, 1.2f);
                 targetDirection.y = inputDirection.y * MathUtils.random(0.8f, 1.2f);
-                inputDirection = MyMathStuff.findPerpendicularVectorOne(GameData.PLAYER.inputDirection);
+                inputDirection = MyMathStuff.findPerpendicularVectorOne(GameData.PLAYER_1.inputDirection);
                 break;
             case SIDESTEPPING_LEFT:
                 targetDirection.x = inputDirection.x * MathUtils.random(0.8f, 1.2f);
                 targetDirection.y = inputDirection.y * MathUtils.random(0.8f, 1.2f);
-                inputDirection = MyMathStuff.findPerpendicularVectorTwo(GameData.PLAYER.inputDirection);
+                inputDirection = MyMathStuff.findPerpendicularVectorTwo(GameData.PLAYER_1.inputDirection);
                 break;
             case HESITATING:
                 inputDirection.x=0;
@@ -82,9 +82,9 @@ public class AIInputHandlerLittleBoo {
                 targetDirection.y = inputDirection.y * MathUtils.random(0.8f, 1.2f);
                 break;
             case TRACKING:
-                targetDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
-                targetDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
-                inputDirection = GameData.PLAYER.body.getLinearVelocity();
+                targetDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
+                targetDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
+                inputDirection = GameData.PLAYER_1.body.getLinearVelocity();
                 break;
         }
     }

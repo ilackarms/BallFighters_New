@@ -179,9 +179,74 @@ public class CharacterSelectScreen implements Screen {
 
 
 
+        TextureAtlas deathGuyTextureAtlas;
+        Skin deathGuySkin;
+        Button deathGuyButton;
+        Button.ButtonStyle deathGuyButtonStyle;
+
+
+
+        deathGuyTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/DeathGuyButton.pack"));
+        deathGuySkin = new Skin(deathGuyTextureAtlas );
+
+        deathGuyButtonStyle = new Button.ButtonStyle();
+        deathGuyButtonStyle.up = deathGuySkin.getDrawable("DeathGuyUp");
+        deathGuyButtonStyle.down = deathGuySkin.getDrawable("DeathGuyDown");
+
+        deathGuyButton = new Button(deathGuyButtonStyle);
+        deathGuyButton.pad(Gdx.graphics.getWidth()/25);
+        deathGuyButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        GameData.PLAYER_CHOICE = GameData.DEATH_GUY;
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
+                    }
+                }).start(tweenManager);
+            }
+        });
+
+
+
+        TextureAtlas bombGuyTextureAtlas;
+        Skin bombGuySkin;
+        Button bombGuyButton;
+        Button.ButtonStyle bombGuyButtonStyle;
+
+
+
+        bombGuyTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/BombGuyButton.pack"));
+        bombGuySkin = new Skin(bombGuyTextureAtlas );
+
+        bombGuyButtonStyle = new Button.ButtonStyle();
+        bombGuyButtonStyle.up = bombGuySkin.getDrawable("BombGuyUp");
+        bombGuyButtonStyle.down = bombGuySkin.getDrawable("BombGuyDown");
+
+        bombGuyButton = new Button(bombGuyButtonStyle);
+        bombGuyButton.pad(Gdx.graphics.getWidth()/25);
+        bombGuyButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        GameData.PLAYER_CHOICE = GameData.BOMB_GUY;
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
+                    }
+                }).start(tweenManager);
+            }
+        });
+
+
+
+
         table.add(booButton).spaceRight(Gdx.graphics.getWidth()/25);
         table.add(swordGuyButton);
         table.add(laserGuyButton);
+        table.add(bombGuyButton);
+        table.add(deathGuyButton);
         //TODO: save characters unlocked, add them in as needed!
         stage.addActor(table);
     }

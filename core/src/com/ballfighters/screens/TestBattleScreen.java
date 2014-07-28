@@ -3,7 +3,6 @@ package com.ballfighters.screens;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -57,7 +56,7 @@ public class TestBattleScreen extends GameScreen {
         tweenManager.update(delta);
 
         //should be called in update method:
-        loopMusic();
+//        loopMusic();
     }
     public void show(){
     	GameData.screen = this;
@@ -95,38 +94,14 @@ public class TestBattleScreen extends GameScreen {
     }
 
     public void startMusic() {
-        track = MathUtils.random(0, 5);
-        switch (track % 5) {
-            case 5:
-                GameData.playMusic("Music/ff3boss.ogg");
-            case 1:
-                GameData.playMusic("Music/dkc3tree[1].ogg");
-            case 2:
-                GameData.playMusic("Music/Dosk.ogg");
-            case 3:
-                GameData.playMusic("Music/grnhill[1].ogg");
-            case 4:
-                GameData.playMusic("Music/dkc3purs[1].ogg");
-            case 0:
-                GameData.playMusic("Music/Techrap.ogg");
-        }
+//        GameData.playMusic("Music/dkc3purs[1].ogg");
+//        if(!GameData.music.isPlaying()){
+//            GameData.playMusic("Music/dkc3purs[1].ogg");
+//        }
+//            GameData.music.setLooping(true);
     }
 
     public void loopMusic() {
-        track = MathUtils.random(0, 5);
-        if(!GameData.music.isPlaying()) {
-            switch (track % 5) {
-                case 0:
-                    GameData.playMusic("Music/ff3boss.ogg");
-                case 1:
-                    GameData.playMusic("Music/dkc3tree[1].ogg");
-                case 2:
-                    GameData.playMusic("Music/MortalKombat.ogg");
-                case 3:
-                    GameData.playMusic("Music/grnhill[1].ogg");
-                case 4:
-                    GameData.playMusic("Music/dkc3purs[1].ogg");
-            }
-        }
+
     }
 }

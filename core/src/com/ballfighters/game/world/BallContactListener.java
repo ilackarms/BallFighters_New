@@ -1,13 +1,9 @@
 package com.ballfighters.game.world;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.ballfighters.game.gamebody.*;
-import com.ballfighters.game.players.LittleBooAI;
 import com.ballfighters.game.players.Player;
-import com.ballfighters.global.GameData;
 
 /**
  * Created by Dell_Owner on 7/9/2014.
@@ -41,6 +37,34 @@ public class BallContactListener implements ContactListener {
             if (contact.getFixtureB().getBody().getUserData() != null &&
                     ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof LaserGuyProjectileCharge) {
                 contact.setEnabled(false);
+            }
+        }
+
+        //explosion thing doesnt contact except to opposing player
+        for(int j = 0; j < manifold.getPoints().length; j++) {
+            if (contact.getFixtureA().getBody().getUserData() != null &&
+                    ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof BombGuyExplosion) {
+                contact.setEnabled(false);
+               if(contact.getFixtureB().getBody().getUserData() != null &&
+                       ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof Player){
+                   BombGuyExplosion bombGuyExplosion =  (BombGuyExplosion) ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject;
+                   Player player =  (Player) ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject;
+                   if(!bombGuyExplosion.parent.equals(player)){
+                       contact.setEnabled(true);
+                   }
+               }
+            }
+            if (contact.getFixtureB().getBody().getUserData() != null &&
+                    ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof BombGuyExplosion) {
+                contact.setEnabled(false);
+                if(contact.getFixtureA().getBody().getUserData() != null &&
+                        ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof Player){
+                    BombGuyExplosion bombGuyExplosion =  (BombGuyExplosion) ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject;
+                    Player player =  (Player) ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject;
+                    if(!bombGuyExplosion.parent.equals(player)){
+                        contact.setEnabled(true);
+                    }
+                }
             }
         }
 
@@ -215,11 +239,6 @@ public class BallContactListener implements ContactListener {
             //SHIELD COLLISION
             if ((bundleA.baseObject instanceof SwordGuyShield)){
                 if((bundleB.baseObject instanceof Bullet) && !((SwordGuyShield) bundleA.baseObject).parent.equals(((Bullet) bundleB.baseObject).parent)){
-                    Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/Shield.wav"));
-                    long soundID = fireSound.play();
-                    fireSound.setVolume(soundID, GameData.VOLUME);
-                    fireSound.dispose();
-
                     bundleB.baseObject.body.setLinearVelocity(bundleB.baseObject.body.getLinearVelocity().x*-1,bundleB.baseObject.body.getLinearVelocity().y*-1);
                     if(bundleB.baseObject instanceof SwordProjectile){
                         (bundleB.baseObject).kill();
@@ -232,10 +251,6 @@ public class BallContactListener implements ContactListener {
             //SHIELD COLLISION
             if ((bundleB.baseObject instanceof SwordGuyShield)){
                 if((bundleA.baseObject instanceof Bullet) && !((SwordGuyShield) bundleB.baseObject).parent.equals(((Bullet) bundleA.baseObject).parent)){
-                    Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/Shield.wav"));
-                    long soundID = fireSound.play();
-                    fireSound.setVolume(soundID, GameData.VOLUME);
-                    fireSound.dispose();
 
                     bundleA.baseObject.body.setLinearVelocity(bundleA.baseObject.body.getLinearVelocity().x*-1,bundleA.baseObject.body.getLinearVelocity().y*-1);
                     if(bundleA.baseObject instanceof SwordProjectile){

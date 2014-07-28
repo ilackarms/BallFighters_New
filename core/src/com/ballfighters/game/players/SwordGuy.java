@@ -21,8 +21,6 @@ import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.screens.GameOverScreen;
-import com.ballfighters.screens.GameScreen;
-import com.ballfighters.screens.TestBattleScreen;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -39,8 +37,6 @@ public class SwordGuy extends Player {
     protected float density = 5f;
     protected float restitution = 0.5f;
     public static final int MAX_HEALTH = 150;
-
-    protected BallTween tween;
 
     public SwordGuy(Vector2 position) {
 

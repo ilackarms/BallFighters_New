@@ -49,13 +49,21 @@ public class BallWorld3 {
             case GameData.LASER_GUY:
                 player1 = new LaserGuy(new Vector2(-40,40));
                 break;
+            case GameData.DEATH_GUY:
+                player1 = new DeathGuy(new Vector2(-40,40));
+                break;
+            case GameData.BOMB_GUY:
+                player1 = new BombGuy(new Vector2(-40,40));
+                break;
         }
 
         player2 = new LaserGuyAI(new Vector2(40,-40));
+        GameData.PLAYER_2 = player2;
+
         camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         GameData.camera = camera;
-        GameData.PLAYER = player1;
-        GameData.ANIMATEDBG =new Animator("Backgrounds/LaserBattleScreen.png",1,4,.125f);
+        GameData.PLAYER_1 = player1;
+        GameData.ANIMATEDBG =new Animator("Backgrounds/8bitplanet.png",4,2,.125f);
         debugRenderer = new Box2DDebugRenderer();
         worldBodies = new Array<Body>();
         worldJoints = new Array<Joint>();
@@ -153,7 +161,7 @@ public class BallWorld3 {
         batch.end();
 
         //debug
-        debugRenderer.render(world, camera.combined);
+//        debugRenderer.render(world, camera.combined);
     }
 
     public void dispose(){

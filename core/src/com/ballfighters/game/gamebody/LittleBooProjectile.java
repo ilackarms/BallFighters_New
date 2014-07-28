@@ -119,7 +119,6 @@ public class LittleBooProjectile extends Bullet {
     @Override
     public void update(){
         dataBundle.sprite = sprite;
-        body.applyForceToCenter(body.getLinearVelocity(),true);
         body.setUserData(dataBundle);
     }
 

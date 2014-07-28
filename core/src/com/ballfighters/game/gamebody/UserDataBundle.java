@@ -18,6 +18,7 @@ public class UserDataBundle {
     public int damage;
     public Boolean ghostMode;
     public Boolean draw;
+    public Boolean isSlowed;
 
     public UserDataBundle(){
         this.sprite = new Sprite();
@@ -30,5 +31,6 @@ public class UserDataBundle {
         followsPlayer = false;
         ghostMode = false;
         draw = true;
+        isSlowed = false;
     }
 }

@@ -5,12 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.ballfighters.global.GameData;
 import com.ballfighters.screens.SplashScreen;
-import com.ballfighters.screens.TestBattleScreen;
 
 public class BallFighters extends Game {
 	SpriteBatch batch;

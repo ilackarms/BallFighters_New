@@ -21,11 +21,8 @@ import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.screens.GameOverScreen;
-import com.ballfighters.screens.GameScreen;
-import com.ballfighters.screens.TestBattleScreen;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
-import javafx.stage.Screen;
 
 import java.util.ArrayList;
 
@@ -132,12 +129,10 @@ public class LittleBoo extends Player {
         long soundID = fireSound.play();
         fireSound.setVolume(soundID, GameData.VOLUME);
         fireSound.dispose();
-        Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
-                this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
+        Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*1*MyMathStuff.toUnit(clickPosition).x,
+                this.body.getPosition().y+radius*1*MyMathStuff.toUnit(clickPosition).y);
         Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
         new LittleBooProjectile(this, shot1Position,shot1Velocity);
-        new LittleBooProjectile(this, shot1Position.rotate(-20),shot1Velocity.rotate(-20));
-        new LittleBooProjectile(this, shot1Position.rotate(20),shot1Velocity.rotate(20));
 
         tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.YELLOW,1.2f).yoyo(1);
     }

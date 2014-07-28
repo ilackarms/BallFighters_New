@@ -57,6 +57,7 @@ public class SplashScreen implements Screen {
         GameData.music = Gdx.audio.newMusic(Gdx.files.internal("Music/GetLucky.mp3"));
         GameData.music.setVolume(GameData.VOLUME);
         GameData.music.play();
+        GameData.music.setLooping(true);
 
         GameData.BLACKSCREEN.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Tween.set(GameData.BLACKSCREEN, SpriteAccessor.ALPHA).target(1).start(tweenManager);

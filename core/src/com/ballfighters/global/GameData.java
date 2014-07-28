@@ -1,7 +1,6 @@
 package com.ballfighters.global;
 
 import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ballfighters.game.gamebody.Animator;
 import com.ballfighters.game.players.Player;
-import com.ballfighters.screens.GameScreen;
 
 import java.util.ArrayList;
 
@@ -28,7 +26,7 @@ public final class GameData {
     public static SpriteBatch batch;
     public static Screen screen;
     public static Camera camera;
-    public static Player PLAYER;
+    public static Player PLAYER_1, PLAYER_2;
     public static Animator ANIMATEDBG;
     public static TweenManager tweenManager;
     public static int PLAYER_CHOICE;
@@ -36,6 +34,8 @@ public final class GameData {
     public static final int LITTLE_BOO=0;
     public static final int SWORD_GUY=1;
     public static final int LASER_GUY=2;
+    public static final int DEATH_GUY=3;
+    public static final int BOMB_GUY=4;
 
 
     public static final Vector2 PLAYER_1_HEALTH_BAR_LOCATION = new Vector2(5,Gdx.graphics.getHeight()-25);
@@ -56,6 +56,7 @@ public final class GameData {
         GameData.music = Gdx.audio.newMusic(Gdx.files.internal(filename));
         GameData.music.setVolume(GameData.VOLUME);
         GameData.music.play();
+        GameData.music.setLooping(true);
         return GameData.music;
     }
 

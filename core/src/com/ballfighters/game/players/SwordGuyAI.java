@@ -3,7 +3,6 @@ package com.ballfighters.game.players;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -20,7 +19,8 @@ import com.ballfighters.game.gamebody.*;
 import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
-import com.ballfighters.screens.*;
+import com.ballfighters.screens.TestBattleScreen2;
+import com.ballfighters.screens.TestBattleScreen3;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -161,7 +161,7 @@ public class SwordGuyAI  extends Player {
         new SwordGuyShield(this, shieldDisplacement, angle);
 
         Gdx.input.vibrate(50);
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
+        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/Shield.wav"));
         long soundID = fireSound.play();
         fireSound.setVolume(soundID, GameData.VOLUME);
         fireSound.dispose();

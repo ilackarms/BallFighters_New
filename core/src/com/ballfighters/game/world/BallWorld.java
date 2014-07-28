@@ -1,7 +1,6 @@
 package com.ballfighters.game.world;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -42,21 +41,29 @@ public class BallWorld {
 
         switch (GameData.PLAYER_CHOICE){
             case GameData.LITTLE_BOO:
-                GameData.PLAYER = new LittleBoo(new Vector2(-40,40));
+                GameData.PLAYER_1 = new LittleBoo(new Vector2(-40,40));
                 break;
             case GameData.SWORD_GUY:
-                GameData.PLAYER = new SwordGuy(new Vector2(-40,40));
+                GameData.PLAYER_1 = new SwordGuy(new Vector2(-40,40));
                 break;
             case GameData.LASER_GUY:
-                GameData.PLAYER = new LaserGuy(new Vector2(-40,40));
+                GameData.PLAYER_1 = new LaserGuy(new Vector2(-40,40));
+                break;
+            case GameData.DEATH_GUY:
+                GameData.PLAYER_1 = new DeathGuy(new Vector2(-40,40));
+                break;
+            case GameData.BOMB_GUY:
+                GameData.PLAYER_1 = new BombGuy(new Vector2(-40,40));
                 break;
         }
 
-        player1 = GameData.PLAYER;
+        player1 = GameData.PLAYER_1;
         player2 = new LittleBooAI(new Vector2(40,-40));
+        GameData.PLAYER_2 = player2;
+
         camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
         GameData.camera = camera;
-        GameData.ANIMATEDBG =new Animator("Backgrounds/testBattleBGSheet.png",4,4,.25f);
+        GameData.ANIMATEDBG =new Animator("Backgrounds/8bittemple.png",2,4,.04f);
         debugRenderer = new Box2DDebugRenderer();
         worldBodies = new Array<Body>();
         worldJoints = new Array<Joint>();

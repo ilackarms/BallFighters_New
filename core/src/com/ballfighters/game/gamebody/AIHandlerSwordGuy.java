@@ -58,31 +58,31 @@ public class AIHandlerSwordGuy {
             case CHARGING1:
             case CHARGING2:
             case CHARGING3:
-                inputDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x);
-                inputDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y);
-                targetDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
-                targetDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
+                inputDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x);
+                inputDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y);
+                targetDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
+                targetDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
                 break;
             case SIDESTEPPING_RIGHT:
-                targetDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
-                targetDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
-                inputDirection = MyMathStuff.findPerpendicularVectorOne(GameData.PLAYER.inputDirection);
+                targetDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
+                targetDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
+                inputDirection = MyMathStuff.findPerpendicularVectorOne(GameData.PLAYER_1.inputDirection);
                 break;
             case SIDESTEPPING_LEFT:
-                targetDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
-                targetDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
-                inputDirection = MyMathStuff.findPerpendicularVectorTwo(GameData.PLAYER.inputDirection);
+                targetDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
+                targetDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
+                inputDirection = MyMathStuff.findPerpendicularVectorTwo(GameData.PLAYER_1.inputDirection);
                 break;
             case HESITATING:
                 inputDirection.x=0;
                 inputDirection.y=0;
-                targetDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
-                targetDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
+                targetDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
+                targetDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
                 break;
             case TRACKING:
-                targetDirection.x = (GameData.PLAYER.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
-                targetDirection.y = (GameData.PLAYER.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
-                inputDirection = GameData.PLAYER.body.getLinearVelocity();
+                targetDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
+                targetDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
+                inputDirection = GameData.PLAYER_1.body.getLinearVelocity();
                 break;
         }
     }

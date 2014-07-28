@@ -1,0 +1,19 @@
+
+DeathGuyButton.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+DeathGuyDown
+  rotate: false
+  xy: 1, 1
+  size: 33, 34
+  orig: 33, 34
+  offset: 0, 0
+  index: -1
+DeathGuyUp
+  rotate: false
+  xy: 36, 1
+  size: 33, 34
+  orig: 33, 34
+  offset: 0, 0
+  index: -1
