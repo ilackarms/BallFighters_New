@@ -61,14 +61,13 @@ public class LaserGuyProjectile extends Bullet{
         this.parent = parent;
         this.position = new Vector2(position).add(MyMathStuff.toUnit(direction).scl(WIDTH));
         this.angle = MathUtils.degreesToRadians*direction.angle();
-        System.out.println("ANGLE!!!: "+angle);
 //        this.angle = 0;
         this.direction = direction;
 
         spriteWidth=HEIGHT*2;
         spriteHeight=WIDTH*2;
         float duration = 0.2f;
-        damage = 1;
+        damage = 2;
 
         body =  initializeBody();
         body.setTransform(position, 0);
@@ -115,7 +114,7 @@ public class LaserGuyProjectile extends Bullet{
     }
 
     public void killChain(){
-        System.out.println("Killing "+this);
+//        System.out.println("Killing "+this);
         kill();
         if(parent instanceof LaserGuyProjectile){
             ((LaserGuyProjectile) parent).killChain();

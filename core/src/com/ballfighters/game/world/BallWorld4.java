@@ -41,26 +41,32 @@ public class BallWorld4 {
 
         switch (GameData.PLAYER_CHOICE){
             case GameData.LITTLE_BOO:
-                player1 = new LittleBoo(new Vector2(-40,40));
+                player1 = new LittleBoo(new Vector2(-40,10));
                 break;
             case GameData.SWORD_GUY:
-                player1 = new SwordGuy(new Vector2(-40,40));
+                player1 = new SwordGuy(new Vector2(-40,10));
                 break;
             case GameData.LASER_GUY:
-                player1 = new LaserGuy(new Vector2(-40,40));
+                player1 = new LaserGuy(new Vector2(-40,10));
                 break;
             case GameData.DEATH_GUY:
-                player1 = new DeathGuy(new Vector2(-40,40));
+                player1 = new DeathGuy(new Vector2(-40,10));
                 break;
             case GameData.BOMB_GUY:
-                player1 = new BombGuy(new Vector2(-40,40));
+                player1 = new BombGuy(new Vector2(-40,10));
+                break;
+            case GameData.PLASMA_GUY:
+                player1 = new PlasmaGuy(new Vector2(-40,10));
+                break;
+            case GameData.LIGHTNING_GUY:
+                player1 = new LightningGuy(new Vector2(-40,10));
                 break;
         }
 
-        player2 = new DeathGuyAI(new Vector2(40,-40));
+        player2 = new DeathGuyAI(new Vector2(40,-10));
         GameData.PLAYER_2 = player2;
 
-        camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
+        camera = new OrthographicCamera(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/3);
         GameData.camera = camera;
         GameData.PLAYER_1 = player1;
         GameData.ANIMATEDBG =new Animator("Backgrounds/8bitgraveyard.png",1,4,.125f);

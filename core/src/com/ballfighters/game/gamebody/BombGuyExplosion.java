@@ -17,7 +17,7 @@ public class BombGuyExplosion extends Bullet {
         spriteWidth=15f;
         spriteHeight=15f;
         duration = 1.5f;
-        damage = 8;
+        damage = 5;
         float SPEED = 50000f;
 
         this.position = position;

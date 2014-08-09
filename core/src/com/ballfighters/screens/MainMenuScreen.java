@@ -8,16 +8,17 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.ballfighters.game.gamebody.Animator;
 import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
@@ -167,7 +168,43 @@ public class MainMenuScreen implements Screen {
         table.add(buttonPlay2);
         table.getCell(buttonPlay2).spaceRight(80f);
         table.add(exitButton);
-        table.debug();  //remove later
+
+        Skin sliderSkin = new Skin();
+        sliderSkin.add("knob", new Texture(Gdx.files.internal("Buttons/SliderButton.png")));
+        sliderSkin.add("bg",new Texture(Gdx.files.internal("Buttons/SliderBg.png")));
+        Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
+        sliderStyle.background = sliderSkin.getDrawable("bg");
+        sliderStyle.knob = sliderSkin.getDrawable("knob");
+        final Slider slider = new Slider(0,100,1,false,sliderStyle);
+        slider.setVisible(true);
+        slider.addListener(new DragListener(){
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer){
+                GameData.VOLUME = slider.getValue()/100;
+                GameData.music.setVolume(GameData.VOLUME);
+            }
+        });
+        slider.setSize(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/5);
+
+        Skin labelSkin = new Skin(Gdx.files.internal("Labels/Fonts/uiskin.json"));
+        labelSkin.getAtlas().getTextures().iterator().next().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        labelSkin.getFont("default-font").setMarkupEnabled(true);
+        labelSkin.getFont("default-font").setScale(2.5f);
+        Label volumeLabel = new Label("Volume",labelSkin);
+        volumeLabel.sizeBy(50f);
+        volumeLabel.setAlignment(Align.bottom | Align.left);
+
+        table.row();
+        table.add(volumeLabel).spaceTop(50f);
+        table.row();
+        table.add(slider).size(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/9);
+        table.getCell(slider);
+
+
+        slider.setPosition(Gdx.graphics.getWidth() / 2 - slider.getWidth() / 2, Gdx.graphics.getHeight() / 4);
+
+
+//        table.debug();  //remove later
         stage.addActor(table);
 
     }

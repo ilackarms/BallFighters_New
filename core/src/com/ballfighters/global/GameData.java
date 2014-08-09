@@ -36,16 +36,18 @@ public final class GameData {
     public static final int LASER_GUY=2;
     public static final int DEATH_GUY=3;
     public static final int BOMB_GUY=4;
+    public static final int PLASMA_GUY=5;
+    public static final int LIGHTNING_GUY=6;
 
 
     public static final Vector2 PLAYER_1_HEALTH_BAR_LOCATION = new Vector2(5,Gdx.graphics.getHeight()-25);
     public static final Vector2 HEALTH_BAR_SIZE = new Vector2(Gdx.graphics.getWidth()/6,Gdx.graphics.getHeight()/35);
-    public static Sprite PLAYER_1_HEALTH_BAR = new Sprite(new Texture(Gdx.files.internal("Sprites/HealthBar.png")));
-    public static Sprite PLAYER_1_HEALTH_BAR_BOX = new Sprite(new Texture(Gdx.files.internal("Sprites/HealthBarBox.png")));
+    public static Sprite PLAYER_1_HEALTH_BAR;
+    public static Sprite PLAYER_1_HEALTH_BAR_BOX;
 
     public static final Vector2 PLAYER_2_HEALTH_BAR_LOCATION = new Vector2(Gdx.graphics.getWidth()*5/6,Gdx.graphics.getHeight()-25);
-    public static Sprite PLAYER_2_HEALTH_BAR = new Sprite(new Texture(Gdx.files.internal("Sprites/HealthBar.png")));
-    public static Sprite PLAYER_2_HEALTH_BAR_BOX = new Sprite(new Texture(Gdx.files.internal("Sprites/HealthBarBox.png")));
+    public static Sprite PLAYER_2_HEALTH_BAR;
+    public static Sprite PLAYER_2_HEALTH_BAR_BOX;
 
 
     public static ArrayList<AnimationPackage> staticAnimations = new ArrayList<AnimationPackage>();
@@ -65,6 +67,11 @@ public final class GameData {
     }
 
     public static void initializeHealthBars(){
+        GameData.PLAYER_1_HEALTH_BAR = new Sprite(new Texture(Gdx.files.internal("Sprites/HealthBar.png")));
+        GameData.PLAYER_1_HEALTH_BAR_BOX = new Sprite(new Texture(Gdx.files.internal("Sprites/HealthBarBox.png")));
+        GameData.PLAYER_2_HEALTH_BAR = new Sprite(new Texture(Gdx.files.internal("Sprites/HealthBar.png")));
+        GameData.PLAYER_2_HEALTH_BAR_BOX = new Sprite(new Texture(Gdx.files.internal("Sprites/HealthBarBox.png")));
+
         PLAYER_1_HEALTH_BAR.setPosition(PLAYER_1_HEALTH_BAR_LOCATION.x,PLAYER_1_HEALTH_BAR_LOCATION.y);
         PLAYER_1_HEALTH_BAR.setSize(HEALTH_BAR_SIZE.x,HEALTH_BAR_SIZE.y);
         PLAYER_1_HEALTH_BAR_BOX.setPosition(PLAYER_1_HEALTH_BAR_LOCATION.x,PLAYER_1_HEALTH_BAR_LOCATION.y);

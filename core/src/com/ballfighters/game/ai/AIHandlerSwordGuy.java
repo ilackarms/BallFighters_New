@@ -1,4 +1,4 @@
-package com.ballfighters.game.gamebody;
+package com.ballfighters.game.ai;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -26,6 +26,9 @@ public class AIHandlerSwordGuy {
     public static final int HESITATING = 4;
     public static final int CHARGING2 = 5;
     public static final int CHARGING3 = 6;
+    public static final int CHARGING4 = 7;
+    public static final int CHARGING5 = 8;
+    public static final int CHARGING6 = 9;
 
 
     public AIHandlerSwordGuy(Player aiPlayer) {
@@ -39,8 +42,7 @@ public class AIHandlerSwordGuy {
 
     protected void changeState(){
         if (aiPlayer.body.isActive()) {
-            state = MathUtils.random(0, 4);
-            System.out.println("STATE: "+state);
+            state = MathUtils.random(0, 9);
             //change state after 5 SECONDS!
             Timer.schedule(new Timer.Task() {
                 @Override
@@ -58,6 +60,9 @@ public class AIHandlerSwordGuy {
             case CHARGING1:
             case CHARGING2:
             case CHARGING3:
+            case CHARGING4:
+            case CHARGING5:
+            case CHARGING6:
                 inputDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x);
                 inputDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y);
                 targetDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);

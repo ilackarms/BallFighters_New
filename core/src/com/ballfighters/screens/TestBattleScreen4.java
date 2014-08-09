@@ -4,9 +4,13 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.ballfighters.game.world.BallWorld4;
 import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
@@ -20,6 +24,9 @@ public class TestBattleScreen4 extends GameScreen {
     private Sprite background;
     private SpriteBatch batch, bgBatch, fadeOut;
     public TweenManager tweenManager;
+
+    Label infoText1;
+    Label infoText2;
 
 
     private int track;
@@ -44,6 +51,8 @@ public class TestBattleScreen4 extends GameScreen {
         GameData.PLAYER_1_HEALTH_BAR.draw(bgBatch);
         GameData.PLAYER_2_HEALTH_BAR_BOX.draw(bgBatch);
         GameData.PLAYER_2_HEALTH_BAR.draw(bgBatch);
+        infoText1.draw(bgBatch,1);
+        infoText2.draw(bgBatch,1);
         bgBatch.end();
 
         ballWorld.update();
@@ -75,6 +84,19 @@ public class TestBattleScreen4 extends GameScreen {
 
         Tween.set(GameData.BLACKSCREEN,SpriteAccessor.ALPHA).target(0).start(tweenManager);
         startMusic();
+
+        Skin labelSkin = new Skin(Gdx.files.internal("Labels/Fonts/uiskin.json"));
+        labelSkin.getAtlas().getTextures().iterator().next().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        labelSkin.getFont("default-font").setMarkupEnabled(true);
+        labelSkin.getFont("default-font").setScale(1.0f);
+
+        infoText1 = new Label(ballWorld.player1.name,labelSkin);
+        infoText2 = new Label(ballWorld.player2.name,labelSkin);
+        infoText1 .setAlignment(Align.bottom | Align.left);
+        infoText2 .setAlignment(Align.bottom | Align.left);
+        infoText1.setPosition(0,Gdx.graphics.getHeight()-infoText1.getHeight()-GameData.PLAYER_1_HEALTH_BAR.getHeight());
+        infoText2.setPosition(Gdx.graphics.getWidth()-infoText2.getWidth(),Gdx.graphics.getHeight()-infoText2.getHeight()-GameData.PLAYER_2_HEALTH_BAR.getHeight());
+
     }
 
     public void hide(){
@@ -87,11 +109,15 @@ public class TestBattleScreen4 extends GameScreen {
 
     }
     public void resize(int width, int height){
-        ballWorld.camera.viewportWidth = width/4f;
-        ballWorld.camera.viewportHeight = height/4f;
+        ballWorld.camera.viewportWidth = width/6f;
+        ballWorld.camera.viewportHeight = height/6f;
         ballWorld.camera.update();
     }
     public void dispose(){
+        GameData.PLAYER_1_HEALTH_BAR.getTexture().dispose();
+        GameData.PLAYER_1_HEALTH_BAR_BOX.getTexture().dispose();
+        GameData.PLAYER_2_HEALTH_BAR.getTexture().dispose();
+        GameData.PLAYER_2_HEALTH_BAR_BOX.getTexture().dispose();
     }
 
     public void startMusic() {

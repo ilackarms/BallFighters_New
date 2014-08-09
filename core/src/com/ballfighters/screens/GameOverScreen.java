@@ -6,6 +6,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,8 +19,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
+
+import java.util.ArrayList;
 
 /**
  * Created by Dell_Owner on 7/13/2014.
@@ -53,6 +57,10 @@ public class GameOverScreen implements Screen {
 
 
         tweenManager.update(delta);
+
+        if(Gdx.input.getInputProcessor().keyUp(Input.Keys.BACK)){
+            Gdx.app.exit();
+        }
     }
 
     public void resize(int i, int i1){
@@ -60,7 +68,9 @@ public class GameOverScreen implements Screen {
     }
 
     public void show(){
-        GameData.screen = this;
+//        GameData.screen = this;
+
+        GameData.staticAnimations = new ArrayList<AnimationPackage>();
 
         initializeSprites();
         initializeStage();
@@ -129,6 +139,7 @@ public class GameOverScreen implements Screen {
                     @Override
                     public void onEvent(int i, BaseTween<?> baseTween) {
                         Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        if(GameData.music!=null && GameData.music.isPlaying()) GameData.music.stop();
                         ((Game) Gdx.app.getApplicationListener()).setScreen(new CharacterSelectScreen());
                     }
                 }).start(tweenManager);
@@ -150,8 +161,10 @@ public class GameOverScreen implements Screen {
                     @Override
                     public void onEvent(int i, BaseTween<?> baseTween) {
                         Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
-                        if (continueScreen instanceof TestBattleScreen) {//todo: add in all screens
-                            ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
+                        if(GameData.music!=null && GameData.music.isPlaying()) GameData.music.stop();
+                        if (continueScreen instanceof GameScreen) {//todo: add in all screens
+                            GameData.staticAnimations = new ArrayList<AnimationPackage>();
+                            ((Game) Gdx.app.getApplicationListener()).setScreen(continueScreen);
                         }
                     }
                 }).start(tweenManager);
@@ -172,7 +185,7 @@ public class GameOverScreen implements Screen {
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
                     @Override
                     public void onEvent(int i, BaseTween<?> baseTween) {
-                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 0.5f).target(0).start(tweenManager);
                         Gdx.app.exit();
                     }
                 }).start(tweenManager);

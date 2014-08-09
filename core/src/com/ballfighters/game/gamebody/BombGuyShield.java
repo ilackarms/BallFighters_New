@@ -15,7 +15,7 @@ public class BombGuyShield  extends GameBody{
     GameBody parent;
     float duration;
     public Array<Body> worldBodies;
-    public final float ATTRACTION = 5000f;
+    public final float ATTRACTION = 50000f;
 
     public BombGuyShield(GameBody parent, Vector2 position, Vector2 velocity) {
 
@@ -76,7 +76,7 @@ public class BombGuyShield  extends GameBody{
         returnDataBundle.rotatable = true;
         returnDataBundle.baseObject = this;
         returnDataBundle.flaggedForDeletion = false;
-        returnDataBundle.rotatable = true;
+        returnDataBundle.rotatable = false;
         returnDataBundle.isPlayer = false;
         body.setUserData(returnDataBundle);
         return returnDataBundle;
@@ -98,7 +98,6 @@ public class BombGuyShield  extends GameBody{
                 UserDataBundle bundle = (UserDataBundle) attractedBody.getUserData();
                 if(!(bundle.baseObject).equals(this.parent)) {
                     Vector2 attractor = new Vector2(MyMathStuff.toUnit(attractedBody.getPosition().add(this.body.getPosition().scl(-1))).scl(-1*ATTRACTION));
-                    System.out.println("Object: "+bundle.baseObject+" attracted to "+this+" in direction "+attractor);
                     attractedBody.applyForceToCenter(attractor,true);
                 }
             }

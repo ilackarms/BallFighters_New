@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
+import com.ballfighters.game.players.DeathGuyAI;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 
@@ -59,7 +60,7 @@ public class DeathGuyShield extends Bullet {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.5f;
+        fixtureDef.density = 0.1f;
         fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.5f;
 
@@ -87,7 +88,12 @@ public class DeathGuyShield extends Bullet {
     @Override
     public void update(){
         dataBundle.sprite = sprite;
-        body.setLinearVelocity(MyMathStuff.toUnit(target.body.getPosition().add(body.getPosition().scl(-1))).scl(75));
+        if(parent instanceof DeathGuyAI) {
+            body.applyForceToCenter(MyMathStuff.toUnit(target.body.getPosition().add(body.getPosition().scl(-1))).scl(1000000), true);
+        }
+        else {
+            body.setLinearVelocity(MyMathStuff.toUnit(target.body.getPosition().add(body.getPosition().scl(-1))).scl(1000));
+        }
         body.setUserData(dataBundle);
     }
 

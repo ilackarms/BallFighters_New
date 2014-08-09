@@ -81,9 +81,9 @@ public class GameScreen implements Screen {
 
     }
     public void resize(int width, int height){
-        ballWorld.camera.viewportWidth = width/4f;
-        ballWorld.camera.viewportHeight = height/4f;
-        ballWorld.camera.update();
+//        ballWorld.camera.viewportWidth = width/4f;
+//        ballWorld.camera.viewportHeight = height/4f;
+//        ballWorld.camera.update();
     }
     public void dispose(){
     }

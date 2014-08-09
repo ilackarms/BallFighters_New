@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
+import com.ballfighters.game.players.LaserGuyAI;
 import com.ballfighters.global.GameData;
 
 /**
@@ -54,6 +55,10 @@ public class LaserGuyShield extends Bullet {
         spriteHeight = 18f;
         float duration = 7f;
         damage = 5;
+
+        if(parent instanceof LaserGuyAI) {
+            duration = 3f;
+        }
 
         body =  initializeBody();
         body.setTransform(position, 0);

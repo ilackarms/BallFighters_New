@@ -29,8 +29,8 @@ public class SwordProjectile extends Bullet {
         this.position = new Vector2(parent.body.getPosition().x+displacement.x,parent.body.getPosition().y+displacement.y);
         this.angle = angle;
 
-        System.out.println("DISPLACEMENT: ("+displacement.x+","+displacement.y+")");
-        System.out.println("ANGLE: (" + MyMathStuff.convertTo2D(parent.clickPosition).angle()+")");
+//        System.out.println("DISPLACEMENT: ("+displacement.x+","+displacement.y+")");
+//        System.out.println("ANGLE: (" + MyMathStuff.convertTo2D(parent.clickPosition).angle()+")");
         if(displacement.x>=0){
             direction = 1;
         }else {

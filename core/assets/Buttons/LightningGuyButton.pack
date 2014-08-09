@@ -1,0 +1,19 @@
+
+LightningGuyButton.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+LightningGuyDown
+  rotate: false
+  xy: 1, 1
+  size: 19, 23
+  orig: 19, 23
+  offset: 0, 0
+  index: -1
+LightningGuyUp
+  rotate: false
+  xy: 22, 1
+  size: 19, 23
+  orig: 19, 23
+  offset: 0, 0
+  index: -1

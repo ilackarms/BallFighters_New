@@ -15,8 +15,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ballfighters.global.GameData;
 import com.ballfighters.tween.SpriteAccessor;
@@ -25,7 +27,7 @@ import com.ballfighters.tween.SpriteAccessor;
 public class CharacterSelectScreen implements Screen {
 
     private Stage stage;
-    private Sprite characterSelectLabel;
+    private Sprite characterSelectLabel1, characterSelectLabel2;
     private SpriteBatch batch;
     private TweenManager tweenManager;
 
@@ -38,7 +40,8 @@ public class CharacterSelectScreen implements Screen {
         stage.act(delta);
         stage.draw();
         batch.begin();
-        characterSelectLabel.draw(batch);
+        characterSelectLabel1.draw(batch);
+        characterSelectLabel2.draw(batch);
         GameData.BLACKSCREEN.draw(batch);
         batch.end();
 
@@ -82,9 +85,12 @@ public class CharacterSelectScreen implements Screen {
     protected void initializeSprites(){
 
         Texture menuTexture = new Texture(Gdx.files.internal("Labels/selectPlayer.png"));
-        characterSelectLabel= new Sprite(menuTexture);
-        characterSelectLabel.setSize(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/4);
-        characterSelectLabel.setPosition(Gdx.graphics.getWidth()/2-characterSelectLabel.getWidth()/2,Gdx.graphics.getHeight()-characterSelectLabel.getHeight()-10f);
+        characterSelectLabel1 = new Sprite(menuTexture);
+        characterSelectLabel1.setSize(Gdx.graphics.getWidth()/9,Gdx.graphics.getHeight()/2);
+        characterSelectLabel1.setPosition(0, Gdx.graphics.getHeight() - characterSelectLabel1.getHeight() - 10f);
+        characterSelectLabel2 = new Sprite(new Texture(Gdx.files.internal("Labels/selectFighter.png")));
+        characterSelectLabel2.setSize(Gdx.graphics.getWidth()/9,Gdx.graphics.getHeight()/2);
+        characterSelectLabel2.setPosition(Gdx.graphics.getWidth()-characterSelectLabel2.getWidth(), Gdx.graphics.getHeight() - characterSelectLabel2.getHeight() - 10f);
 
         GameData.BLACKSCREEN.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -104,7 +110,10 @@ public class CharacterSelectScreen implements Screen {
 
         table = new Table();
         table.setBounds(0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-
+        Skin labelSkin = new Skin(Gdx.files.internal("Labels/Fonts/uiskin.json"));
+        labelSkin.getAtlas().getTextures().iterator().next().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        labelSkin.getFont("default-font").setMarkupEnabled(true);
+        labelSkin.getFont("default-font").setScale(2.5f);
 
 
         textureAtlasBoo = new TextureAtlas(Gdx.files.internal("Buttons/BooKnockoff.pack"));
@@ -128,6 +137,8 @@ public class CharacterSelectScreen implements Screen {
                 }).start(tweenManager);
             }
         });
+        Label ghostLabel = new Label("Ghost Guy\t",labelSkin);
+        ghostLabel.setAlignment(Align.bottom | Align.left);
 
 
 
@@ -152,6 +163,8 @@ public class CharacterSelectScreen implements Screen {
                 }).start(tweenManager);
             }
         });
+        Label swordLabel = new Label("Sword Guy",labelSkin);
+        swordLabel.setAlignment(Align.bottom | Align.left);
 
 
 
@@ -176,6 +189,9 @@ public class CharacterSelectScreen implements Screen {
                 }).start(tweenManager);
             }
         });
+        Label laserLabel = new Label("Laser Guy",labelSkin);
+        laserLabel.setAlignment(Align.bottom | Align.left);
+
 
 
 
@@ -207,6 +223,8 @@ public class CharacterSelectScreen implements Screen {
                 }).start(tweenManager);
             }
         });
+        Label deathLabel = new Label("Reaper Guy",labelSkin);
+        deathLabel.setAlignment(Align.bottom | Align.left);
 
 
 
@@ -214,8 +232,6 @@ public class CharacterSelectScreen implements Screen {
         Skin bombGuySkin;
         Button bombGuyButton;
         Button.ButtonStyle bombGuyButtonStyle;
-
-
 
         bombGuyTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/BombGuyButton.pack"));
         bombGuySkin = new Skin(bombGuyTextureAtlas );
@@ -238,15 +254,91 @@ public class CharacterSelectScreen implements Screen {
                 }).start(tweenManager);
             }
         });
+        Label bombLabel = new Label("Bomb Guy",labelSkin);
+        bombLabel.setAlignment(Align.bottom | Align.left);
+
+
+        TextureAtlas plasmaGuyTextureAtlas;
+        Skin plasmaGuySkin;
+        Button plasmaGuyButton;
+        Button.ButtonStyle plasmaGuyButtonStyle;
+
+        plasmaGuyTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/PlasmaGuyButton.pack"));
+        plasmaGuySkin = new Skin(plasmaGuyTextureAtlas );
+
+        plasmaGuyButtonStyle = new Button.ButtonStyle();
+        plasmaGuyButtonStyle.up = plasmaGuySkin.getDrawable("PlasmaGuyUp");
+        plasmaGuyButtonStyle.down = plasmaGuySkin.getDrawable("PlasmaGuyDown");
+
+        plasmaGuyButton = new Button(plasmaGuyButtonStyle);
+        plasmaGuyButton.pad(Gdx.graphics.getWidth()/25);
+        plasmaGuyButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        GameData.PLAYER_CHOICE = GameData.PLASMA_GUY;
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
+                    }
+                }).start(tweenManager);
+            }
+        });
+        Label plasmaLabel = new Label("Plasma Guy",labelSkin);
+        plasmaLabel.setAlignment(Align.bottom | Align.left);
+
+
+        TextureAtlas lightningGuyTextureAtlas;
+        Skin lightningGuySkin;
+        Button lightningGuyButton;
+        Button.ButtonStyle lightningGuyButtonStyle;
+
+        lightningGuyTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/LightningGuyButton.pack"));
+        lightningGuySkin = new Skin(lightningGuyTextureAtlas );
+
+        lightningGuyButtonStyle = new Button.ButtonStyle();
+        lightningGuyButtonStyle.up = lightningGuySkin.getDrawable("LightningGuyUp");
+        lightningGuyButtonStyle.down = lightningGuySkin.getDrawable("LightningGuyDown");
+
+        lightningGuyButton = new Button(lightningGuyButtonStyle);
+        lightningGuyButton.pad(Gdx.graphics.getWidth()/25);
+        lightningGuyButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        GameData.PLAYER_CHOICE = GameData.LIGHTNING_GUY;
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
+                    }
+                }).start(tweenManager);
+            }
+        });
+        Label lightningLabel = new Label("Lightning Guy",labelSkin);
+        lightningLabel.setAlignment(Align.bottom | Align.left);
 
 
 
+        table.add(booButton);
+        table.add(ghostLabel);
 
-        table.add(booButton).spaceRight(Gdx.graphics.getWidth()/25);
+        table.add(plasmaGuyButton);
+        table.add(plasmaLabel).row();
+
         table.add(swordGuyButton);
+        table.add(swordLabel);
+
+        table.add(lightningGuyButton);
+        table.add(lightningLabel).row();
+
         table.add(laserGuyButton);
+        table.add(laserLabel).row();
         table.add(bombGuyButton);
+        table.add(bombLabel).row();
         table.add(deathGuyButton);
+        table.add(deathLabel).row();
+
+
         //TODO: save characters unlocked, add them in as needed!
         stage.addActor(table);
     }

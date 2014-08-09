@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.utils.Timer;
 import com.ballfighters.game.gamebody.GameBody;
 import com.ballfighters.game.gamebody.UserDataBundle;
 import com.ballfighters.global.GameData;
@@ -20,6 +21,9 @@ public class Player extends GameBody {
     public float radius;
     public float density;
     public float restitution;
+    public float PERMANENT_ACCELERATION;
+    public int slowStacks;
+    public String name;
 
     protected BallTween tween;
 
@@ -39,8 +43,24 @@ public class Player extends GameBody {
 
     }
 
+
     public void shield(){
 
+    }
+
+    public void gooHit(){
+        slowStacks++;
+        ACCELERATION/=2;
+        body.setLinearVelocity(body.getLinearVelocity().scl(0.5f));
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                slowStacks--;
+                if(slowStacks<=0){
+                    ACCELERATION = PERMANENT_ACCELERATION;
+                }
+            }
+        },2);
     }
 
 
@@ -70,5 +90,11 @@ public class Player extends GameBody {
         body.setUserData(dataBundle);
         body.setTransform(position,0);
         return body;
+    }
+
+    @Override
+    public void kill(){
+        super.kill();
+        health = 0;
     }
 }

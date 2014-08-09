@@ -1,16 +1,14 @@
 package com.ballfighters.game.gamebody;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer;
-import com.ballfighters.game.players.Player;
-import com.ballfighters.game.players.SwordGuy;
+import com.ballfighters.game.players.*;
 import com.ballfighters.global.GameData;
+import com.ballfighters.screens.GameOverScreen;
+import com.ballfighters.screens.TestBattleScreen;
 
 /**
  * Created by Dell_Owner on 7/2/2014.
@@ -22,16 +20,18 @@ public class InputHandler implements GestureDetector.GestureListener, InputProce
     public Player player;
     public Vector3 mousePosition;
     public Boolean shieldDelay;
+    public Vector3 longPressLocation;
 
     public InputHandler(Player player){//todo: make the constructor accept a set of keys as the up/down/left/right input
         inputDirection = new Vector2(0,0);
         this.player = player;
         targetDirection = new Vector3(0,0,0);
         mousePosition = new Vector3(0,0,0);
+        longPressLocation = new Vector3(0,0,0);
         shieldDelay = false;
 
-        //set Back button handler
-        Gdx.input.setCatchBackKey(true);
+
+
     }
 
 
@@ -93,10 +93,18 @@ public class InputHandler implements GestureDetector.GestureListener, InputProce
                 targetDirection.x = Gdx.input.getX();
                 targetDirection.y = Gdx.input.getY();
                 mousePosition = GameData.camera.unproject(targetDirection);
+
+                longPressLocation.x = GameData.camera.unproject(new Vector3(Gdx.input.getX(),Gdx.input.getY(),0)).x;
+                longPressLocation.y = GameData.camera.unproject(new Vector3(Gdx.input.getX(),Gdx.input.getY(),0)).y;
+
                 player.clickPosition.x = mousePosition.x - player.body.getPosition().x;
                 player.clickPosition.y = mousePosition.y - player.body.getPosition().y;
                 player.shield();
-                if(!(player instanceof SwordGuy)) shieldDelay = true;
+                if(!(player instanceof SwordGuy ||
+                        player instanceof LaserGuy ||
+                            player instanceof BombGuy ||
+                                player instanceof PlasmaGuy ||
+                                    player instanceof DeathGuy)) shieldDelay = true;
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
@@ -138,14 +146,15 @@ public class InputHandler implements GestureDetector.GestureListener, InputProce
         }
 
     public boolean keyDown(int i) {
-        if(i == Input.Keys.BACK){
-            //do nothing?
-            System.out.println("TRY AGAIN FUCKER!!");
-        }
         return false;
     }
 
     public boolean keyUp(int i) {
+        if(i == Input.Keys.BACK){
+            System.out.println("TRY AGAIN FUCKER!!");
+//            Gdx.app.exit();
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
+        }
         return false;
     }
 
@@ -160,7 +169,7 @@ public class InputHandler implements GestureDetector.GestureListener, InputProce
         player.clickPosition.x = mousePosition.x - player.body.getPosition().x;
         player.clickPosition.y = mousePosition.y - player.body.getPosition().y;
         player.fireShots();
-        System.out.println("Fire direction is:" +player.clickPosition.x+","+player.clickPosition.y);
+//        System.out.println("Fire direction is:" +player.clickPosition.x+","+player.clickPosition.y);
         return false;
     }
 

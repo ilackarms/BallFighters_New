@@ -66,7 +66,7 @@ public class SplashScreen implements Screen {
             @Override
             public void onEvent(int i, BaseTween<?> baseTween) {
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new InstructionScreen());
             }
         }).start(tweenManager);
     }
@@ -86,5 +86,6 @@ public class SplashScreen implements Screen {
     public void dispose(){
        batch.dispose();
         sprite.getTexture().dispose();
+        GameData.BLACKSCREEN.getTexture().dispose();
     }
 }

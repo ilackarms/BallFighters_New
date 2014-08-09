@@ -41,6 +41,8 @@ public class LaserGuy extends Player {
 
     public LaserGuy(Vector2 position) {
 
+        name = "Laser Guy";
+
         this.position = position;
         animator = new Animator("Sprites/LaserGuy.png", 4, 4);
         inputDirection = new Vector2(0,0);
@@ -55,6 +57,7 @@ public class LaserGuy extends Player {
         Gdx.input.setInputProcessor(gestureDetector);
         clickPosition = new Vector3(0,0,0);
         ACCELERATION = 3000f;
+        PERMANENT_ACCELERATION = 3000f;
         tweenList = new ArrayList<BallTween>();
 
         tween = null;
@@ -149,31 +152,34 @@ public class LaserGuy extends Player {
 
     @Override
     public void shield(){
-        new LaserGuyShield(this);
+        if(health>0) {
+            new LaserGuyShield(this);
 
-        Gdx.input.vibrate(50);
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LaserGuySounds/LaserGuyShield.wav"));
-        long soundID = fireSound.play();
-        fireSound.setVolume(soundID, GameData.VOLUME);
-        fireSound.dispose();
+            Gdx.input.vibrate(50);
+            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LaserGuySounds/LaserGuyShield.wav"));
+            long soundID = fireSound.play();
+            fireSound.setVolume(soundID, GameData.VOLUME);
+            fireSound.dispose();
 
-        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.BLUE,1.2f).yoyo(1);
+            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.BLUE, 1.2f).yoyo(1);
+        }
     }
 
     @Override
     public void getHit(Bullet bullet){
         Gdx.input.vibrate(100);
-        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.RED,2.2f).yoyo(1);
+        tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.RED, 2.2f).yoyo(1);
         Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
-        long soundID = hitSound .play();
-        hitSound .setVolume(soundID, GameData.VOLUME);
+        long soundID = hitSound.play();
+        hitSound.setVolume(soundID, GameData.VOLUME);
         hitSound.dispose();
 
-        health-=bullet.damage;
-        float ratio = (float) health/ (float) MAX_HEALTH;
-        System.out.println(health+"/"+MAX_HEALTH+"="+ratio);
+        health -= bullet.damage;
+        float ratio = (float) health / (float) MAX_HEALTH;
+        if(ratio<0) ratio = 0;
+        System.out.println(health + "/" + MAX_HEALTH + "=" + ratio);
         GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
-        if(health<0){
+        if (health <= 0) {
             kill();
         }
     }
@@ -196,10 +202,12 @@ public class LaserGuy extends Player {
         staticGameOverAnimation.position=new Vector2(lastPosition);
         GameData.staticAnimations.add(staticGameOverAnimation);
 
+
         //NEW GAME ON DEATH!
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
@@ -207,7 +215,8 @@ public class LaserGuy extends Player {
                         GameData.screen.dispose();
                         GameData.screen.hide();
                         GameData.staticAnimations.remove(staticGameOverAnimation);
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
+                        GameData.staticAnimations = new ArrayList<AnimationPackage>();
+
                     }
                 }).start(GameData.tweenManager);
             }

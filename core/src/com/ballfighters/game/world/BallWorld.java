@@ -41,27 +41,33 @@ public class BallWorld {
 
         switch (GameData.PLAYER_CHOICE){
             case GameData.LITTLE_BOO:
-                GameData.PLAYER_1 = new LittleBoo(new Vector2(-40,40));
+                GameData.PLAYER_1 = new LittleBoo(new Vector2(-40,10));
                 break;
             case GameData.SWORD_GUY:
-                GameData.PLAYER_1 = new SwordGuy(new Vector2(-40,40));
+                GameData.PLAYER_1 = new SwordGuy(new Vector2(-40,10));
                 break;
             case GameData.LASER_GUY:
-                GameData.PLAYER_1 = new LaserGuy(new Vector2(-40,40));
+                GameData.PLAYER_1 = new LaserGuy(new Vector2(-40,10));
                 break;
             case GameData.DEATH_GUY:
-                GameData.PLAYER_1 = new DeathGuy(new Vector2(-40,40));
+                GameData.PLAYER_1 = new DeathGuy(new Vector2(-40,10));
                 break;
             case GameData.BOMB_GUY:
-                GameData.PLAYER_1 = new BombGuy(new Vector2(-40,40));
+                GameData.PLAYER_1 = new BombGuy(new Vector2(-40,10));
+                break;
+            case GameData.PLASMA_GUY:
+                GameData.PLAYER_1 = new PlasmaGuy(new Vector2(-40,10));
+                break;
+            case GameData.LIGHTNING_GUY:
+                GameData.PLAYER_1 = new LightningGuy(new Vector2(-40,10));
                 break;
         }
 
         player1 = GameData.PLAYER_1;
-        player2 = new LittleBooAI(new Vector2(40,-40));
+        player2 = new LittleBooAI(new Vector2(40,-10));
         GameData.PLAYER_2 = player2;
 
-        camera = new OrthographicCamera(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
+        camera = new OrthographicCamera(Gdx.graphics.getWidth()/3f,Gdx.graphics.getHeight()/3f);
         GameData.camera = camera;
         GameData.ANIMATEDBG =new Animator("Backgrounds/8bittemple.png",2,4,.04f);
         debugRenderer = new Box2DDebugRenderer();
@@ -146,7 +152,7 @@ public class BallWorld {
                 UserDataBundle bundle = (UserDataBundle) body.getUserData();
                 if(bundle.draw) {
                     Sprite sprite = bundle.sprite;
-                    sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
+                     sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
                     if (bundle.rotatable) {
                         sprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
                     }

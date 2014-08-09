@@ -15,13 +15,12 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Timer;
+import com.ballfighters.game.ai.AIHandlerLaserGuy;
 import com.ballfighters.game.gamebody.*;
 import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
-import com.ballfighters.screens.TestBattleScreen2;
-import com.ballfighters.screens.TestBattleScreen3;
-import com.ballfighters.screens.TestBattleScreen5;
+import com.ballfighters.screens.*;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -35,13 +34,15 @@ public class DeathGuyAI extends Player {
     protected float radius = 5.5f;
     protected float density = 5f;
     protected float restitution = 0.5f;
-    public static final int MAX_HEALTH = 200;
+    public static final int MAX_HEALTH = 100;
 
     protected AIHandlerLaserGuy aiInputHandler;
 
     protected BallTween tween;
 
     public DeathGuyAI(Vector2 position) {
+
+        name = "Reaper Guy";
 
         this.position = position;
         animator = new Animator("Sprites/DeathGuy.png", 4, 4);
@@ -53,6 +54,7 @@ public class DeathGuyAI extends Player {
         dataBundle = createUserDataBundle();
         clickPosition = new Vector3(0,0,0);
         ACCELERATION = 60000f;
+        PERMANENT_ACCELERATION = 60000f;
         tweenList = new ArrayList<BallTween>();
 
         aiInputHandler = new AIHandlerLaserGuy(this);
@@ -116,69 +118,72 @@ public class DeathGuyAI extends Player {
     Boolean fireShotOnCoolDown = false;
     @Override
     public void fireShots(){
-        if(!fireShotOnCoolDown) {
-            Gdx.input.vibrate(15);
+        if(health>0) {
+            if (!fireShotOnCoolDown) {
 
-            int rand = MathUtils.random(1, 3);
-            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/SwordProjectile" + rand + ".wav"));
-            long soundID = fireSound.play();
-            fireSound.setVolume(soundID, GameData.VOLUME);
-            fireSound.dispose();
+                int rand = MathUtils.random(1, 3);
+                Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/SwordProjectile" + rand + ".wav"));
+                long soundID = fireSound.play();
+                fireSound.setVolume(soundID, GameData.VOLUME);
+                fireSound.dispose();
 
-            Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
-                    this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
-            Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
-            int direction;
-            if (shot1Velocity.x >= 0) {
-                direction = 1;
-            } else {
-                direction = -1;
-            }
-            new DeathGuyProjectile(this, shot1Position,shot1Velocity, direction);
-
-            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
-
-            fireShotOnCoolDown=true;
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    fireShotOnCoolDown = false;
+                Vector2 shot1Position = new Vector2(this.body.getPosition().x + radius * 2 * MyMathStuff.toUnit(clickPosition).x,
+                        this.body.getPosition().y + radius * 2 * MyMathStuff.toUnit(clickPosition).y);
+                Vector2 shot1Velocity = new Vector2(clickPosition.x, clickPosition.y);
+                int direction;
+                if (shot1Velocity.x >= 0) {
+                    direction = 1;
+                } else {
+                    direction = -1;
                 }
-            }, 0.25f);
+                new DeathGuyProjectile(this, shot1Position, shot1Velocity, direction);
+
+                tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
+
+                fireShotOnCoolDown = true;
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        fireShotOnCoolDown = false;
+                    }
+                }, 0.25f);
+            }
         }
     }
 
     @Override
     public void shield(){
-        Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
-                this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
-        Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
+        if(health>0) {
+            Vector2 shot1Position = new Vector2(this.body.getPosition().x + radius * 2 * MyMathStuff.toUnit(clickPosition).x,
+                    this.body.getPosition().y + radius * 2 * MyMathStuff.toUnit(clickPosition).y);
+            Vector2 shot1Velocity = new Vector2(clickPosition.x, clickPosition.y);
 
-        new DeathGuyShield(this, shot1Position,shot1Velocity, GameData.PLAYER_1);
+            new DeathGuyShield(this, shot1Position, shot1Velocity, GameData.PLAYER_1);
 
-        Gdx.input.vibrate(50);
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
-        long soundID = fireSound.play();
-        fireSound.setVolume(soundID, GameData.VOLUME);
-        fireSound.dispose();
+            Gdx.input.vibrate(50);
+            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
+            long soundID = fireSound.play();
+            fireSound.setVolume(soundID, GameData.VOLUME);
+            fireSound.dispose();
 
-        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.BLUE,1.2f).yoyo(1);
+            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.BLUE, 1.2f).yoyo(1);
+        }
     }
 
     @Override
     public void getHit(Bullet bullet){
-        Gdx.input.vibrate(100);
-        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.RED,2.2f).yoyo(1);
+        tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.RED, 2.2f).yoyo(1);
         Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
-        long soundID = hitSound .play();
-        hitSound .setVolume(soundID, GameData.VOLUME);
+        long soundID = hitSound.play();
+        hitSound.setVolume(soundID, GameData.VOLUME);
         hitSound.dispose();
 
-        health-=bullet.damage;
-        float ratio = (float) health/ (float) MAX_HEALTH;
-        System.out.println(health+"/"+MAX_HEALTH+"="+ratio);
+        health -= bullet.damage;
+        float ratio = (float) health / (float) MAX_HEALTH;
+        if(ratio<0) ratio = 0;
+        System.out.println(health + "/" + MAX_HEALTH + "=" + ratio);
         GameData.PLAYER_2_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
-        if(health<0){
+        if (health <= 0) {
             kill();
         }
     }
@@ -186,7 +191,6 @@ public class DeathGuyAI extends Player {
     @Override
     public void kill(){
         super.kill();
-        GameData.playMusic("Music/Victory.mp3");
         Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));
         long soundID = deathSound.play();
         deathSound .setVolume(soundID, GameData.VOLUME);
@@ -194,71 +198,18 @@ public class DeathGuyAI extends Player {
         lastPosition = body.getPosition();
 
 
-        Animator player1DeathAnimation = new Animator("Sprites/ClickToContinue.png",1,5);
-        final AnimationPackage staticDeathAnimation = new AnimationPackage(player1DeathAnimation,spriteWidth*10,spriteHeight*10);
-        staticDeathAnimation.play();
-        staticDeathAnimation.position=new Vector2(position);
-        GameData.staticAnimations.add(staticDeathAnimation);
-
-
-
-        /*
-        LISTEN FOR LONG PRESS
-         */
-        Gdx.input.setInputProcessor(new GestureDetector(new GestureDetector.GestureListener() {
+        final TestBattleScreen4 battleScreen = (TestBattleScreen4) GameData.screen;
+        Gdx.input.vibrate(100);
+        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
             @Override
-            public boolean touchDown(float v, float v2, int i, int i2) {
-                return false;
+            public void onEvent(int type, BaseTween<?> source) {
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
+                GameData.screen.dispose();
+                GameData.screen.hide();
+                GameData.staticAnimations = new ArrayList<AnimationPackage>();
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ContinueScreen(new TestBattleScreen6(), name));
             }
-
-            @Override
-            public boolean tap(float v, float v2, int i, int i2) {
-                return false;
-            }
-
-            @Override
-            public boolean longPress(float v, float v2) {
-                final TestBattleScreen2 battleScreen = (TestBattleScreen2) GameData.screen;
-                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
-                    @Override
-                    public void onEvent(int type, BaseTween<?> source) {
-                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);
-                        GameData.screen.dispose();
-                        GameData.screen.hide();
-                        GameData.staticAnimations.remove(staticDeathAnimation);
-                        Gdx.input.vibrate(100);
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen5());
-                    }
-                }).start(battleScreen.tweenManager);
-                return false;
-            }
-
-            @Override
-            public boolean fling(float v, float v2, int i) {
-                return false;
-            }
-
-            @Override
-            public boolean pan(float v, float v2, float v3, float v4) {
-                return false;
-            }
-
-            @Override
-            public boolean panStop(float v, float v2, int i, int i2) {
-                return false;
-            }
-
-            @Override
-            public boolean zoom(float v, float v2) {
-                return false;
-            }
-
-            @Override
-            public boolean pinch(Vector2 vector2, Vector2 vector22, Vector2 vector23, Vector2 vector24) {
-                return false;
-            }
-        }));
-
+        }).start(battleScreen.tweenManager);
 
     }
 

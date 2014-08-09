@@ -1,0 +1,19 @@
+
+PlasmaGuyButton.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+PlasmaGuyDown
+  rotate: false
+  xy: 1, 1
+  size: 105, 88
+  orig: 105, 88
+  offset: 0, 0
+  index: -1
+PlasmaGuyUp
+  rotate: false
+  xy: 108, 1
+  size: 105, 88
+  orig: 105, 88
+  offset: 0, 0
+  index: -1

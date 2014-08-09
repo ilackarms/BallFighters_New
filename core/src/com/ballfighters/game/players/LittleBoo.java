@@ -42,6 +42,7 @@ public class LittleBoo extends Player {
 
     public LittleBoo(Vector2 position) {
 
+        name = "Ghost Guy";
 
     	this.position = position;
         animator = new Animator("Sprites/littleboo.png", 4, 4);
@@ -57,6 +58,7 @@ public class LittleBoo extends Player {
         Gdx.input.setInputProcessor(gestureDetector);
         clickPosition = new Vector3(0,0,0);
         ACCELERATION = 300f;
+        PERMANENT_ACCELERATION = 300f;
         tweenList = new ArrayList<BallTween>();
 
         tween = null;
@@ -123,43 +125,47 @@ public class LittleBoo extends Player {
 
     @Override
     public void fireShots(){
-        Gdx.input.vibrate(15);
-        int rand = MathUtils.random(5);
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/littleBooProjectile" + rand + ".wav"));
-        long soundID = fireSound.play();
-        fireSound.setVolume(soundID, GameData.VOLUME);
-        fireSound.dispose();
-        Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*1*MyMathStuff.toUnit(clickPosition).x,
-                this.body.getPosition().y+radius*1*MyMathStuff.toUnit(clickPosition).y);
-        Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
-        new LittleBooProjectile(this, shot1Position,shot1Velocity);
+        if(health>0) {
+            Gdx.input.vibrate(15);
+            int rand = MathUtils.random(5);
+            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/littleBooProjectile" + rand + ".wav"));
+            long soundID = fireSound.play();
+            fireSound.setVolume(soundID, GameData.VOLUME);
+            fireSound.dispose();
+            Vector2 shot1Position = new Vector2(this.body.getPosition().x + radius * 1 * MyMathStuff.toUnit(clickPosition).x,
+                    this.body.getPosition().y + radius * 1 * MyMathStuff.toUnit(clickPosition).y);
+            Vector2 shot1Velocity = new Vector2(clickPosition.x, clickPosition.y);
+            new LittleBooEctoplasm(this, shot1Position, shot1Velocity);
 
-        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.YELLOW,1.2f).yoyo(1);
+            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
+        }
     }
 
     @Override
     public void shield(){
-        dataBundle.ghostMode = true;
-        System.out.println("GHOSTMODE ON");
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                dataBundle.ghostMode=false;
-                System.out.println("GHOSTMODE OFF");
-            }
-        },3f);
+        if(health>0) {
+            dataBundle.ghostMode = true;
+            System.out.println("GHOSTMODE ON");
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    dataBundle.ghostMode = false;
+                    System.out.println("GHOSTMODE OFF");
+                }
+            }, 3f);
 
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
-        long soundID = fireSound.play();
-        fireSound.setVolume(soundID, GameData.VOLUME);
-        fireSound.dispose();
+            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
+            long soundID = fireSound.play();
+            fireSound.setVolume(soundID, GameData.VOLUME);
+            fireSound.dispose();
 
-        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.BLUE,1.2f).yoyo(1);
+            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.BLUE, 1.2f).yoyo(1);
+        }
     }
 
     @Override
     public void getHit(Bullet bullet){
-        if(!dataBundle.ghostMode) {
+        if (!dataBundle.ghostMode) {
             Gdx.input.vibrate(100);
             tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.RED, 2.2f).yoyo(1);
             Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
@@ -169,9 +175,10 @@ public class LittleBoo extends Player {
 
             health -= bullet.damage;
             float ratio = (float) health / (float) MAX_HEALTH;
+        if(ratio<0) ratio = 0;
             System.out.println(health + "/" + MAX_HEALTH + "=" + ratio);
             GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
-            if (health < 0) {
+            if (health <= 0) {
                 kill();
             }
         }
@@ -207,6 +214,7 @@ public class LittleBoo extends Player {
                         GameData.screen.dispose();
                         GameData.screen.hide();
                         GameData.staticAnimations.remove(staticGameOverAnimation);
+                        GameData.staticAnimations = new ArrayList<AnimationPackage>();
 
                     }
                 }).start(GameData.tweenManager);

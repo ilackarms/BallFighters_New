@@ -1,6 +1,10 @@
 package com.ballfighters.game.players;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.input.GestureDetector;
@@ -9,9 +13,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer;
 import com.ballfighters.game.gamebody.*;
+import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
+import com.ballfighters.screens.GameOverScreen;
 import com.ballfighters.tween.BallTween;
+import com.ballfighters.tween.SpriteAccessor;
 
 import java.util.ArrayList;
 
@@ -28,6 +35,8 @@ public class DeathGuy extends Player {
 
 
     public DeathGuy(Vector2 position) {
+
+        name = "Reaper Guy";
 
         this.position = position;
         animator = new Animator("Sprites/DeathGuy.png", 4, 4);
@@ -48,6 +57,7 @@ public class DeathGuy extends Player {
         Gdx.input.setInputProcessor(gestureDetector);
         clickPosition = new Vector3(0,0,0);
         ACCELERATION = 3000f;
+        PERMANENT_ACCELERATION = 3000f;
         tweenList = new ArrayList<BallTween>();
 
         tween = null;
@@ -57,101 +67,104 @@ public class DeathGuy extends Player {
     Boolean fireShotOnCoolDown = false;
     @Override
     public void fireShots(){
-        if(!fireShotOnCoolDown) {
-            Gdx.input.vibrate(15);
+        if(health>0) {
+            if (!fireShotOnCoolDown) {
+                Gdx.input.vibrate(15);
 
-            int rand = MathUtils.random(1, 3);
-            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/SwordProjectile" + rand + ".wav"));
-            long soundID = fireSound.play();
-            fireSound.setVolume(soundID, GameData.VOLUME);
-            fireSound.dispose();
+                int rand = MathUtils.random(1, 3);
+                Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/SwordGuySounds/SwordProjectile" + rand + ".wav"));
+                long soundID = fireSound.play();
+                fireSound.setVolume(soundID, GameData.VOLUME);
+                fireSound.dispose();
 
-            Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
-                    this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
-            Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
-            int direction;
-            if (shot1Velocity.x >= 0) {
-                direction = 1;
-            } else {
-                direction = -1;
-            }
-            new DeathGuyProjectile(this, shot1Position,shot1Velocity, direction);
-
-            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
-
-            fireShotOnCoolDown=true;
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    fireShotOnCoolDown = false;
+                Vector2 shot1Position = new Vector2(this.body.getPosition().x + radius * 2 * MyMathStuff.toUnit(clickPosition).x,
+                        this.body.getPosition().y + radius * 2 * MyMathStuff.toUnit(clickPosition).y);
+                Vector2 shot1Velocity = new Vector2(clickPosition.x, clickPosition.y);
+                int direction;
+                if (shot1Velocity.x >= 0) {
+                    direction = 1;
+                } else {
+                    direction = -1;
                 }
-            }, 0.125f);
+                new DeathGuyProjectile(this, shot1Position, shot1Velocity, direction);
+
+                tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
+
+                fireShotOnCoolDown = true;
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        fireShotOnCoolDown = false;
+                    }
+                }, 0.125f);
+            }
         }
     }
 
 
     @Override
     public void update(){
-        if(health>2) {
-            if (!regenTimer && health<MAX_HEALTH) {
-                health += 1;
-                float ratio = (float) health/ (float) MAX_HEALTH;
-                System.out.println(health+"/"+MAX_HEALTH+"="+ratio);
-                GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
-                regenTimer=true;
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        regenTimer=false;
-                    }
-                },2f);
-            }
+        if (!regenTimer && health<MAX_HEALTH && health >= 1) {
+            health += 1;
+            float ratio = (float) health/ (float) MAX_HEALTH;
+            System.out.println(health+"/"+MAX_HEALTH+"="+ratio);
+            GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
+            regenTimer=true;
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    regenTimer=false;
+                }
+            },2f);
+        }
 
-            super.update();
-            inputDirection.x = 0;
-            inputDirection.y = 0;
-            inputHandler.directionHandler();
-            animate();
-            if (tween != null) {
-                tween.update(sprite);
-            }
-            if (dataBundle.ghostMode) {
-                sprite.setColor(sprite.getColor().r, sprite.getColor().g, sprite.getColor().b, 0.5f);
-            }
+        super.update();
+        inputDirection.x = 0;
+        inputDirection.y = 0;
+        inputHandler.directionHandler();
+        animate();
+        if (tween != null) {
+            tween.update(sprite);
+        }
+        if (dataBundle.ghostMode) {
+            sprite.setColor(sprite.getColor().r, sprite.getColor().g, sprite.getColor().b, 0.5f);
         }
     }
 
     @Override
     public void shield(){
-        Vector2 shot1Position = new Vector2(this.body.getPosition().x+radius*2*MyMathStuff.toUnit(clickPosition).x,
-                this.body.getPosition().y+radius*2*MyMathStuff.toUnit(clickPosition).y);
-        Vector2 shot1Velocity = new Vector2(clickPosition.x,clickPosition.y);
+        if(health>0) {
+            Vector2 shot1Position = new Vector2(this.body.getPosition().x + radius * 2 * MyMathStuff.toUnit(clickPosition).x,
+                    this.body.getPosition().y + radius * 2 * MyMathStuff.toUnit(clickPosition).y);
+            Vector2 shot1Velocity = new Vector2(clickPosition.x, clickPosition.y);
 
-        new DeathGuyShield(this, shot1Position,shot1Velocity, GameData.PLAYER_2);
+            new DeathGuyShield(this, shot1Position, shot1Velocity, GameData.PLAYER_2);
 
-        Gdx.input.vibrate(50);
-        Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
-        long soundID = fireSound.play();
-        fireSound.setVolume(soundID, GameData.VOLUME);
-        fireSound.dispose();
+            Gdx.input.vibrate(50);
+            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/WavySound.wav"));
+            long soundID = fireSound.play();
+            fireSound.setVolume(soundID, GameData.VOLUME);
+            fireSound.dispose();
 
-        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.BLUE,1.2f).yoyo(1);
+            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.BLUE, 1.2f).yoyo(1);
+        }
     }
 
     @Override
     public void getHit(Bullet bullet){
         Gdx.input.vibrate(100);
-        tween = new BallTween(animator,BallTween.COLOR,BallTween.Colors.RED,2.2f).yoyo(1);
+        tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.RED, 2.2f).yoyo(1);
         Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
-        long soundID = hitSound .play();
-        hitSound .setVolume(soundID, GameData.VOLUME);
+        long soundID = hitSound.play();
+        hitSound.setVolume(soundID, GameData.VOLUME);
         hitSound.dispose();
 
-        health-=bullet.damage;
-        float ratio = (float) health/ (float) MAX_HEALTH;
-        System.out.println(health+"/"+MAX_HEALTH+"="+ratio);
+        health -= bullet.damage;
+        float ratio = (float) health / (float) MAX_HEALTH;
+        if(ratio<0) ratio = 0;
+        System.out.println(health + "/" + MAX_HEALTH + "=" + ratio);
         GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
-        if(health<0){
+        if (health <= 0) {
             kill();
         }
     }
@@ -172,7 +185,45 @@ public class DeathGuy extends Player {
         }
     }
 
+    @Override
+    public void kill(){
+        super.kill();
+        GameData.playMusic("Music/GameOver.mp3");
+        Gdx.input.vibrate(1000);
+        Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));
+        long soundID = deathSound.play();
+        deathSound .setVolume(soundID, GameData.VOLUME);
+        deathSound.dispose();
+        lastPosition.x = MyMathStuff.convertTo3D(body.getPosition()).x;
+        lastPosition.y = MyMathStuff.convertTo3D(body.getPosition()).y;
 
+        Animator gameOverAnimation = new Animator("Sprites/GameOverAnimation.png",2,5);
+        final AnimationPackage staticGameOverAnimation = new AnimationPackage(gameOverAnimation,64*2,32*2);
+        staticGameOverAnimation.play();
+        staticGameOverAnimation.position=new Vector2(lastPosition);
+        GameData.staticAnimations.add(staticGameOverAnimation);
+
+
+        //NEW GAME ON DEATH!
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int type, BaseTween<?> source) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(GameData.tweenManager);
+                        GameData.screen.dispose();
+                        GameData.screen.hide();
+                        GameData.staticAnimations.remove(staticGameOverAnimation);
+                        GameData.staticAnimations = new ArrayList<AnimationPackage>();
+
+                    }
+                }).start(GameData.tweenManager);
+            }
+        }, 8);
+
+    }
 
 
 }

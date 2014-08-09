@@ -1,4 +1,4 @@
-package com.ballfighters.game.gamebody;
+package com.ballfighters.game.ai;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -39,7 +39,6 @@ public class AIInputHandlerLittleBoo {
     protected void changeState(){
         if (aiPlayer.body.isActive()) {
             state = MathUtils.random(0,5);
-            System.out.println("STATE: "+state);
             //change state after 5 SECONDS!
             Timer.schedule(new Timer.Task() {
                     @Override
