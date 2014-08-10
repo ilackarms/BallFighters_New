@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 import com.ballfighters.global.GameData;
-
 /**
  * Created by Dell_Owner on 7/4/2014.
  */
@@ -41,11 +40,11 @@ public class LaserGuyProjectileCharge extends GameBody {
             @Override
             public void run() {
 
-                int rand = MathUtils.random(1, 3);
-                Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LaserGuySounds/LaserFire" + rand + ".wav"));
-                long soundID = fireSound.play();
-                fireSound.setVolume(soundID, GameData.VOLUME);
-                fireSound.dispose();
+//                int rand = MathUtils.random(1, 3);
+//                Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LaserGuySounds/LaserFire" + rand + ".wav"));
+//                long soundID = fireSound.play();
+//                fireSound.setVolume(soundID, GameData.VOLUME);
+//                fireSound.dispose();
 
                 new LaserGuyProjectile(laserParent, laserPosition , laserVelocity,30);
                 kill();

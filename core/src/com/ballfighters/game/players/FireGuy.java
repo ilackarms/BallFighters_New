@@ -7,14 +7,13 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer;
-import com.ballfighters.game.gamebody.Animator;
-import com.ballfighters.game.gamebody.Bullet;
-import com.ballfighters.game.gamebody.InputHandler;
-import com.ballfighters.game.gamebody.PlasmaGuyProjectile;
+import com.ballfighters.game.gamebody.*;
 import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
 public class FireGuy extends Player {
 
    protected InputHandler inputHandler;
-    public static final int MAX_HEALTH = 100;
+    public static final int MAX_HEALTH = 200;
 
 
     protected BallTween tween;
@@ -38,10 +37,11 @@ public class FireGuy extends Player {
 
     public FireGuy(Vector2 position) {
 
-        name = "Plasma Guy";
+        name = "Fire Guy";
+        isAI = false;
 
         this.position = position;
-        animator = new Animator("Sprites/plasmaGuy.png", 4, 4);
+        animator = new Animator("Sprites/FireGuy.png", 4, 4);
         inputDirection = new Vector2(0,0);
 
         radius = 5.5f;
@@ -51,7 +51,7 @@ public class FireGuy extends Player {
         body = createBody();
         health = MAX_HEALTH;
         spriteHeight = 18f;
-        spriteWidth = 13f;
+        spriteWidth = 18f;
         dataBundle = createUserDataBundle();
         inputHandler = new InputHandler(this);
 
@@ -68,21 +68,29 @@ public class FireGuy extends Player {
     }
 
     Boolean fireShotOnCoolDown = false;
+    Boolean fireSoundOnCooldown = false;
     @Override
     public void fireShots(){
         if(health>0) {
             if (!fireShotOnCoolDown) {
-                Gdx.input.vibrate(15);
-
-                Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/PlasmaGuySounds/plasmaShot.wav"));
-                long soundID = fireSound.play();
-                fireSound.setVolume(soundID, GameData.VOLUME);
-                fireSound.dispose();
+                if(!fireSoundOnCooldown) {
+                    Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/FireGuySounds/FireGuyProjectile.wav"));
+                    long soundID = fireSound.play();
+                    fireSound.setVolume(soundID, GameData.VOLUME);
+                    fireSound.dispose();
+                    fireSoundOnCooldown = true;
+                    Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            fireSoundOnCooldown= false;
+                        }
+                    }, 1.5f);
+                }
 
                 Vector2 shot1Position = new Vector2(this.body.getPosition().x + radius * 2 * MyMathStuff.toUnit(clickPosition).x,
                         this.body.getPosition().y + radius * 2 * MyMathStuff.toUnit(clickPosition).y);
                 Vector2 shot1Velocity = new Vector2(clickPosition.x, clickPosition.y);
-                new PlasmaGuyProjectile(this, shot1Position, shot1Velocity, true);
+                new FireGuyProjectile(this, shot1Position, shot1Velocity);
 
                 tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
 
@@ -92,7 +100,7 @@ public class FireGuy extends Player {
                     public void run() {
                         fireShotOnCoolDown = false;
                     }
-                }, 0.1f);
+                }, 0.033f);
             }
         }
     }
@@ -111,47 +119,56 @@ public class FireGuy extends Player {
         if (dataBundle.ghostMode) {
             sprite.setColor(sprite.getColor().r, sprite.getColor().g, sprite.getColor().b, 0.5f);
         }
+
+        if(Gdx.input.isTouched()){
+            inputHandler.targetDirection.x = Gdx.input.getX();
+            inputHandler.targetDirection.y = Gdx.input.getY();
+            inputHandler.mousePosition = GameData.camera.unproject(inputHandler.targetDirection);
+            inputHandler.player.clickPosition.x = inputHandler.mousePosition.x - inputHandler.player.body.getPosition().x;
+            inputHandler.player.clickPosition.y = inputHandler.mousePosition.y - inputHandler.player.body.getPosition().y;
+            inputHandler.player.fireShots();
+        }
     }
 
     @Override
     public void shield(){
         if(health>0) {
 
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    animator = new Animator("Sprites/plasmaGuyTeleport.png", 1, 6, 0.125f);
-                }
-            },0.125f);
-
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    System.out.println("Position before tele:" +body.getPosition());
-                    System.out.println("Mouse position:" +"("+Gdx.input.getX()+","+Gdx.input.getY()+")");
-                    System.out.println("Uprojected Mouse position:" +GameData.camera.unproject(new Vector3(Gdx.input.getX(),Gdx.input.getY(),0)));
-                    Vector3 transform = GameData.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-                    if(transform.len()==0) transform = new Vector3(0,0,0);
-                    body.setTransform(MyMathStuff.convertTo2D(transform), 0);
-                    System.out.println("Position after tele:" +body.getPosition());
-                }
-            },0.5f);
-
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    animator = new Animator("Sprites/plasmaGuy.png", 4, 4);
-                }
-            },0.625f);
-
-
-            Gdx.input.vibrate(50);
-            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/PlasmaGuySounds/teleport.wav"));
-            long soundID = fireSound.play();
-            fireSound.setVolume(soundID, GameData.VOLUME);
-            fireSound.dispose();
-
-            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.BLUE, 1.2f).yoyo(1);
+//            Timer.schedule(new Timer.Task() {
+//                @Override
+//                public void run() {
+//                    animator = new Animator("Sprites/plasmaGuyTeleport.png", 1, 6, 0.125f);
+//                }
+//            },0.125f);
+//
+//            Timer.schedule(new Timer.Task() {
+//                @Override
+//                public void run() {
+//                    System.out.println("Position before tele:" +body.getPosition());
+//                    System.out.println("Mouse position:" +"("+Gdx.input.getX()+","+Gdx.input.getY()+")");
+//                    System.out.println("Uprojected Mouse position:" +GameData.camera.unproject(new Vector3(Gdx.input.getX(),Gdx.input.getY(),0)));
+//                    Vector3 transform = GameData.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+//                    if(transform.len()==0) transform = new Vector3(0,0,0);
+//                    body.setTransform(MyMathStuff.convertTo2D(transform), 0);
+//                    System.out.println("Position after tele:" +body.getPosition());
+//                }
+//            },0.5f);
+//
+//            Timer.schedule(new Timer.Task() {
+//                @Override
+//                public void run() {
+//                    animator = new Animator("Sprites/plasmaGuy.png", 4, 4);
+//                }
+//            },0.625f);
+//
+//
+//            Gdx.input.vibrate(50);
+//            Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/PlasmaGuySounds/teleport.wav"));
+//            long soundID = fireSound.play();
+//            fireSound.setVolume(soundID, GameData.VOLUME);
+//            fireSound.dispose();
+//
+//            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.BLUE, 1.2f).yoyo(1);
         }
     }
 
@@ -192,6 +209,13 @@ public class FireGuy extends Player {
 
     @Override
     public void kill(){
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                new CollisionlessSprite(lastPosition, new Animator("Sprites/FireGuyDeath.png",1,11,0.5f),12f,spriteWidth,spriteHeight);
+            }
+        }, 0.01f);
+
         super.kill();
         GameData.playMusic("Music/GameOver.mp3");
         Gdx.input.vibrate(1000);
@@ -202,31 +226,7 @@ public class FireGuy extends Player {
         lastPosition.x = MyMathStuff.convertTo3D(body.getPosition()).x;
         lastPosition.y = MyMathStuff.convertTo3D(body.getPosition()).y;
 
-        Animator gameOverAnimation = new Animator("Sprites/GameOverAnimation.png",2,5);
-        final AnimationPackage staticGameOverAnimation = new AnimationPackage(gameOverAnimation,64*2,32*2);
-        staticGameOverAnimation.play();
-        staticGameOverAnimation.position=new Vector2(lastPosition);
-        GameData.staticAnimations.add(staticGameOverAnimation);
-
-
-        //NEW GAME ON DEATH!
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
-                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
-                    @Override
-                    public void onEvent(int type, BaseTween<?> source) {
-                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(GameData.tweenManager);
-                        GameData.screen.dispose();
-                        GameData.screen.hide();
-                        GameData.staticAnimations.remove(staticGameOverAnimation);
-                        GameData.staticAnimations = new ArrayList<AnimationPackage>();
-
-                    }
-                }).start(GameData.tweenManager);
-            }
-        }, 8);
+//        new CollisionlessSprite(this, new Vector2(0,0), new Animator("Sprites/GameOverAnimation.png",2,5),0.5f,100f,80f);
 
     }
 

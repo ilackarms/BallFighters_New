@@ -38,6 +38,7 @@ public final class GameData {
     public static final int BOMB_GUY=4;
     public static final int PLASMA_GUY=5;
     public static final int LIGHTNING_GUY=6;
+    public static final int FIRE_GUY=7;
 
 
     public static final Vector2 PLAYER_1_HEALTH_BAR_LOCATION = new Vector2(5,Gdx.graphics.getHeight()-25);

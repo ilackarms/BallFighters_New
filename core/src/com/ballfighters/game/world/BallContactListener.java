@@ -120,6 +120,15 @@ public class BallContactListener implements ContactListener {
             }
         }
 
+        //flamethrower contact with flamethrower
+        for(int j = 0; j < currentManifold.getNumberOfContactPoints(); j++){
+            if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof FireGuyProjectile){
+                if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof FireGuyProjectile) {
+                    contact.setEnabled(false);
+                }
+            }
+        }
+
 
 
         //laser guy shield contact with parent

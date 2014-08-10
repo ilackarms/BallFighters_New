@@ -1,0 +1,19 @@
+
+FireGuyButton.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+FireGuyDown
+  rotate: false
+  xy: 1, 1
+  size: 23, 26
+  orig: 23, 26
+  offset: 0, 0
+  index: -1
+FireGuyUp
+  rotate: false
+  xy: 26, 1
+  size: 23, 26
+  orig: 23, 26
+  offset: 0, 0
+  index: -1

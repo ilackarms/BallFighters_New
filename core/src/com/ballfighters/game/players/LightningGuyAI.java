@@ -213,6 +213,12 @@ public class LightningGuyAI extends Player {
 
     @Override
     public void kill(){
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                new CollisionlessSprite(lastPosition, new Animator("Sprites/LightningGuyDeath.png",1,23,0.25f),12f,spriteWidth,spriteHeight);
+            }
+        }, 0.01f);
         super.kill();
         Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));
         long soundID = deathSound.play();

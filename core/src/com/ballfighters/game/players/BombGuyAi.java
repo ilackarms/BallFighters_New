@@ -198,6 +198,12 @@ public class BombGuyAI extends Player {
 
     @Override
     public void kill(){
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                new CollisionlessSprite(lastPosition, new Animator("Sprites/BombGuyDeath.png",1,20,0.5f),12f,spriteWidth,spriteHeight);
+            }
+        }, 0.01f);
         super.kill();
 //        GameData.playMusic("Music/Victory.mp3");
         Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));

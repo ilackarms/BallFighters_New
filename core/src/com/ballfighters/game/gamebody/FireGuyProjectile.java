@@ -1,7 +1,5 @@
 package com.ballfighters.game.gamebody;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
@@ -12,25 +10,23 @@ import com.ballfighters.math.MyMathStuff;
 /**
  * Created by Dell_Owner on 7/27/2014.
  */
-public class PlasmaGuyProjectile extends Bullet {
+public class FireGuyProjectile extends Bullet {
 
-
-    Boolean initialShot;
+    FireGuyProjectile self;
     float radius;
     Vector2 constantVelocity;
 
-    public PlasmaGuyProjectile(GameBody parent, Vector2 position, Vector2 velocity, final Boolean initialShot) {
+    public FireGuyProjectile(GameBody parent, Vector2 position, final Vector2 velocity) {
 
         this.parent = parent;
-        spriteWidth=7f;
-        spriteHeight=10f;
-        duration = 1.0f;
-        if(!initialShot){
-            duration = 0.5f;
-        }
-        damage = 4;
+        spriteWidth=19f;
+        spriteHeight=23f;
+        duration = 0.5f;
+
+
+        damage = 3;
         float SPEED = 50000f;
-        this.initialShot = initialShot;
+        self = this;
         constantVelocity = velocity;
 
         this.position = position;
@@ -42,7 +38,7 @@ public class PlasmaGuyProjectile extends Bullet {
         dataBundle = createUserDataBundle();
         clickPosition = new Vector3(0, 0, 0);//necessary so we don't get errors in update()
 
-        animator = new Animator("Sprites/plasmaShot.png", 1, 5, 0.125f);
+        animator = new Animator("Sprites/FireGuyProjectile.png", 1, 12, 0.125f);
 
         //DESTROY AFTER 5 SECONDS!
         Timer.schedule(new Timer.Task() {
@@ -52,11 +48,6 @@ public class PlasmaGuyProjectile extends Bullet {
             }
         }, duration);
 
-//        System.out.println(this+ "info: " +
-//                "position: "+position+"\n"+
-//                "velocity: "+velocity+"\n"+
-//                "body: "+body+"\n" +
-//                "sprite:"+sprite+"\n");
     }
 
     public Body initializeBody(){
@@ -108,34 +99,4 @@ public class PlasmaGuyProjectile extends Bullet {
         kill();
     }
 
-    @Override
-    public void kill(){
-        if(initialShot) {
-
-            final Vector2 explosionlocation = new Vector2(this.body.getPosition());
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/PlasmaGuySounds/plasmaShot.wav"));
-                    long soundID = fireSound.play();
-                    fireSound.setVolume(soundID, GameData.VOLUME);
-                    fireSound.dispose();
-
-                    Vector2 direction1 = MyMathStuff.findPerpendicularVectorOne(body.getLinearVelocity());
-                    Vector2 direction2 = MyMathStuff.findPerpendicularVectorTwo(body.getLinearVelocity());
-
-                    if(direction1.len()<=0 || direction2.len()<=0 ){
-                        direction1 = new Vector2(1,-1);
-                        direction2 = new Vector2(-1,1);
-                    }
-
-                    new CollisionlessSprite(explosionlocation, new Animator("Sprites/plasmaShotExplosion.png",1,8,0.12f),0.5f,5f);
-                    new PlasmaGuyProjectile(parent, explosionlocation.add(MyMathStuff.toUnit(direction1).scl(2f*radius)), direction1, false);
-                    new PlasmaGuyProjectile(parent, explosionlocation.add(MyMathStuff.toUnit(direction2).scl(2f*radius)), direction2, false);
-                }
-            }, 0.01f);
-        }
-
-        super.kill();
-    }
 }

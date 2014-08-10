@@ -11,16 +11,39 @@ import com.ballfighters.global.GameData;
  */
 public class CollisionlessSprite extends GameBody {
 
-    GameBody parent;
     float duration,  radius;
 
-    public CollisionlessSprite(GameBody parent, Vector2 position, Animator animator, float duration, float radius) {
+    public CollisionlessSprite(Vector2 position, Animator animator, float duration, float radius) {
 
-        this.parent = parent;
         spriteWidth=15f;
         spriteHeight=15f;
         this.duration=duration;
         this.radius= radius;
+
+        this.position = position;
+        inputDirection = new Vector2(0, 0);
+        body =  initializeBody();
+        body.setTransform(position, 0);
+        dataBundle = createUserDataBundle();
+        clickPosition = new Vector3(0, 0, 0);//necessary so we don't get errors in update()
+
+        this.animator = animator;
+
+        //DESTROY AFTER 0.75 SECONDS!
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                kill();
+            }
+        }, duration);
+    }
+
+    public CollisionlessSprite( Vector2 position, Animator animator, float duration, float width, float height) {
+
+        spriteWidth=width;
+        spriteHeight=height;
+        this.duration=duration;
+        this.radius= 5f;
 
         this.position = position;
         inputDirection = new Vector2(0, 0);

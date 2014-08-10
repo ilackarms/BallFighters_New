@@ -16,10 +16,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Timer;
 import com.ballfighters.game.ai.AIInputHandlerLittleBoo;
-import com.ballfighters.game.gamebody.Animator;
-import com.ballfighters.game.gamebody.Bullet;
-import com.ballfighters.game.gamebody.LittleBooProjectile;
-import com.ballfighters.game.gamebody.UserDataBundle;
+import com.ballfighters.game.gamebody.*;
 import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
@@ -171,6 +168,12 @@ public class LittleBooAI extends Player {
 
     @Override
     public void kill(){
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                new CollisionlessSprite(lastPosition, new Animator("Sprites/LittleBooDeathAnimation.png",1,12,0.5f),12f,spriteWidth,spriteHeight);
+            }
+        }, 0.01f);
         super.kill();
 //        GameData.playMusic("Music/Victory.mp3");
         Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));

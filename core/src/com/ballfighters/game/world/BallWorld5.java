@@ -61,6 +61,9 @@ public class BallWorld5 {
             case GameData.LIGHTNING_GUY:
                 player1 = new LightningGuy(new Vector2(-40,10));
                 break;
+            case GameData.FIRE_GUY:
+                player1 = new FireGuy(new Vector2(-40,10));
+                break;
         }
 
         player2 = new BombGuyAI(new Vector2(40,-10));

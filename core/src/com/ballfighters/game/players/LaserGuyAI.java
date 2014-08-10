@@ -193,6 +193,12 @@ public class LaserGuyAI extends Player {
 
     @Override
     public void kill(){
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                new CollisionlessSprite(lastPosition, new Animator("Sprites/LaserGuyDeath.png",1,16,0.5f),12f,spriteWidth,spriteHeight);
+            }
+        }, 0.01f);
         super.kill();
         Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooDeath.wav"));
         long soundID = deathSound.play();

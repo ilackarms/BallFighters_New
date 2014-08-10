@@ -318,6 +318,36 @@ public class CharacterSelectScreen implements Screen {
         lightningLabel.setAlignment(Align.bottom | Align.left);
 
 
+        TextureAtlas fireGuyTextureAtlas;
+        Skin fireGuySkin;
+        Button fireGuyButton;
+        Button.ButtonStyle fireGuyButtonStyle;
+
+        fireGuyTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/FireGuyButton.pack"));
+        fireGuySkin = new Skin(fireGuyTextureAtlas );
+
+        fireGuyButtonStyle = new Button.ButtonStyle();
+        fireGuyButtonStyle.up = fireGuySkin.getDrawable("FireGuyUp");
+        fireGuyButtonStyle.down = fireGuySkin.getDrawable("FireGuyDown");
+
+        fireGuyButton = new Button(fireGuyButtonStyle);
+        fireGuyButton.pad(Gdx.graphics.getWidth()/25);
+        fireGuyButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        GameData.PLAYER_CHOICE = GameData.FIRE_GUY;
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
+                    }
+                }).start(tweenManager);
+            }
+        });
+        Label fireLabel = new Label("Fire Guy",labelSkin);
+        fireLabel.setAlignment(Align.bottom | Align.left);
+
+
 
         table.add(booButton);
         table.add(ghostLabel);
@@ -332,7 +362,11 @@ public class CharacterSelectScreen implements Screen {
         table.add(lightningLabel).row();
 
         table.add(laserGuyButton);
-        table.add(laserLabel).row();
+        table.add(laserLabel);
+
+        table.add(fireGuyButton);
+        table.add(fireLabel).row();
+
         table.add(bombGuyButton);
         table.add(bombLabel).row();
         table.add(deathGuyButton);

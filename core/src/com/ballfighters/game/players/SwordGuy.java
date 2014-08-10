@@ -41,6 +41,7 @@ public class SwordGuy extends Player {
     public SwordGuy(Vector2 position) {
 
         name = "Sword Guy";
+        isAI = false;
 
         this.position = position;
         animator = new Animator("Sprites/SwordGuy.png", 4, 4);
@@ -200,6 +201,13 @@ public class SwordGuy extends Player {
 
     @Override
     public void kill(){
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                new CollisionlessSprite(lastPosition, new Animator("Sprites/SwordGuyDeath.png",1,18,0.5f),12f,spriteWidth,spriteHeight);
+            }
+        }, 0.01f);
+
         super.kill();
         GameData.playMusic("Music/GameOver.mp3");
         Gdx.input.vibrate(1000);
@@ -209,30 +217,6 @@ public class SwordGuy extends Player {
         deathSound.dispose();
         lastPosition.x = MyMathStuff.convertTo3D(body.getPosition()).x;
         lastPosition.y = MyMathStuff.convertTo3D(body.getPosition()).y;
-
-        Animator gameOverAnimation = new Animator("Sprites/GameOverAnimation.png",2,5);
-        final AnimationPackage staticGameOverAnimation = new AnimationPackage(gameOverAnimation,64*2,32*2);
-        staticGameOverAnimation.play();
-        staticGameOverAnimation.position=new Vector2(lastPosition);
-        GameData.staticAnimations.add(staticGameOverAnimation);
-
-        //NEW GAME ON DEATH!
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
-                    @Override
-                    public void onEvent(int type, BaseTween<?> source) {
-                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(GameData.tweenManager);
-                        GameData.screen.dispose();
-                        GameData.screen.hide();
-                        GameData.staticAnimations.remove(staticGameOverAnimation);
-                        GameData.staticAnimations = new ArrayList<AnimationPackage>();
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
-                    }
-                }).start(GameData.tweenManager);
-            }
-        }, 8);
 
     }
 
