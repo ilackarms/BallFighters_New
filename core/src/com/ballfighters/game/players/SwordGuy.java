@@ -156,7 +156,7 @@ public class SwordGuy extends Player {
                     public void run() {
                         fireShotOnCoolDown = false;
                     }
-                }, 0.05f);
+                }, 0.01f);
             }
         }
     }

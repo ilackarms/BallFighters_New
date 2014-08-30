@@ -36,7 +36,7 @@ public class LaserGuyAI extends Player {
     protected float radius = 5.5f;
     protected float density = 5f;
     protected float restitution = 0.5f;
-    public static final int MAX_HEALTH = 90;
+    public static final int MAX_HEALTH = 110;
 
     protected AIHandlerLaserGuy aiInputHandler;
 
@@ -209,7 +209,7 @@ public class LaserGuyAI extends Player {
 
         final TestBattleScreen3 battleScreen = (TestBattleScreen3) GameData.screen;
         Gdx.input.vibrate(100);
-        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).delay(2f).setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
                 Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(battleScreen.tweenManager);

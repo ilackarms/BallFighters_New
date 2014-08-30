@@ -6,7 +6,6 @@ import aurelienribon.tweenengine.TweenCallback;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -20,7 +19,10 @@ import com.ballfighters.game.gamebody.*;
 import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
-import com.ballfighters.screens.*;
+import com.ballfighters.screens.ContinueScreen;
+import com.ballfighters.screens.TestBattleScreen6;
+import com.ballfighters.screens.TestBattleScreen7;
+import com.ballfighters.screens.TestBattleScreen8;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 /**
  * Created by Dell_Owner on 7/23/2014.
  */
-public class LightningGuyAI extends Player {
+public class FireGuyAI extends Player {
 
 
     protected float radius = 5.5f;
@@ -41,12 +43,12 @@ public class LightningGuyAI extends Player {
 
     protected BallTween tween;
 
-    public LightningGuyAI(Vector2 position) {
+    public FireGuyAI(Vector2 position) {
 
-        name = "Lightning Guy";
+        name = "Fire Guy";
 
         this.position = position;
-        animator = new Animator("Sprites/LightningGuy.png", 4, 4);
+        animator = new Animator("Sprites/FireGuy.png", 4, 4);
         inputDirection = new Vector2(0,0);
         body = createBody();
         health = MAX_HEALTH;
@@ -117,41 +119,29 @@ public class LightningGuyAI extends Player {
     }
 
     Boolean fireShotOnCoolDown = false;
+    Boolean fireSoundOnCooldown = false;
     @Override
     public void fireShots(){
         if(health>0) {
             if (!fireShotOnCoolDown) {
-                Gdx.input.vibrate(15);
-
-                Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LightningGuySounds/LightningGuyProjectile.wav"));
-                long soundID = fireSound.play();
-                fireSound.setVolume(soundID, GameData.VOLUME);
-                fireSound.dispose();
+                if(!fireSoundOnCooldown) {
+                    Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/FireGuySounds/FireGuyProjectile.wav"));
+                    long soundID = fireSound.play();
+                    fireSound.setVolume(soundID, GameData.VOLUME);
+                    fireSound.dispose();
+                    fireSoundOnCooldown = true;
+                    Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            fireSoundOnCooldown= false;
+                        }
+                    }, 1.5f);
+                }
 
                 Vector2 shot1Position = new Vector2(this.body.getPosition().x + radius * 2 * MyMathStuff.toUnit(clickPosition).x,
                         this.body.getPosition().y + radius * 2 * MyMathStuff.toUnit(clickPosition).y);
                 Vector2 shot1Velocity = new Vector2(clickPosition.x, clickPosition.y);
-                new LightningGuyProjectile(this, shot1Position, shot1Velocity, false);
-
-
-                Vector2 rotatedClick = MyMathStuff.convertTo2D(clickPosition).rotate(105);
-                shot1Position = new Vector2(this.body.getPosition().x + radius * 2 * MyMathStuff.toUnit(rotatedClick).x,
-                        this.body.getPosition().y + radius * 2 * MyMathStuff.toUnit(rotatedClick).y);
-                shot1Velocity = new Vector2(rotatedClick.x, rotatedClick.y);
-                new LightningGuyProjectile(this, shot1Position, shot1Velocity, false);
-
-
-                rotatedClick = rotatedClick.rotate(105);
-                shot1Position = new Vector2(this.body.getPosition().x + radius * 2 * MyMathStuff.toUnit(rotatedClick).x,
-                        this.body.getPosition().y + radius * 2 * MyMathStuff.toUnit(rotatedClick).y);
-                shot1Velocity = new Vector2(rotatedClick.x, rotatedClick.y);
-                new LightningGuyProjectile(this, shot1Position, shot1Velocity, false);
-
-                rotatedClick = rotatedClick.rotate(105);
-                shot1Position = new Vector2(this.body.getPosition().x + radius * 2 * MyMathStuff.toUnit(rotatedClick).x,
-                        this.body.getPosition().y + radius * 2 * MyMathStuff.toUnit(rotatedClick).y);
-                shot1Velocity = new Vector2(rotatedClick.x, rotatedClick.y);
-                new LightningGuyProjectile(this, shot1Position, shot1Velocity, false);
+                new FireGuyProjectile(this, shot1Position, shot1Velocity);
 
                 tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.YELLOW, 1.2f).yoyo(1);
 
@@ -161,7 +151,7 @@ public class LightningGuyAI extends Player {
                     public void run() {
                         fireShotOnCoolDown = false;
                     }
-                }, 0.3f);
+                }, 0.033f);
             }
         }
     }
@@ -171,23 +161,43 @@ public class LightningGuyAI extends Player {
     public void shield(){
         if(health>0) {
             if (!shieldOnCoolDown) {
-                new LaserGuyShield(this);
-
-                Gdx.input.vibrate(50);
-                Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LaserGuySounds/LaserGuyShield.wav"));
-                long soundID = fireSound.play();
-                fireSound.setVolume(soundID, GameData.VOLUME);
-                fireSound.dispose();
-
-                tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.BLUE, 1.2f).yoyo(1);
-
-                fireShotOnCoolDown = true;
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        fireShotOnCoolDown = false;
-                    }
-                }, 1.5f);
+//                Timer.schedule(new Timer.Task() {
+//                    @Override
+//                    public void run() {
+//                        animator = new Animator("Sprites/plasmaGuyTeleport.png", 1, 6, 0.125f);
+//                    }
+//                },0.125f);
+//
+//                Timer.schedule(new Timer.Task() {
+//                    @Override
+//                    public void run() {
+//                        Vector3 transform = GameData.camera.unproject(new Vector3(MathUtils.random(40, Gdx.graphics.getWidth() - 40), MathUtils.random(40,Gdx.graphics.getHeight()-40), 0));
+//                        if(transform.len()==0) transform = new Vector3(0,0,0);
+//                        body.setTransform(MyMathStuff.convertTo2D(transform), 0);
+//                    }
+//                },0.5f);
+//
+//                Timer.schedule(new Timer.Task() {
+//                    @Override
+//                    public void run() {
+//                        animator = new Animator("Sprites/plasmaGuy.png", 4, 4);
+//                    }
+//                }, 0.625f);
+//
+//                Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/PlasmaGuySounds/teleport.wav"));
+//                long soundID = fireSound.play();
+//                fireSound.setVolume(soundID, GameData.VOLUME);
+//                fireSound.dispose();
+//
+//                tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.BLUE, 1.2f).yoyo(1);
+//
+//                fireShotOnCoolDown = true;
+//                Timer.schedule(new Timer.Task() {
+//                    @Override
+//                    public void run() {
+//                        fireShotOnCoolDown = false;
+//                    }
+//                }, 3.5f);
             }
         }
     }
@@ -216,7 +226,13 @@ public class LightningGuyAI extends Player {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                new CollisionlessSprite(lastPosition, new Animator("Sprites/LightningGuyDeath.png",1,23,0.25f),12f,spriteWidth,spriteHeight);
+                new CollisionlessSprite(lastPosition, new Animator("Sprites/FireGuyDeath.png",1,11,0.5f),12f,spriteWidth,spriteHeight);
+            }
+        }, 0.01f);
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                new CollisionlessSprite(lastPosition, new Animator("Sprites/PlasmaGuyDeath.png",1,20,0.5f),12f,spriteWidth,spriteHeight);
             }
         }, 0.01f);
         super.kill();
@@ -227,7 +243,7 @@ public class LightningGuyAI extends Player {
         lastPosition = body.getPosition();
 
 
-        final TestBattleScreen7 battleScreen = (TestBattleScreen7) GameData.screen;
+        final TestBattleScreen8 battleScreen = (TestBattleScreen8) GameData.screen;
         Gdx.input.vibrate(100);
         Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).delay(2f).setCallback(new TweenCallback() {
             @Override
@@ -236,10 +252,9 @@ public class LightningGuyAI extends Player {
                 GameData.screen.dispose();
                 GameData.screen.hide();
                 GameData.staticAnimations = new ArrayList<AnimationPackage>();
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ContinueScreen(new TestBattleScreen8(), name));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ContinueScreen(new TestBattleScreen7(), name));
             }
         }).start(battleScreen.tweenManager);
-
 
     }
 

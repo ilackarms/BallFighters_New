@@ -31,7 +31,7 @@ public class LightningGuyProjectile extends Bullet {
         if(!reboundShot){
             duration = 0.5f;
         }
-        damage = 2;
+        damage = 3;
         float SPEED = 50000f;
         self = this;
         constantVelocity = velocity;
