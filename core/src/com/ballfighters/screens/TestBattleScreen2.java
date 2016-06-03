@@ -136,7 +136,7 @@ public class TestBattleScreen2 extends GameScreen {
                 case 3:
                     GameData.playMusic("Music/grnhill[1].ogg");
                 case 4:
-                    GameData.playMusic("Music/dkc3purs[1].ogg");
+                    GameData.playMusic("Music/WilyStronghold1.mp3");
             }
         }
     }

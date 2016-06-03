@@ -119,9 +119,9 @@ public class TestBattleScreen extends GameScreen {
     }
 
     public void startMusic() {
-//        GameData.playMusic("Music/dkc3purs[1].ogg");
+//        GameData.playMusic("Music/WilyStronghold1.mp3");
 //        if(!GameData.music.isPlaying()){
-        GameData.playMusic("Music/dkc3purs[1].ogg");
+        GameData.playMusic("Music/WilyStronghold1.mp3");
 //        }
 //            GameData.music.setLooping(true);
     }
