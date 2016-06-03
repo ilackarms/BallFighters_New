@@ -6,7 +6,6 @@ import aurelienribon.tweenengine.TweenCallback;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -20,9 +19,9 @@ import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.screens.ContinueScreen;
-import com.ballfighters.screens.TestBattleScreen6;
 import com.ballfighters.screens.TestBattleScreen7;
 import com.ballfighters.screens.TestBattleScreen8;
+import com.ballfighters.screens.TestBattleScreen9;
 import com.ballfighters.tween.BallTween;
 import com.ballfighters.tween.SpriteAccessor;
 
@@ -122,7 +121,7 @@ public class FireGuyAI extends Player {
     Boolean fireSoundOnCooldown = false;
     @Override
     public void fireShots(){
-        if(health>0) {
+        if(health>0 && !dataBundle.flaggedForDeletion) {
             if (!fireShotOnCoolDown) {
                 if(!fireSoundOnCooldown) {
                     Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/FireGuySounds/FireGuyProjectile.wav"));
@@ -202,19 +201,29 @@ public class FireGuyAI extends Player {
         }
     }
 
+    Boolean getHitSoundCoolDown = false;
     @Override
     public void getHit(Bullet bullet){
-        Gdx.input.vibrate(100);
-        tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.RED, 2.2f).yoyo(1);
-        Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
-        long soundID = hitSound.play();
-        hitSound.setVolume(soundID, GameData.VOLUME);
-        hitSound.dispose();
+        if(!getHitSoundCoolDown) {
+            Gdx.input.vibrate(10);
+            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.RED, 2.2f).yoyo(1);
+            Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
+            long soundID = hitSound.play();
+            hitSound.setVolume(soundID, GameData.VOLUME);
+            hitSound.dispose();
+            getHitSoundCoolDown = true;
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    getHitSoundCoolDown = false;
+                }
+            }, 0.5f);
+        }
 
         health -= bullet.damage;
         float ratio = (float) health / (float) MAX_HEALTH;
         if(ratio<0) ratio = 0;
-        System.out.println(health + "/" + MAX_HEALTH + "=" + ratio);
+
         GameData.PLAYER_2_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
         if (health <= 0) {
             kill();
@@ -227,12 +236,6 @@ public class FireGuyAI extends Player {
             @Override
             public void run() {
                 new CollisionlessSprite(lastPosition, new Animator("Sprites/FireGuyDeath.png",1,11,0.5f),12f,spriteWidth,spriteHeight);
-            }
-        }, 0.01f);
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                new CollisionlessSprite(lastPosition, new Animator("Sprites/PlasmaGuyDeath.png",1,20,0.5f),12f,spriteWidth,spriteHeight);
             }
         }, 0.01f);
         super.kill();
@@ -252,7 +255,7 @@ public class FireGuyAI extends Player {
                 GameData.screen.dispose();
                 GameData.screen.hide();
                 GameData.staticAnimations = new ArrayList<AnimationPackage>();
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ContinueScreen(new TestBattleScreen7(), name));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ContinueScreen(new TestBattleScreen9(), name));
             }
         }).start(battleScreen.tweenManager);
 

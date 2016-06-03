@@ -13,6 +13,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Timer;
+import com.ballfighters.game.gamebody.Animator;
+import com.ballfighters.game.gamebody.CollisionlessSprite;
 import com.ballfighters.game.gamebody.GameBody;
 import com.ballfighters.game.gamebody.UserDataBundle;
 import com.ballfighters.global.GameData;
@@ -32,6 +34,7 @@ public class Player extends GameBody {
     public float restitution;
     public float PERMANENT_ACCELERATION;
     public int slowStacks;
+    public int rootStacks;
     public String name;
     public Boolean isAI=true;
 
@@ -71,6 +74,29 @@ public class Player extends GameBody {
                 }
             }
         },2);
+        System.out.println("GOOHIT!");
+    }
+
+    public void rootHit(){
+        rootStacks++;
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                new CollisionlessSprite(body.getPosition(), new Animator("Sprites/RootAnimation.png",1,6,0.12f),0.25f,5f);
+            }
+        },0.001f);
+
+        dataBundle.isRooted = true;
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                rootStacks--;
+                if(rootStacks<=0){
+                    dataBundle.isRooted = false;
+                }
+            }
+        },0.25f);
+        System.out.println("ROOTHIT!");
     }
 
 
@@ -115,9 +141,11 @@ public class Player extends GameBody {
                     GameData.BLACKSCREEN = new Sprite(new Texture(Gdx.files.internal("Backgrounds/blackScreen.png")));
                     GameData.BLACKSCREEN.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
                     Tween.set(GameData.BLACKSCREEN, SpriteAccessor.ALPHA).target(0).start(GameData.tweenManager);
+
                     Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
                         @Override
                         public void onEvent(int type, BaseTween<?> source) {
+                            GameData.PLAYER_2.dataBundle.flaggedForDeletion = true;
                             ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOverScreen(GameData.screen));
                             Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(4).start(GameData.tweenManager);
                             GameData.screen.dispose();

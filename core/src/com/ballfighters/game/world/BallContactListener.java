@@ -3,6 +3,7 @@ package com.ballfighters.game.world;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.ballfighters.game.gamebody.*;
+import com.ballfighters.game.players.PlantMinion;
 import com.ballfighters.game.players.Player;
 
 /**
@@ -161,6 +162,37 @@ public class BallContactListener implements ContactListener {
             }
         }
 
+        //VINE MINIONS DON'T HIT THEMSELVES, DON'T GET HIT BY VINEGUY
+        if(contact.getFixtureA().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof PlantMinion){
+            PlantMinion vineMinion = (PlantMinion) ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject;
+            if(contact.getFixtureB().getBody().getUserData() !=null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof Bullet){
+                Bullet bullet = (Bullet) ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject;
+                if(bullet.parent.equals(vineMinion)){
+                    contact.setEnabled(false);
+                }
+            }
+            if(contact.getFixtureB().getBody().getUserData() !=null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof Bullet){
+                Bullet bullet = (Bullet) ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject;
+                if(bullet.parent.equals(vineMinion.parent)){
+                    contact.setEnabled(false);
+                }
+            }
+        }
+        if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof PlantMinion){
+            PlantMinion vineMinion = (PlantMinion) ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject;
+            if(contact.getFixtureA().getBody().getUserData() !=null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof Bullet){
+                Bullet bullet = (Bullet) ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject;
+                if(bullet.parent.equals(vineMinion)){
+                    contact.setEnabled(false);
+                }
+            }
+            if(contact.getFixtureA().getBody().getUserData() !=null && ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject instanceof Bullet){
+                Bullet bullet = (Bullet) ((UserDataBundle) contact.getFixtureA().getBody().getUserData()).baseObject;
+                if(bullet.parent.equals(vineMinion.parent)){
+                    contact.setEnabled(false);
+                }
+            }
+        }
 
 
         //ALL BULLET contact with parent
@@ -172,9 +204,6 @@ public class BallContactListener implements ContactListener {
                 if(contact.getFixtureB().getBody().getUserData() != null && ((UserDataBundle) contact.getFixtureB().getBody().getUserData()).baseObject instanceof Player){
                     UserDataBundle bundleB = (UserDataBundle) contact.getFixtureB().getBody().getUserData();
                     Player swordGuy = (Player) bundleB.baseObject;
-                    System.out.println("Swordguy1"+swordGuy);
-                    System.out.println("Swordguy2"+laserParent);
-                    System.out.println("Swordguy3"+bundleB.baseObject);
                     //if player is parent of sword, no contact
                     if(laserParent!=null && laserParent.equals(swordGuy) || bundleB.ghostMode){
                         contact.setEnabled(false);
@@ -263,6 +292,18 @@ public class BallContactListener implements ContactListener {
             }
 
 
+            //monster guys punches explode!
+            if ((bundleA.baseObject instanceof Player) && (bundleB.baseObject instanceof MonsterGuyProjectile) && !(bundleA.baseObject).equals(((MonsterGuyProjectile) bundleB.baseObject).parent)) {
+                bundleA.baseObject.getHit((Bullet) bundleB.baseObject);
+                ((MonsterGuyProjectile) bundleB.baseObject).getHit((MonsterGuyProjectile) bundleB.baseObject);
+            }
+            //monster guys punches explode!
+            if ((bundleB.baseObject instanceof Player) && (bundleA.baseObject instanceof MonsterGuyProjectile) && !(bundleB.baseObject).equals(((MonsterGuyProjectile) bundleA.baseObject).parent)) {
+                bundleB.baseObject.getHit((Bullet) bundleA.baseObject);
+                ((MonsterGuyProjectile) bundleA.baseObject).getHit((MonsterGuyProjectile) bundleA.baseObject);
+            }
+
+
 
             //regular bullet on player collision
             if ((bundleA.baseObject instanceof Player) && (bundleB.baseObject instanceof Bullet) && !(bundleB.baseObject instanceof LaserGuyProjectile)
@@ -274,6 +315,11 @@ public class BallContactListener implements ContactListener {
                 if(bundleB.baseObject instanceof LittleBooEctoplasm){
                     ((Player) bundleA.baseObject).gooHit();
                 }
+
+                //vine = root!
+                if(bundleB.baseObject instanceof PlantGuyProjectile){
+                    ((Player) bundleA.baseObject).rootHit();
+                }
             }
             //regular bullet on player collision
             if ((bundleB.baseObject instanceof Player) && (bundleA.baseObject instanceof Bullet) && !(bundleA.baseObject instanceof LaserGuyProjectile)
@@ -284,6 +330,11 @@ public class BallContactListener implements ContactListener {
                 //ectoplasm = slow!
                 if(bundleA.baseObject instanceof LittleBooEctoplasm){
                     ((Player) bundleB.baseObject).gooHit();
+                }
+
+                //vine = root!
+                if(bundleA.baseObject instanceof PlantGuyProjectile){
+                    ((Player) bundleB.baseObject).rootHit();
                 }
             }
 

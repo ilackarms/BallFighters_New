@@ -348,6 +348,66 @@ public class CharacterSelectScreen implements Screen {
         fireLabel.setAlignment(Align.bottom | Align.left);
 
 
+        TextureAtlas plantGuyTextureAtlas;
+        Skin plantGuySkin;
+        Button plantGuyButton;
+        Button.ButtonStyle plantGuyButtonStyle;
+
+        plantGuyTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/PlantGuyButton.pack"));
+        plantGuySkin = new Skin(plantGuyTextureAtlas );
+
+        plantGuyButtonStyle = new Button.ButtonStyle();
+        plantGuyButtonStyle.up = plantGuySkin.getDrawable("PlantGuyUp");
+        plantGuyButtonStyle.down = plantGuySkin.getDrawable("PlantGuyDown");
+
+        plantGuyButton = new Button(plantGuyButtonStyle);
+        plantGuyButton.pad(Gdx.graphics.getWidth()/25);
+        plantGuyButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        GameData.PLAYER_CHOICE = GameData.PLANT_GUY;
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
+                    }
+                }).start(tweenManager);
+            }
+        });
+        Label plantLabel = new Label("Plant Guy",labelSkin);
+        plantLabel.setAlignment(Align.bottom | Align.left);
+
+
+        TextureAtlas nerdGuyTextureAtlas;
+        Skin nerdGuySkin;
+        Button nerdGuyButton;
+        Button.ButtonStyle nerdGuyButtonStyle;
+
+        nerdGuyTextureAtlas = new TextureAtlas(Gdx.files.internal("Buttons/NerdGuyButton.pack"));
+        nerdGuySkin = new Skin(nerdGuyTextureAtlas );
+
+        nerdGuyButtonStyle = new Button.ButtonStyle();
+        nerdGuyButtonStyle.up = nerdGuySkin.getDrawable("NerdGuyUp");
+        nerdGuyButtonStyle.down = nerdGuySkin.getDrawable("NerdGuyDown");
+
+        nerdGuyButton = new Button(nerdGuyButtonStyle);
+        nerdGuyButton.pad(Gdx.graphics.getWidth()/25);
+        nerdGuyButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 3).target(1).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int i, BaseTween<?> baseTween) {
+                        Tween.to(GameData.BLACKSCREEN, SpriteAccessor.ALPHA, 2).target(0).delay(3).start(tweenManager);
+                        GameData.PLAYER_CHOICE = GameData.NERD_GUY;
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new TestBattleScreen());
+                    }
+                }).start(tweenManager);
+            }
+        });
+        Label nerdLabel = new Label("Nerd Guy",labelSkin);
+        nerdLabel.setAlignment(Align.bottom | Align.left);
+
+
 
         table.add(booButton);
         table.add(ghostLabel);
@@ -368,9 +428,15 @@ public class CharacterSelectScreen implements Screen {
         table.add(fireLabel).row();
 
         table.add(bombGuyButton);
-        table.add(bombLabel).row();
+        table.add(bombLabel);
+        table.add(plantGuyButton);
+        table.add(plantLabel).row();
+
         table.add(deathGuyButton);
-        table.add(deathLabel).row();
+        table.add(deathLabel);
+
+        table.add(nerdGuyButton);
+        table.add(nerdLabel).row();
 
 
         //TODO: save characters unlocked, add them in as needed!

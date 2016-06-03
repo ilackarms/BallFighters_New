@@ -1,7 +1,5 @@
 package com.ballfighters.game.gamebody;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
@@ -109,7 +107,8 @@ public class LightningGuyProjectile extends Bullet {
     public void update(){
         animate();
         if(reboundShot){
-            constantVelocity = parent.body.getPosition().add(body.getPosition().scl(-1)).scl(6000);
+//            constantVelocity = parent.body.getPosition().add(body.getPosition().scl(-1)).scl(6000);
+            constantVelocity = MyMathStuff.findPerpendicularVectorOne(parent.body.getPosition().add(body.getPosition().scl(-1)).scl(6000));
         }
         sprite.setRotation(constantVelocity.angle());
         dataBundle.sprite = sprite;

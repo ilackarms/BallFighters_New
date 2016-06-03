@@ -15,7 +15,7 @@ public class BombGuyShield  extends GameBody{
     GameBody parent;
     float duration;
     public Array<Body> worldBodies;
-    public final float ATTRACTION = 50000f;
+    public final float ATTRACTION = 1000f;
 
     public BombGuyShield(GameBody parent, Vector2 position, Vector2 velocity) {
 

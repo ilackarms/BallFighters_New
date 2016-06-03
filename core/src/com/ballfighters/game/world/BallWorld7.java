@@ -64,6 +64,12 @@ public class BallWorld7 {
             case GameData.FIRE_GUY:
                 player1 = new FireGuy(new Vector2(-40,10));
                 break;
+            case GameData.PLANT_GUY:
+                player1 = new PlantGuy(new Vector2(-40,10));
+                break;
+            case GameData.NERD_GUY:
+                player1 = new NerdGuy(new Vector2(-40,10));
+                break;
         }
 
         player2 = new LightningGuyAI(new Vector2(40,-10));
@@ -108,8 +114,8 @@ public class BallWorld7 {
 
     public void update(){
 
-    	player1.update();
-    	player2.update();
+        if(!player1.dataBundle.flaggedForDeletion) player1.update();
+        if(!player2.dataBundle.flaggedForDeletion) player2.update();
 
         GameData.WORLD.getBodies(worldBodies);
         GameData.WORLD.getJoints(worldJoints);

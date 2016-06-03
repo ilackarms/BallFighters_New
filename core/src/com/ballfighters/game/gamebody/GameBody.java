@@ -33,7 +33,7 @@ public abstract class GameBody {
         sprite.getTexture().dispose();
     }
 
-    protected void animate(){
+    public void animate(){
         //animation
 
         animator.update(clickPosition);

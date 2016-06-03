@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.Timer;
 import com.ballfighters.game.players.*;
 import com.ballfighters.global.GameData;
 import com.ballfighters.screens.GameOverScreen;
-import com.ballfighters.screens.TestBattleScreen;
 
 /**
  * Created by Dell_Owner on 7/2/2014.

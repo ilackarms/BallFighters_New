@@ -37,14 +37,14 @@ public class AIHandlerLaserGuy {
     }
 
     protected void changeState(){
-        if (aiPlayer.body.isActive()) {
+        if (aiPlayer.body.isActive() && !aiPlayer.dataBundle.flaggedForDeletion) {
             state = MathUtils.random(0, 5);
             //change state after 5 SECONDS!
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
                     changeState();
-                    if (state == RETREATING || state == HESITATING) aiPlayer.shield();
+                    if (state == RETREATING || state == HESITATING ) aiPlayer.shield();
                 }
             }, stateDuration / 4);
         }

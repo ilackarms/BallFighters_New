@@ -5,9 +5,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -21,7 +19,6 @@ import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
 import com.ballfighters.screens.ContinueScreen;
-import com.ballfighters.screens.TestBattleScreen2;
 import com.ballfighters.screens.TestBattleScreen4;
 import com.ballfighters.screens.TestBattleScreen5;
 import com.ballfighters.tween.BallTween;
@@ -122,7 +119,7 @@ public class BombGuyAI extends Player {
     Boolean fireShotOnCoolDown = false;
     @Override
     public void fireShots(){
-        if(health>0) {
+        if(health>0 && !dataBundle.flaggedForDeletion) {
             if (!fireShotOnCoolDown) {
                 Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/BombGuySounds/BombGuyThrow.wav"));
                 long soundID = fireSound.play();
@@ -150,7 +147,7 @@ public class BombGuyAI extends Player {
     Boolean shieldOnCoolDown = false;
     @Override
     public void shield(){
-        if(health>0) {
+        if(health>0 && !dataBundle.flaggedForDeletion) {
             if (!shieldOnCoolDown) {
                 Vector2 shot1Position = new Vector2(this.body.getPosition().x + radius * 2 * MyMathStuff.toUnit(clickPosition).x,
                         this.body.getPosition().y + radius * 2 * MyMathStuff.toUnit(clickPosition).y);
@@ -172,24 +169,34 @@ public class BombGuyAI extends Player {
                     public void run() {
                         shieldOnCoolDown = false;
                     }
-                }, 1.5f);
+                }, 3.5f);
             }
         }
     }
 
+    Boolean getHitSoundCoolDown = false;
     @Override
     public void getHit(Bullet bullet){
-        Gdx.input.vibrate(100);
-        tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.RED, 2.2f).yoyo(1);
-        Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
-        long soundID = hitSound.play();
-        hitSound.setVolume(soundID, GameData.VOLUME);
-        hitSound.dispose();
+        if(!getHitSoundCoolDown) {
+            Gdx.input.vibrate(10);
+            tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.RED, 2.2f).yoyo(1);
+            Sound hitSound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LittleBooSounds/LittleBooHit.wav"));
+            long soundID = hitSound.play();
+            hitSound.setVolume(soundID, GameData.VOLUME);
+            hitSound.dispose();
+            getHitSoundCoolDown = true;
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    getHitSoundCoolDown = false;
+                }
+            }, 0.5f);
+        }
 
         health -= bullet.damage;
         float ratio = (float) health / (float) MAX_HEALTH;
         if(ratio<0) ratio = 0;
-        System.out.println(health + "/" + MAX_HEALTH + "=" + ratio);
+
         GameData.PLAYER_2_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
         if (health <= 0) {
             kill();

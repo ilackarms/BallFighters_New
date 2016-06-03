@@ -1,10 +1,6 @@
 package com.ballfighters.game.players;
 
-import aurelienribon.tweenengine.BaseTween;
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenCallback;
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.input.GestureDetector;
@@ -17,12 +13,9 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Timer;
 import com.ballfighters.game.gamebody.*;
-import com.ballfighters.global.AnimationPackage;
 import com.ballfighters.global.GameData;
 import com.ballfighters.math.MyMathStuff;
-import com.ballfighters.screens.GameOverScreen;
 import com.ballfighters.tween.BallTween;
-import com.ballfighters.tween.SpriteAccessor;
 
 import java.util.ArrayList;
 
@@ -164,8 +157,10 @@ public class LittleBoo extends Player {
         }
     }
 
+    Boolean getHitSoundCoolDown = false;
     @Override
     public void getHit(Bullet bullet){
+        if(!getHitSoundCoolDown) {
         if (!dataBundle.ghostMode) {
             Gdx.input.vibrate(100);
             tween = new BallTween(animator, BallTween.COLOR, BallTween.Colors.RED, 2.2f).yoyo(1);
@@ -173,11 +168,19 @@ public class LittleBoo extends Player {
             long soundID = hitSound.play();
             hitSound.setVolume(soundID, GameData.VOLUME);
             hitSound.dispose();
+            getHitSoundCoolDown = true;
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    getHitSoundCoolDown = false;
+                }
+            }, 0.5f);
+        }
 
             health -= bullet.damage;
             float ratio = (float) health / (float) MAX_HEALTH;
         if(ratio<0) ratio = 0;
-            System.out.println(health + "/" + MAX_HEALTH + "=" + ratio);
+
             GameData.PLAYER_1_HEALTH_BAR.setSize(Gdx.graphics.getWidth() / 6 * ratio, GameData.PLAYER_1_HEALTH_BAR.getHeight());
             if (health <= 0) {
                 kill();

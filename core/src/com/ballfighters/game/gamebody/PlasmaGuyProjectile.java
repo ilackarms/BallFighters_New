@@ -129,7 +129,7 @@ public class PlasmaGuyProjectile extends Bullet {
                         direction2 = new Vector2(-1,1);
                     }
 
-                    new CollisionlessSprite(explosionlocation, new Animator("Sprites/plasmaShotExplosion.png",1,8,0.12f),0.5f,5f);
+                    new CollisionlessSprite(explosionlocation, new Animator("Sprites/plasmaShotExplosion.png",1,8,0.0625f),0.25f,5f);
                     new PlasmaGuyProjectile(parent, explosionlocation.add(MyMathStuff.toUnit(direction1).scl(2f*radius)), direction1, false);
                     new PlasmaGuyProjectile(parent, explosionlocation.add(MyMathStuff.toUnit(direction2).scl(2f*radius)), direction2, false);
                 }

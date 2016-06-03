@@ -19,6 +19,7 @@ public class UserDataBundle {
     public Boolean ghostMode;
     public Boolean draw;
     public Boolean isSlowed;
+    public Boolean isRooted;
 
     public UserDataBundle(){
         this.sprite = new Sprite();
@@ -32,5 +33,6 @@ public class UserDataBundle {
         ghostMode = false;
         draw = true;
         isSlowed = false;
+        isRooted = false;
     }
 }

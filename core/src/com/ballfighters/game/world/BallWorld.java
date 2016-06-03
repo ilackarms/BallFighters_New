@@ -64,6 +64,12 @@ public class BallWorld {
             case GameData.FIRE_GUY:
                 GameData.PLAYER_1 = new FireGuy(new Vector2(-40,10));
                 break;
+            case GameData.PLANT_GUY:
+                GameData.PLAYER_1 = new PlantGuy(new Vector2(-40,10));
+                break;
+            case GameData.NERD_GUY:
+                GameData.PLAYER_1 = new NerdGuy(new Vector2(-40,10));
+                break;
         }
 
         player1 = GameData.PLAYER_1;
@@ -109,8 +115,8 @@ public class BallWorld {
 
     public void update(){
 
-    	player1.update();
-    	player2.update();
+    	if(!player1.dataBundle.flaggedForDeletion) player1.update();
+    	if(!player2.dataBundle.flaggedForDeletion) player2.update();
 
         GameData.WORLD.getBodies(worldBodies);
         GameData.WORLD.getJoints(worldJoints);
@@ -119,6 +125,7 @@ public class BallWorld {
         for(Body body : worldBodies){
             if(body.getUserData()!=null && body.getUserData() instanceof UserDataBundle){
                 UserDataBundle bundle = (UserDataBundle) body.getUserData();
+//                if(bundle.baseObject instanceof PlantMinion) System.out.println("OBJECT IS "+bundle.baseObject);
                 bundle.baseObject.update();
                 if (bundle.flaggedForDeletion){
                     bundle.baseObject.body.setActive(false);
@@ -179,6 +186,8 @@ public class BallWorld {
         player2.body.destroyFixture(player2.fixture);
         player1.kill();
         player2.kill();
+        player1.dataBundle.flaggedForDeletion = true;
+        player2.dataBundle.flaggedForDeletion = true;
     }
 
 }

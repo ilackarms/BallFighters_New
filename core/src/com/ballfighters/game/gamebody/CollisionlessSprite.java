@@ -1,5 +1,6 @@
 package com.ballfighters.game.gamebody;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
@@ -12,6 +13,7 @@ import com.ballfighters.global.GameData;
 public class CollisionlessSprite extends GameBody {
 
     float duration,  radius;
+    Boolean rotationEnabled;
 
     public CollisionlessSprite(Vector2 position, Animator animator, float duration, float radius) {
 
@@ -22,12 +24,14 @@ public class CollisionlessSprite extends GameBody {
 
         this.position = position;
         inputDirection = new Vector2(0, 0);
-        body =  initializeBody();
+        body =  initializeStaticBody();
         body.setTransform(position, 0);
         dataBundle = createUserDataBundle();
         clickPosition = new Vector3(0, 0, 0);//necessary so we don't get errors in update()
 
         this.animator = animator;
+
+        rotationEnabled = false;
 
         //DESTROY AFTER 0.75 SECONDS!
         Timer.schedule(new Timer.Task() {
@@ -47,7 +51,7 @@ public class CollisionlessSprite extends GameBody {
 
         this.position = position;
         inputDirection = new Vector2(0, 0);
-        body =  initializeBody();
+        body =  initializeStaticBody();
         body.setTransform(position, 0);
         dataBundle = createUserDataBundle();
         clickPosition = new Vector3(0, 0, 0);//necessary so we don't get errors in update()
@@ -61,11 +65,44 @@ public class CollisionlessSprite extends GameBody {
                 kill();
             }
         }, duration);
+
+        rotationEnabled = false;
+    }
+
+    public CollisionlessSprite( Vector2 position, Animator animator, float duration, float width, float height, Vector2 velocity) {
+
+        velocity.x = velocity.x/2;
+        velocity.y = velocity.y/2;
+
+        spriteWidth=width;
+        spriteHeight=height;
+        this.duration=duration;
+        this.radius= 5f;
+
+        this.position = position;
+        inputDirection = new Vector2(0, 0);
+        body =  initializeKinematicBody(velocity);
+        body.setTransform(position, velocity.angle()* MathUtils.degreesToRadians);
+        dataBundle = createUserDataBundle();
+        clickPosition = new Vector3(0, 0, 0);//necessary so we don't get errors in update()
+
+        this.animator = animator;
+
+        //DESTROY AFTER 0.75 SECONDS!
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                kill();
+            }
+        }, duration);
+
+        rotationEnabled = true;
+        dataBundle.rotatable = true;
     }
 
 
 
-    public Body initializeBody(){
+    public Body initializeStaticBody(){
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -80,6 +117,29 @@ public class CollisionlessSprite extends GameBody {
 
         body = GameData.WORLD.createBody(bodyDef);
         fixture = body.createFixture(fixtureDef);
+
+        shape.dispose();
+
+        return body;
+    }
+
+    public Body initializeKinematicBody(Vector2 velocity){
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        Shape shape = new CircleShape();
+        shape.setRadius(radius);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 0.5f;
+        fixtureDef.friction = 0.1f;
+        fixtureDef.restitution = 0.5f;
+
+        body = GameData.WORLD.createBody(bodyDef);
+        fixture = body.createFixture(fixtureDef);
+
+        body.setLinearVelocity(velocity);
 
         shape.dispose();
 

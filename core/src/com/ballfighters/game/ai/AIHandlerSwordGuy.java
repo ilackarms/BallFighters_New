@@ -41,7 +41,7 @@ public class AIHandlerSwordGuy {
     }
 
     protected void changeState(){
-        if (aiPlayer.body.isActive()) {
+        if (aiPlayer.body.isActive() && !aiPlayer.dataBundle.flaggedForDeletion) {
             state = MathUtils.random(0, 9);
             //change state after 5 SECONDS!
             Timer.schedule(new Timer.Task() {
@@ -59,6 +59,13 @@ public class AIHandlerSwordGuy {
         switch (state) {
             case CHARGING1:
             case CHARGING2:
+                inputDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x);
+                inputDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y);
+                targetDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
+                targetDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
+                aiPlayer.ACCELERATION = 1600;
+                aiPlayer.PERMANENT_ACCELERATION = 1600;
+                break;
             case CHARGING3:
             case CHARGING4:
             case CHARGING5:
@@ -67,6 +74,9 @@ public class AIHandlerSwordGuy {
                 inputDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y);
                 targetDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);
                 targetDirection.y = (GameData.PLAYER_1.body.getPosition().y - aiPlayer.body.getPosition().y) * MathUtils.random(0.8f, 1.2f);
+
+                aiPlayer.ACCELERATION = 800;
+                aiPlayer.PERMANENT_ACCELERATION = 800;
                 break;
             case SIDESTEPPING_RIGHT:
                 targetDirection.x = (GameData.PLAYER_1.body.getPosition().x - aiPlayer.body.getPosition().x) * MathUtils.random(0.8f, 1.2f);

@@ -1,0 +1,19 @@
+
+SwordGuyButton.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+SwordGuyDown
+  rotate: false
+  xy: 1, 1
+  size: 33, 32
+  orig: 33, 32
+  offset: 0, 0
+  index: -1
+SwordGuyUp
+  rotate: false
+  xy: 36, 1
+  size: 33, 32
+  orig: 33, 32
+  offset: 0, 0
+  index: -1

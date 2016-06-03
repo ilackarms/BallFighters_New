@@ -1,0 +1,19 @@
+
+BombGuyButton.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+BombGuyDown
+  rotate: false
+  xy: 1, 1
+  size: 20, 31
+  orig: 20, 31
+  offset: 0, 0
+  index: -1
+BombGuyUp
+  rotate: false
+  xy: 23, 1
+  size: 20, 31
+  orig: 20, 31
+  offset: 0, 0
+  index: -1

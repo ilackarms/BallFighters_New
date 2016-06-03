@@ -25,7 +25,7 @@ public class DeathGuyShield extends Bullet {
         spriteWidth=10.5f;
         spriteHeight=10.5f;
         duration = 3.5f;
-        damage = 2;
+        damage = 3;
         float SPEED = 50000f;
 
         this.position = position;

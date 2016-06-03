@@ -37,7 +37,7 @@ public class AIInputHandlerLittleBoo {
     }
 
     protected void changeState(){
-        if (aiPlayer.body.isActive()) {
+        if (aiPlayer.body.isActive() && !aiPlayer.dataBundle.flaggedForDeletion) {
             state = MathUtils.random(0,5);
             //change state after 5 SECONDS!
             Timer.schedule(new Timer.Task() {

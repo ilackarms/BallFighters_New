@@ -89,7 +89,7 @@ public class DeathGuyProjectile  extends Bullet {
 
         fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.5f;
+        fixtureDef.density = 5f;
         fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.5f;
 
